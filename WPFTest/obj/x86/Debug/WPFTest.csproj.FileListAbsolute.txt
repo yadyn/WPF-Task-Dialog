@@ -1,0 +1,16 @@
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\bin\Debug\WPFTest.exe
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\bin\Debug\WPFTest.pdb
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\bin\Debug\TaskDialog.dll
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\bin\Debug\TaskDialog.pdb
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\bin\Debug\TaskDialog.xml
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\obj\x86\Debug\MainWindow.baml
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\obj\x86\Debug\MainWindow.g.cs
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\obj\x86\Debug\App.g.cs
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\obj\x86\Debug\WPFTest_MarkupCompile.cache
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\obj\x86\Debug\WPFTest.g.resources
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\obj\x86\Debug\WPFTest.Properties.Resources.resources
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\obj\x86\Debug\WPFTest.exe
+C:\Users\saha340\Projects\Git\TaskDialog\WPFTest\obj\x86\Debug\WPFTest.pdb
