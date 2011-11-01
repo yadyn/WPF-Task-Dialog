@@ -7,8 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskDialog", "TaskDialog\Ta
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0AEE669A-366A-428F-BDEF-A7954132DEBD}"
 	ProjectSection(SolutionItems) = preProject
-		..\ItsBeen\license.txt = ..\ItsBeen\license.txt
-		..\ItsBeen\readme.markdown = ..\ItsBeen\readme.markdown
+		license.txt = license.txt
+		readme.markdown = readme.markdown
 	EndProjectSection
 EndProject
 Global

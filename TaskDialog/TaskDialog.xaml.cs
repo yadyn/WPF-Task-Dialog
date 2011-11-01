@@ -89,7 +89,7 @@ namespace TaskDialogInterop
 		{
 			if (this.DataContext != null && this.DataContext is TaskDialogViewModel)
 			{
-				if ((this.DataContext as TaskDialogViewModel).ShowCloseButton)
+				if ((this.DataContext as TaskDialogViewModel).AllowDialogCancellation)
 				{
 					SafeNativeMethods.SetWindowIconVisibility(this, false);
 				}
@@ -110,9 +110,18 @@ namespace TaskDialogInterop
 			if (this.DataContext != null && this.DataContext is TaskDialogViewModel)
 			{
 				// Block Alt-F4 if it isn't allowed
-				if (!(this.DataContext as TaskDialogViewModel).CanAltF4
+				if (!(this.DataContext as TaskDialogViewModel).AllowDialogCancellation
 					&& e.Key == Key.System && e.SystemKey == Key.F4)
 					e.Handled = true;
+
+				// Handel Esc manually if the override has been set
+				if ((this.DataContext as TaskDialogViewModel).AllowDialogCancellation
+					&& e.Key == Key.Escape)
+				{
+					e.Handled = true;
+					this.DialogResult = false;
+					Close();
+				}
 			}
 		}
 		/// <summary>

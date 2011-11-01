@@ -97,6 +97,7 @@ namespace WPFTest
 			config.MainIcon = VistaTaskDialogIcon.Shield;
 			config.FooterText = "Optional footer text with an icon can be included.";
 			config.FooterIcon = VistaTaskDialogIcon.Warning;
+			config.AllowDialogCancellation = true;
 
 			TaskDialogResult res =
 				TaskDialog.Show(config);

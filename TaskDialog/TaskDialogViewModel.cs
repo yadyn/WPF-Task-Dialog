@@ -179,28 +179,20 @@ namespace TaskDialogInterop
 			}
 		}
 		/// <summary>
-		/// Gets a value indicating whether or not to show the red X close button.
+		/// Gets a value indicating whether or not Alt-F4, Esc, and the red X
+		/// close button should work.
 		/// </summary>
-		public bool ShowCloseButton
-		{
-			get
-			{
-				// The close button should be shown when only regular common buttons are specified
-				return (options.CommandButtons == null || options.CommandButtons.Length == 0)
-					&& (options.RadioButtons == null || options.RadioButtons.Length == 0)
-					&& (options.CustomButtons == null || options.CustomButtons.Length == 0);
-			}
-		}
-		/// <summary>
-		/// Gets a value indicating whether or not Alt-F4 should work.
-		/// </summary>
-		public bool CanAltF4
+		public bool AllowDialogCancellation
 		{
 			get
 			{
 				// Alt-F4 should only work if there is a close button or some other
-				//normal button marked as IsCancel
-				return ShowCloseButton || NormalButtons.Any(button => button.IsCancel);
+				//normal button marked as IsCancel or its been overridden
+				return options.AllowDialogCancellation
+					|| NormalButtons.Any(button => button.IsCancel)
+					|| ((options.CommandButtons == null || options.CommandButtons.Length == 0)
+						&& (options.RadioButtons == null || options.RadioButtons.Length == 0)
+						&& (options.CustomButtons == null || options.CustomButtons.Length == 0));
 			}
 		}
 		/// <summary>
@@ -237,28 +229,30 @@ namespace TaskDialogInterop
 					else if (options.CustomButtons != null)
 					{
 						int i = 0;
-						return (from button in options.CustomButtons
-								select new TaskDialogButtonData(
-									TaskDialog.CustomButtonIDOffset + i,
-									button,
-									NormalButtonCommand,
-									DefaultButtonIndex == i++,
-									button.Contains(VistaTaskDialogCommonButtons.Cancel.ToString()) || button.Contains(VistaTaskDialogCommonButtons.Close.ToString())))
-								.ToList();
+						_normalButtons =
+							(from button in options.CustomButtons
+							 select new TaskDialogButtonData(
+								TaskDialog.CustomButtonIDOffset + i,
+								button,
+								NormalButtonCommand,
+								DefaultButtonIndex == i++,
+								button.Contains(VistaTaskDialogCommonButtons.Cancel.ToString()) || button.Contains(VistaTaskDialogCommonButtons.Close.ToString())))
+							.ToList();
 					}
 					else if (options.CommonButtons != TaskDialogCommonButtons.None)
 					{
 						int i = 0;
 						VistaTaskDialogCommonButtons comBtns = TaskDialog.ConvertCommonButtons(options.CommonButtons);
-						return (from button in Enum.GetValues(typeof(VistaTaskDialogCommonButtons)).Cast<int>()
-								where button != (int)VistaTaskDialogCommonButtons.None
-									&& comBtns.HasFlag((VistaTaskDialogCommonButtons)button)
-								select TaskDialog.ConvertCommonButton(
-									(VistaTaskDialogCommonButtons)button,
-									NormalButtonCommand,
-									DefaultButtonIndex == i++,
-									(VistaTaskDialogCommonButtons)button == VistaTaskDialogCommonButtons.Cancel || (VistaTaskDialogCommonButtons)button == VistaTaskDialogCommonButtons.Close))
-								.ToList();
+						_normalButtons =
+							(from button in Enum.GetValues(typeof(VistaTaskDialogCommonButtons)).Cast<int>()
+							 where button != (int)VistaTaskDialogCommonButtons.None
+								&& comBtns.HasFlag((VistaTaskDialogCommonButtons)button)
+							 select TaskDialog.ConvertCommonButton(
+								(VistaTaskDialogCommonButtons)button,
+								NormalButtonCommand,
+								DefaultButtonIndex == i++,
+								(VistaTaskDialogCommonButtons)button == VistaTaskDialogCommonButtons.Cancel || (VistaTaskDialogCommonButtons)button == VistaTaskDialogCommonButtons.Close))
+							.ToList();
 					}
 					else
 					{

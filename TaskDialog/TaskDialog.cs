@@ -380,6 +380,8 @@ namespace TaskDialogInterop
 					vtd.DefaultRadioButton = options.DefaultButtonIndex.Value;
 			}
 
+			bool hasCustomCancel = false;
+
 			if (options.CustomButtons != null && options.CustomButtons.Length > 0)
 			{
 				List<VistaTaskDialogButton> lst = new List<VistaTaskDialogButton>();
@@ -390,6 +392,14 @@ namespace TaskDialogInterop
 						VistaTaskDialogButton button = new VistaTaskDialogButton();
 						button.ButtonId = CustomButtonIDOffset + i;
 						button.ButtonText = options.CustomButtons[i];
+
+						if (!hasCustomCancel)
+						{
+							hasCustomCancel =
+								(button.ButtonText == "Close"
+								|| button.ButtonText == "Cancel");
+						}
+
 						lst.Add(button);
 					}
 					catch (FormatException)
@@ -411,9 +421,12 @@ namespace TaskDialogInterop
 			vtd.FooterIcon = options.FooterIcon;
 			vtd.EnableHyperlinks = false;
 			vtd.ShowProgressBar = false;
-			vtd.AllowDialogCancellation = (options.CommonButtons == TaskDialogCommonButtons.Close ||
-										   options.CommonButtons == TaskDialogCommonButtons.OKCancel ||
-										   options.CommonButtons == TaskDialogCommonButtons.YesNoCancel);
+			vtd.AllowDialogCancellation =
+				(options.AllowDialogCancellation
+				|| hasCustomCancel
+				|| options.CommonButtons == TaskDialogCommonButtons.Close
+				|| options.CommonButtons == TaskDialogCommonButtons.OKCancel
+				|| options.CommonButtons == TaskDialogCommonButtons.YesNoCancel);
 			vtd.CallbackTimer = false;
 			vtd.ExpandedByDefault = false;
 			vtd.ExpandFooterArea = false;

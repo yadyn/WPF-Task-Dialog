@@ -105,6 +105,16 @@ namespace TaskDialogInterop
 		/// Additional footer text.
 		/// </summary>
 		public string FooterText;
+		/// <summary>
+		/// Indicates that the dialog should be able to be closed using Alt-F4,
+		/// Escape, and the title bar's close button even if no cancel button
+		/// is specified the CommonButtons.
+		/// </summary>
+		/// <remarks>
+		/// You'll want to set this to true if you use CustomButtons and have
+		/// a Cancel-like button in it.
+		/// </remarks>
+		public bool AllowDialogCancellation;
 	}
 	/// <summary>
 	/// Provides data for all task dialog buttons.
