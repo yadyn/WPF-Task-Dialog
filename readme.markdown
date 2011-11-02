@@ -31,7 +31,7 @@ though, is found in the overload that takes a TaskDialogOptions object.
 The basic flow in your apps will typically be something like this:
 
     TaskDialogOptions config = new TaskDialogOptions();
-
+    
     config.Owner = this;
     config.Title = "Task Dialog Title";
     config.MainInstruction = "The main instruction text for the TaskDialog goes here";
@@ -45,7 +45,7 @@ The basic flow in your apps will typically be something like this:
     config.MainIcon = VistaTaskDialogIcon.Shield;
     config.FooterText = "Optional footer text with an icon can be included.";
     config.FooterIcon = VistaTaskDialogIcon.Warning;
-
+    
     TaskDialogResult res = TaskDialog.Show(config);
 
 The options object lets you specify all of the particulars. Anything you don't
@@ -74,9 +74,9 @@ You can read more as well as see screenshots [here][4].
 - Uses the native TaskDialogIndirect API when available (Vista/7)
 - Licensed under [The Code Project Open License (CPOL) 1.02][5]
     - Can be freely redistributed
-	- Can be modified
-	- Can be used in commercial software
-	- No warranty/guarantee
+    - Can be modified
+    - Can be used in commercial software
+    - No warranty/guarantee
 
 [1]: http://msdn.microsoft.com/en-us/library/bb760544%28v=vs.85%29.aspx
 [2]: http://www.codeproject.com/KB/vista/Vista_TaskDialog_Wrapper.aspx

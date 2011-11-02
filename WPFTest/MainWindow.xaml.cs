@@ -99,8 +99,7 @@ namespace WPFTest
 			config.FooterIcon = VistaTaskDialogIcon.Warning;
 			config.AllowDialogCancellation = true;
 
-			TaskDialogResult res =
-				TaskDialog.Show(config);
+			TaskDialogResult res = TaskDialog.Show(config);
 
 			UpdateResult(res);
 		}
@@ -147,8 +146,7 @@ namespace WPFTest
 			config.RadioButtons = new string[] { "Radio Option 1", "Radio Option 2", "Radio Option 3", "Radio Option 4", "Radio Option 5" };
 			config.MainIcon = VistaTaskDialogIcon.Information;
 
-			TaskDialogResult res =
-				TaskDialog.Show(config);
+			TaskDialogResult res = TaskDialog.Show(config);
 
 			UpdateResult(res);
 		}
@@ -165,8 +163,7 @@ namespace WPFTest
 			config.CommandButtons = new string[] { "Command &Link 1", "Command Link 2\nLine 2\nLine 3", "Command Link 3" };
 			config.MainIcon = VistaTaskDialogIcon.Information;
 
-			TaskDialogResult res =
-				TaskDialog.Show(config);
+			TaskDialogResult res = TaskDialog.Show(config);
 
 			UpdateResult(res);
 		}

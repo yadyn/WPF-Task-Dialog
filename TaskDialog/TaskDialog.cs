@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
@@ -305,6 +306,57 @@ namespace TaskDialogInterop
 
 			return new TaskDialogButtonData(id, "_" + commonButton.ToString(), command, isDefault, isCancel);
 		}
+		internal static int GetButtonIdForCommonButton(TaskDialogCommonButtons commonButtons, int index)
+		{
+			int buttonId = 0;
+
+			switch (commonButtons)
+			{
+				default:
+				case TaskDialogCommonButtons.None:
+				case TaskDialogCommonButtons.Close:
+					// We'll set to 0 even for Close, as it doesn't matter that we
+					//get the value right since there is only one button anyway
+					buttonId = 0;
+					break;
+				case TaskDialogCommonButtons.OKCancel:
+					if (index == 0)
+						buttonId = (int)VistaTaskDialogCommonButtons.OK;
+					else if (index == 1)
+						buttonId = (int)VistaTaskDialogCommonButtons.Cancel;
+					else
+						buttonId = 0;
+					break;
+				case TaskDialogCommonButtons.RetryCancel:
+					if (index == 0)
+						buttonId = (int)VistaTaskDialogCommonButtons.Retry;
+					else if (index == 1)
+						buttonId = (int)VistaTaskDialogCommonButtons.Cancel;
+					else
+						buttonId = 0;
+					break;
+				case TaskDialogCommonButtons.YesNo:
+					if (index == 0)
+						buttonId = (int)VistaTaskDialogCommonButtons.Yes;
+					else if (index == 1)
+						buttonId = (int)VistaTaskDialogCommonButtons.No;
+					else
+						buttonId = 0;
+					break;
+				case TaskDialogCommonButtons.YesNoCancel:
+					if (index == 0)
+						buttonId = (int)VistaTaskDialogCommonButtons.Yes;
+					else if (index == 1)
+						buttonId = (int)VistaTaskDialogCommonButtons.No;
+					else if (index == 2)
+						buttonId = (int)VistaTaskDialogCommonButtons.Cancel;
+					else
+						buttonId = 0;
+					break;
+			}
+
+			return buttonId;
+		}
 
 		/// <summary>
 		/// Raises the <see cref="E:Showing"/> event.
@@ -355,8 +407,10 @@ namespace TaskDialogInterop
 					}
 				}
 				vtd.Buttons = lst.ToArray();
-				if (options.DefaultButtonIndex.HasValue && options.DefaultButtonIndex >= 0)
-					vtd.DefaultButton = options.DefaultButtonIndex.Value;
+				if (options.DefaultButtonIndex.HasValue
+					&& options.DefaultButtonIndex >= 0
+					&& options.DefaultButtonIndex.Value < vtd.Buttons.Length)
+					vtd.DefaultButton = vtd.Buttons[options.DefaultButtonIndex.Value].ButtonId;
 			}
 			else if (options.RadioButtons != null && options.RadioButtons.Length > 0)
 			{
@@ -376,8 +430,10 @@ namespace TaskDialogInterop
 				}
 				vtd.RadioButtons = lst.ToArray();
 				vtd.NoDefaultRadioButton = (!options.DefaultButtonIndex.HasValue || options.DefaultButtonIndex.Value == -1);
-				if (options.DefaultButtonIndex.HasValue && options.DefaultButtonIndex >= 0)
-					vtd.DefaultRadioButton = options.DefaultButtonIndex.Value;
+				if (options.DefaultButtonIndex.HasValue
+					&& options.DefaultButtonIndex >= 0
+					&& options.DefaultButtonIndex.Value < vtd.RadioButtons.Length)
+					vtd.DefaultButton = vtd.RadioButtons[options.DefaultButtonIndex.Value].ButtonId;
 			}
 
 			bool hasCustomCancel = false;
@@ -408,13 +464,19 @@ namespace TaskDialogInterop
 				}
 
 				vtd.Buttons = lst.ToArray();
-				if (options.DefaultButtonIndex.HasValue && options.DefaultButtonIndex >= 0)
-					vtd.DefaultButton = options.DefaultButtonIndex.Value;
+				if (options.DefaultButtonIndex.HasValue
+					&& options.DefaultButtonIndex.Value >= 0
+					&& options.DefaultButtonIndex.Value < vtd.Buttons.Length)
+					vtd.DefaultButton = vtd.Buttons[options.DefaultButtonIndex.Value].ButtonId;
 				vtd.CommonButtons = VistaTaskDialogCommonButtons.None;
 			}
 			else
 			{
 				vtd.CommonButtons = ConvertCommonButtons(options.CommonButtons);
+
+				if (options.DefaultButtonIndex.HasValue
+					&& options.DefaultButtonIndex >= 0)
+					vtd.DefaultButton = GetButtonIdForCommonButton(options.CommonButtons, options.DefaultButtonIndex.Value);
 			}
 
 			vtd.MainIcon = options.MainIcon;
