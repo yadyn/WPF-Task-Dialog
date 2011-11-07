@@ -522,7 +522,7 @@ namespace TaskDialogInterop
 			}
 			else if (radioButtonResult >= RadioButtonIDOffset)
 			{
-				simpResult = TaskDialogSimpleResult.Radio;
+				simpResult = (TaskDialogSimpleResult)diagResult;
 				radioButtonResult -= RadioButtonIDOffset;
 			}
 			else if (diagResult >= CustomButtonIDOffset)
@@ -576,7 +576,7 @@ namespace TaskDialogInterop
 			}
 			else if (diagResult >= RadioButtonIDOffset)
 			{
-				simpResult = TaskDialogSimpleResult.Radio;
+				simpResult = (TaskDialogSimpleResult)diagResult;
 				radioButtonResult = diagResult - RadioButtonIDOffset;
 			}
 			else if (diagResult >= CustomButtonIDOffset)
