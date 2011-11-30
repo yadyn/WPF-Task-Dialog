@@ -487,7 +487,9 @@ namespace TaskDialogInterop
 			}
 
 			vtd.MainIcon = options.MainIcon;
+			vtd.CustomMainIcon = options.CustomMainIcon;
 			vtd.FooterIcon = options.FooterIcon;
+			vtd.CustomFooterIcon = options.CustomFooterIcon;
 			vtd.EnableHyperlinks = DetectHyperlinks(options.Content, options.ExpandedInfo, options.FooterText);
 			vtd.ShowProgressBar = false;
 			vtd.AllowDialogCancellation =

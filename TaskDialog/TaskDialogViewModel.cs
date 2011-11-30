@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
@@ -219,7 +220,7 @@ namespace TaskDialogInterop
 		{
 			get
 			{
-				return ConvertIconToImageSource(options.MainIcon, true);
+				return ConvertIconToImageSource(options.MainIcon, options.CustomMainIcon, true);
 			}
 		}
 		/// <summary>
@@ -229,7 +230,7 @@ namespace TaskDialogInterop
 		{
 			get
 			{
-				return ConvertIconToImageSource(options.FooterIcon, false);
+				return ConvertIconToImageSource(options.FooterIcon, options.CustomFooterIcon, false);
 			}
 		}
 		/// <summary>
@@ -591,7 +592,7 @@ namespace TaskDialogInterop
 			}
 		}
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
-		private System.Windows.Media.ImageSource ConvertIconToImageSource(VistaTaskDialogIcon icon, bool isLarge)
+		private System.Windows.Media.ImageSource ConvertIconToImageSource(VistaTaskDialogIcon icon, Icon customIcon, bool isLarge)
 		{
 			System.Windows.Media.ImageSource iconSource = null;
 			System.Drawing.Icon sysIcon = null;
@@ -605,13 +606,13 @@ namespace TaskDialogInterop
 					case VistaTaskDialogIcon.None:
 						break;
 					case VistaTaskDialogIcon.Information:
-						sysIcon = System.Drawing.SystemIcons.Information;
+						sysIcon = SystemIcons.Information;
 						break;
 					case VistaTaskDialogIcon.Warning:
-						sysIcon = System.Drawing.SystemIcons.Warning;
+						sysIcon = SystemIcons.Warning;
 						break;
 					case VistaTaskDialogIcon.Error:
-						sysIcon = System.Drawing.SystemIcons.Error;
+						sysIcon = SystemIcons.Error;
 						break;
 					case VistaTaskDialogIcon.Shield:
 						if (isLarge)
@@ -625,7 +626,15 @@ namespace TaskDialogInterop
 						break;
 				}
 
-				if (sysIcon != null)
+				// Custom Icons always take priority
+				if (customIcon != null)
+				{
+					iconSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
+						customIcon.Handle,
+						System.Windows.Int32Rect.Empty,
+						System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+				}
+				else if (sysIcon != null)
 				{
 					iconSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
 						sysIcon.Handle,
@@ -643,6 +652,8 @@ namespace TaskDialogInterop
 			}
 			finally
 			{
+				// Not responsible for disposing of custom icons
+
 				if (sysIcon != null)
 					sysIcon.Dispose();
 				if (altBmp != null)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace TaskDialogInterop
 {
@@ -65,9 +66,16 @@ namespace TaskDialogInterop
 		/// </summary>
 		public string Title;
 		/// <summary>
-		/// A large 32x32 icon that signifies the purpose of the dialog.
+		/// A large 32x32 icon that signifies the purpose of the dialog, using
+		/// one of the built-in system icons.
 		/// </summary>
 		public VistaTaskDialogIcon MainIcon;
+		/// <summary>
+		/// A large 32x32 icon that signifies the purpose of the dialog, using
+		/// a custom Icon resource. If defined <see cref="MainIcon"/> will be
+		/// ignored.
+		/// </summary>
+		public Icon CustomMainIcon;
 		/// <summary>
 		/// Principal text.
 		/// </summary>
@@ -107,9 +115,16 @@ namespace TaskDialogInterop
 		/// </summary>
 		public string VerificationText;
 		/// <summary>
-		/// A small 16x16 icon that signifies the purpose of the footer text.
+		/// A small 16x16 icon that signifies the purpose of the footer text,
+		/// using one of the built-in system icons.
 		/// </summary>
 		public VistaTaskDialogIcon FooterIcon;
+		/// <summary>
+		/// A small 16x16 icon that signifies the purpose of the footer text,
+		/// using a custom Icon resource. If defined <see cref="FooterIcon"/>
+		/// will be ignored.
+		/// </summary>
+		public Icon CustomFooterIcon;
 		/// <summary>
 		/// Additional footer text.
 		/// </summary>

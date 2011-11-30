@@ -169,6 +169,24 @@ namespace WPFTest
 			UpdateResult(res);
 		}
 
+		private void button6_Click(object sender, RoutedEventArgs e)
+		{
+			TaskDialogOptions config = new TaskDialogOptions();
+
+			config.Owner = this;
+			config.Title = "Windows Genuine Verification";
+			config.MainInstruction = "This copy of Windows is not genuine.";
+			config.Content = "You may be a victim of software counterfeiting.";
+			config.CommonButtons = TaskDialogCommonButtons.Close;
+			config.CustomMainIcon = System.Drawing.Icon.FromHandle(Properties.Resources.genuine_32.GetHicon());
+
+			TaskDialogResult res = TaskDialog.Show(config);
+
+			UpdateResult(res);
+
+			config.CustomMainIcon.Dispose();
+		}
+
 		private bool taskDialog_Callback(TaskDialogOptions config, VistaTaskDialogNotificationArgs args, object callbackData)
 		{
 			bool result = false;
