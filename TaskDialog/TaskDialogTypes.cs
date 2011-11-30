@@ -3,6 +3,15 @@
 namespace TaskDialogInterop
 {
 	/// <summary>
+	/// The signature of the callback that recieves notificaitons from a Task Dialog.
+	/// </summary>
+	/// <param name="config">The configuration options for the Task Dialog that is calling.</param>
+	/// <param name="args">The notification arguments including the type of notification and information for the notification.</param>
+	/// <param name="callbackData">The value set on TaskDialog.CallbackData</param>
+	/// <returns>Return value meaning varies depending on the Notification member of args.</returns>
+	public delegate bool TaskDialogCallback(TaskDialogOptions config, VistaTaskDialogNotificationArgs args, object callbackData);
+
+	/// <summary>
 	/// Specifies the standard buttons that are displayed on a task dialog.
 	/// </summary>
 	public enum TaskDialogCommonButtons
@@ -115,6 +124,15 @@ namespace TaskDialogInterop
 		/// a Cancel-like button in it.
 		/// </remarks>
 		public bool AllowDialogCancellation;
+		/// <summary>
+		/// A callback that receives messages from the Task Dialog when
+		/// various events occur.
+		/// </summary>
+		public TaskDialogCallback Callback;
+		/// <summary>
+		/// Reference object that is passed to the callback.
+		/// </summary>
+		public object CallbackData;
 	}
 	/// <summary>
 	/// Provides data for all task dialog buttons.

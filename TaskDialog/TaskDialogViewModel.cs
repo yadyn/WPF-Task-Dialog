@@ -47,11 +47,38 @@ namespace TaskDialogInterop
 		private List<TaskDialogButtonData> _commandLinks;
 		private List<TaskDialogButtonData> _radioButtons;
 		private int _dialogResult = -1;
+		private bool _expandedInfoVisible;
 		private bool _verificationChecked;
+		private bool _preventClose;
 
 		private ICommand _commandNormalButton;
 		private ICommand _commandCommandLink;
 		private ICommand _commandRadioButton;
+		private ICommand _commandHyperlink;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TaskDialogViewModel"/> class.
+		/// </summary>
+		public TaskDialogViewModel()
+		{
+		}
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TaskDialogViewModel"/> class.
+		/// </summary>
+		/// <param name="options">Options to use.</param>
+		public TaskDialogViewModel(TaskDialogOptions options)
+			: this()
+		{
+			this.options = options;
+
+			FixAllButtonLabelAccessKeys();
+
+			// If radio buttons are defined, set the dialog result to the default selected radio
+			if (RadioButtons.Count > 0)
+			{
+				_dialogResult = RadioButtons[DefaultButtonIndex].ID;
+			}
+		}
 
 		/// <summary>
 		/// Gets the window start position.
@@ -114,6 +141,32 @@ namespace TaskDialogInterop
 			}
 		}
 		/// <summary>
+		/// Gets or sets a value indicating whether expanded info is visible.
+		/// </summary>
+		public bool ExpandedInfoVisible
+		{
+			get
+			{
+				return _expandedInfoVisible;
+			}
+			set
+			{
+				if (_expandedInfoVisible == value)
+					return;
+
+				_expandedInfoVisible = value;
+
+				RaisePropertyChangedEvent("ExpandedInfoVisible");
+
+				var args = new VistaTaskDialogNotificationArgs();
+
+				args.Notification = VistaTaskDialogNotification.ExpandoButtonClicked;
+				args.Expanded = _expandedInfoVisible;
+
+				OnCallback(args);
+			}
+		}
+		/// <summary>
 		/// Gets or sets whether the verification checkbox was checked.
 		/// </summary>
 		public bool VerificationChecked
@@ -124,8 +177,19 @@ namespace TaskDialogInterop
 			}
 			set
 			{
+				if (_verificationChecked == value)
+					return;
+
 				_verificationChecked = value;
+
 				RaisePropertyChangedEvent("VerificationChecked");
+
+				var args = new VistaTaskDialogNotificationArgs();
+
+				args.Notification = VistaTaskDialogNotification.VerificationClicked;
+				args.VerificationFlagChecked = _verificationChecked;
+
+				OnCallback(args);
 			}
 		}
 		/// <summary>
@@ -351,6 +415,13 @@ namespace TaskDialogInterop
 							{
 								_dialogResult = i;
 							}
+
+							var args = new VistaTaskDialogNotificationArgs();
+
+							args.Notification = VistaTaskDialogNotification.ButtonClicked;
+							args.ButtonId = i;
+
+							OnCallback(args);
 						});
 				}
 
@@ -385,12 +456,42 @@ namespace TaskDialogInterop
 				if (_commandRadioButton == null)
 				{
 					_commandRadioButton = new RelayCommand<int>((i) =>
-					{
-						_dialogResult = i;
-					});
+						{
+							_dialogResult = i;
+
+							var args = new VistaTaskDialogNotificationArgs();
+
+							args.Notification = VistaTaskDialogNotification.RadioButtonClicked;
+							args.ButtonId = i;
+
+							OnCallback(args);
+						});
 				}
 
 				return _commandRadioButton;
+			}
+		}
+		/// <summary>
+		/// Gets the command associated with hyperlinks.
+		/// </summary>
+		public ICommand HyperlinkCommand
+		{
+			get
+			{
+				if (_commandHyperlink == null)
+				{
+					_commandHyperlink = new RelayCommand<string>((uri) =>
+						{
+							var args = new VistaTaskDialogNotificationArgs();
+
+							args.Notification = VistaTaskDialogNotification.HyperlinkClicked;
+							args.Hyperlink = uri;
+
+							OnCallback(args);
+						});
+				}
+
+				return _commandHyperlink;
 			}
 		}
 
@@ -400,34 +501,52 @@ namespace TaskDialogInterop
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="TaskDialogViewModel"/> class.
+		/// Returns a value indicating whether or not the dialog should cancel a closing event.
 		/// </summary>
-		public TaskDialogViewModel()
+		/// <returns><c>true</c> if dialog closing should be canceled; otherwise, <c>false</c></returns>
+		public bool ShouldCancelClosing()
 		{
+			return _preventClose;
 		}
 		/// <summary>
-		/// Initializes a new instance of the <see cref="TaskDialogViewModel"/> class.
+		/// Notifies any callback handlers that the dialog has been constructed but not yet shown.
 		/// </summary>
-		/// <param name="options">Options to use.</param>
-		public TaskDialogViewModel(TaskDialogOptions options)
-			: this()
+		public void NotifyConstructed()
 		{
-			this.options = options;
+			var args = new VistaTaskDialogNotificationArgs();
 
-			FixAllButtonLabelAccessKeys();
+			args.Notification = VistaTaskDialogNotification.DialogConstructed;
 
-			// If radio buttons are defined, set the dialog result to the default selected radio
-			if (RadioButtons.Count > 0)
-			{
-				_dialogResult = RadioButtons[DefaultButtonIndex].ID;
-			}
+			OnCallback(args);
+		}
+		/// <summary>
+		/// Notifies any callback handlers that the dialog has been created but not yet shown.
+		/// </summary>
+		public void NotifyCreated()
+		{
+			var args = new VistaTaskDialogNotificationArgs();
+
+			args.Notification = VistaTaskDialogNotification.Created;
+
+			OnCallback(args);
+		}
+		/// <summary>
+		/// Notifies any callback handlers that the dialog is destroyed.
+		/// </summary>
+		public void NotifyClosed()
+		{
+			var args = new VistaTaskDialogNotificationArgs();
+
+			args.Notification = VistaTaskDialogNotification.Destroyed;
+
+			OnCallback(args);
 		}
 
 		/// <summary>
 		/// Raises the <see cref="E:PropertyChanged"/> event for the given property.
 		/// </summary>
 		/// <param name="propertyName">Name of the property.</param>
-		private void RaisePropertyChangedEvent(string propertyName)
+		protected void RaisePropertyChangedEvent(string propertyName)
 		{
 			OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
 		}
@@ -435,11 +554,40 @@ namespace TaskDialogInterop
 		/// Raises the <see cref="E:PropertyChanged"/> event.
 		/// </summary>
 		/// <param name="e">The <see cref="System.ComponentModel.PropertyChangedEventArgs"/> instance containing the event data.</param>
-		private void OnPropertyChanged(PropertyChangedEventArgs e)
+		protected void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
 			if (PropertyChanged != null)
 			{
 				PropertyChanged(this, e);
+			}
+		}
+		/// <summary>
+		/// Raises a callback.
+		/// </summary>
+		/// <param name="e">The <see cref="VistaTaskDialogNotificationArgs"/> instance containing the event data.</param>
+		protected void OnCallback(VistaTaskDialogNotificationArgs e)
+		{
+			if (options.Callback != null)
+			{
+				HandleCallbackReturn(e, options.Callback(options, e, options.CallbackData));
+			}
+		}
+
+		private void HandleCallbackReturn(VistaTaskDialogNotificationArgs e, bool returnValue)
+		{
+			switch (e.Notification)
+			{
+				default: // all others
+					// Return value ignored according to MSDN
+					break;
+				case VistaTaskDialogNotification.ButtonClicked:
+					// TRUE : prevent dialog from closing
+					_preventClose = returnValue;
+					break;
+				case VistaTaskDialogNotification.Timer:
+					// TRUE : reset tickcount
+					// Timer functionality not exposed right now, though, so do nothing
+					break;
 			}
 		}
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]

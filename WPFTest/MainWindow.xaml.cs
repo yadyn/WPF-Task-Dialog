@@ -95,9 +95,10 @@ namespace WPFTest
 			config.VerificationText = "Don't show me this message again";
 			config.CustomButtons = new string[] { "&Save", "Do&n't save", "&Cancel" };
 			config.MainIcon = VistaTaskDialogIcon.Shield;
-			config.FooterText = "Optional footer text with an icon can be included.";
+			config.FooterText = "Optional footer text with an icon or <a href=\"testUri\">hyperlink</a> can be included.";
 			config.FooterIcon = VistaTaskDialogIcon.Warning;
 			config.AllowDialogCancellation = true;
+			config.Callback = taskDialog_Callback;
 
 			TaskDialogResult res = TaskDialog.Show(config);
 
@@ -166,6 +167,21 @@ namespace WPFTest
 			TaskDialogResult res = TaskDialog.Show(config);
 
 			UpdateResult(res);
+		}
+
+		private bool taskDialog_Callback(TaskDialogOptions config, VistaTaskDialogNotificationArgs args, object callbackData)
+		{
+			bool result = false;
+
+			switch (args.Notification)
+			{
+				case VistaTaskDialogNotification.HyperlinkClicked:
+					//result = true; // prevents HREF from being processed automatically by ShellExecute
+					MessageBox.Show("Hyperlink clicked: " + args.Hyperlink);
+					break;
+			}
+
+			return result;
 		}
 
 		private void btAsterisk_Click(object sender, RoutedEventArgs e)

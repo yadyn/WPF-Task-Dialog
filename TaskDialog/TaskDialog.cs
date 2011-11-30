@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 
@@ -8,6 +9,12 @@ namespace TaskDialogInterop
 {
 	public partial class TaskDialog
 	{
+		private const string HtmlHyperlinkPattern = "<a href=\".+\">.+</a>";
+		private const string HtmlHyperlinkCapturePattern = "<a href=\"(?<link>.+)\">(?<text>.+)</a>";
+
+		private static readonly Regex _hyperlinkRegex = new Regex(HtmlHyperlinkPattern);
+		private static readonly Regex _hyperlinkCaptureRegex = new Regex(HtmlHyperlinkCapturePattern);
+
 		internal const int CommandButtonIDOffset = 2000;
 		internal const int RadioButtonIDOffset = 1000;
 		internal const int CustomButtonIDOffset = 500;
@@ -481,7 +488,7 @@ namespace TaskDialogInterop
 
 			vtd.MainIcon = options.MainIcon;
 			vtd.FooterIcon = options.FooterIcon;
-			vtd.EnableHyperlinks = false;
+			vtd.EnableHyperlinks = DetectHyperlinks(options.Content, options.ExpandedInfo, options.FooterText);
 			vtd.ShowProgressBar = false;
 			vtd.AllowDialogCancellation =
 				(options.AllowDialogCancellation
@@ -503,7 +510,9 @@ namespace TaskDialogInterop
 			vtd.VerificationFlagChecked = false;
 			vtd.ExpandedControlText = "Hide details";
 			vtd.CollapsedControlText = "Show details";
-			vtd.Callback = null;
+			vtd.Callback = options.Callback;
+			vtd.CallbackData = options.CallbackData;
+			vtd.Config = options;
 
 			TaskDialogResult result = null;
 			int diagResult = 0;
@@ -602,6 +611,16 @@ namespace TaskDialogInterop
 				((options.CustomButtons == null || options.CustomButtons.Length == 0) ? null : customButtonResult));
 
 			return result;
+		}
+		private static bool DetectHyperlinks(string content, string expandedInfo, string footerText)
+		{
+			return DetectHyperlinks(content) || DetectHyperlinks(expandedInfo) || DetectHyperlinks(footerText);
+		}
+		private static bool DetectHyperlinks(string text)
+		{
+			if (String.IsNullOrEmpty(text))
+				return false;
+			return _hyperlinkRegex.IsMatch(text);
 		}
 	}
 }

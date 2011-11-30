@@ -9,15 +9,6 @@ using System.Diagnostics.CodeAnalysis;
 namespace TaskDialogInterop
 {
 	/// <summary>
-	/// The signature of the callback that recieves notificaitons from the Task Dialog.
-	/// </summary>
-	/// <param name="taskDialog">The active task dialog which has methods that can be performed on an active Task Dialog.</param>
-	/// <param name="args">The notification arguments including the type of notification and information for the notification.</param>
-	/// <param name="callbackData">The value set on TaskDialog.CallbackData</param>
-	/// <returns>Return value meaning varies depending on the Notification member of args.</returns>
-	public delegate bool VistaTaskDialogCallback(VistaActiveTaskDialog taskDialog, VistaTaskDialogNotificationArgs args, object callbackData);
-
-	/// <summary>
 	/// The TaskDialog common button flags used to specify the builtin bottons to show in the TaskDialog.
 	/// </summary>
 	[Flags]
@@ -456,12 +447,14 @@ namespace TaskDialogInterop
 		/// <summary>
 		/// The callback that receives messages from the Task Dialog when various events occur.
 		/// </summary>
-		private VistaTaskDialogCallback callback;
+		private TaskDialogCallback callback;
 
 		/// <summary>
 		/// Reference that is passed to the callback.
 		/// </summary>
 		private object callbackData;
+
+		private TaskDialogOptions config;
 
 		/// <summary>
 		/// Specifies the width of the Task Dialog’s client area in DLU’s. If 0, Task Dialog will calculate the ideal width.
@@ -872,7 +865,7 @@ namespace TaskDialogInterop
 		/// <summary>
 		/// The callback that receives messages from the Task Dialog when various events occur.
 		/// </summary>
-		public VistaTaskDialogCallback Callback
+		public TaskDialogCallback Callback
 		{
 			get { return this.callback; }
 			set { this.callback = value; }
@@ -885,6 +878,12 @@ namespace TaskDialogInterop
 		{
 			get { return this.callbackData; }
 			set { this.callbackData = value; }
+		}
+
+		internal TaskDialogOptions Config
+		{
+			get { return this.config; }
+			set { this.config = value; }
 		}
 
 		/// <summary>
@@ -1205,13 +1204,11 @@ namespace TaskDialogInterop
 		/// <returns>A HRESULT. It's not clear in the spec what a failed result will do.</returns>
 		private int PrivateCallback([In] IntPtr hwnd, [In] uint msg, [In] UIntPtr wparam, [In] IntPtr lparam, [In] IntPtr refData)
 		{
-			VistaTaskDialogCallback callback = this.callback;
+			TaskDialogCallback callback = this.callback;
 			if (callback != null)
 			{
 				// Prepare arguments for the callback to the user we are insulating from Interop casting sillyness.
 
-				// Future: Consider reusing a single ActiveTaskDialog object and mark it as destroyed on the destry notification.
-				VistaActiveTaskDialog activeDialog = new VistaActiveTaskDialog(hwnd);
 				VistaTaskDialogNotificationArgs args = new VistaTaskDialogNotificationArgs();
 				args.Notification = (VistaTaskDialogNotification)msg;
 				switch (args.Notification)
@@ -1234,7 +1231,7 @@ namespace TaskDialogInterop
 						break;
 				}
 
-				return (callback(activeDialog, args, this.callbackData) ? 1 : 0);
+				return (callback(this.config, args, this.callbackData) ? 1 : 0);
 			}
 
 			return 0; // false;

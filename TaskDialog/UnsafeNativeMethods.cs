@@ -237,6 +237,66 @@ namespace TaskDialogInterop
 			TDM_UPDATE_ICON = WM_USER + 116  // wParam = icon element (TASKDIALOG_ICON_ELEMENTS), lParam = new icon (hIcon if TDF_USE_HICON_* was set, PCWSTR otherwise)
 		}
 
+		/// <summary>
+		/// TASKDIALOG_NOTIFICATIONS taken from commctrl.h.
+		/// </summary>
+		internal enum TASKDIALOG_NOTIFICATIONS : uint
+		{
+			/// <summary>
+			/// Indicates that the Task Dialog has been created.
+			/// </summary>
+			TDN_CREATED = 0,
+			/// <summary>
+			/// Indicates that navigation has occurred.
+			/// </summary>
+			TDN_NAVIGATED = 1,
+			/// <summary>
+			/// Indicates that a button has been selected. The command ID of
+			/// the button is specified by wParam.
+			/// </summary>
+			TDN_BUTTON_CLICKED = 2,			// wParam = Button ID
+			/// <summary>
+			/// Indicates that a hyperlink has been selected. A pointer to the
+			/// link text is specified by lParam.
+			/// </summary>
+			TDN_HYPERLINK_CLICKED = 3,		// lParam = (LPCWSTR)pszHREF
+			/// <summary>
+			/// Indicates that the Task Dialog timer has fired. The total
+			/// elapsed time is specified by wParam. You can update the
+			/// progress bar by sending a TDM_SET_PROGRESS_BAR_POS message to
+			/// the window specified by the hwnd parameter.
+			/// </summary>
+			TDN_TIMER = 4,					// wParam = Milliseconds since dialog created or timer reset
+			/// <summary>
+			/// Indicates that the Task Dialog has been destroyed.
+			/// </summary>
+			TDN_DESTROYED = 5,
+			/// <summary>
+			/// Indicates that a radio button has been selected. The command
+			/// ID of the radio button is specified by wParam.
+			/// </summary>
+			TDN_RADIO_BUTTON_CLICKED = 6,	// wParam = Radio Button ID
+			/// <summary>
+			/// Indicates that the Task Dialog has been created but has not
+			/// been displayed yet.
+			/// </summary>
+			TDN_DIALOG_CONSTRUCTED = 7,
+			/// <summary>
+			/// Indicates that the Task Dialog verification check box has been
+			/// selected.
+			/// </summary>
+			TDN_VERIFICATION_CLICKED = 8,	// wParam = 1 if checkbox checked, 0 if not, lParam is unused and always 0
+			/// <summary>
+			/// Indicates that the F1 key has been pressed while the Task
+			/// Dialog has focus.
+			/// </summary>
+			TDN_HELP = 9,
+			/// <summary>
+			/// Indicates that the exando button has been selected.
+			/// </summary>
+			TDN_EXPANDO_BUTTON_CLICKED = 10	// wParam = 0 (dialog is now collapsed), wParam != 0 (dialog is now expanded)
+		}
+
 		///// <summary>
 		///// TaskDialog taken from commctrl.h.
 		///// </summary>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -29,20 +30,28 @@ namespace TaskDialogInterop
 			this.Loaded += new RoutedEventHandler(TaskDialog_Loaded);
 			this.SourceInitialized += new EventHandler(TaskDialog_SourceInitialized);
 			this.KeyDown += new KeyEventHandler(TaskDialog_KeyDown);
+			this.Closing += new System.ComponentModel.CancelEventHandler(TaskDialog_Closing);
+			base.Closed += new EventHandler(TaskDialog_Closed);
 		}
 
-		/// <summary>
-		/// Handles the Loaded event of the TaskDialog control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+		private TaskDialogViewModel ViewModel
+		{
+			get { return this.DataContext as TaskDialogViewModel; }
+		}
+
 		private void TaskDialog_Loaded(object sender, RoutedEventArgs e)
 		{
-			if (this.DataContext != null && this.DataContext is TaskDialogViewModel)
+			if (ViewModel != null)
 			{
-				this.WindowStartupLocation = (this.DataContext as TaskDialogViewModel).StartPosition;
+				ViewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(DataContext_PropertyChanged);
 
-				if ((this.DataContext as TaskDialogViewModel).NormalButtons.Count == 0)
+				ConvertToHyperlinkedText(ContentText, ViewModel.Content);
+				ConvertToHyperlinkedText(ExpandedInfo, ViewModel.ExpandedInfo);
+				ConvertToHyperlinkedText(FooterText, ViewModel.FooterText);
+
+				this.WindowStartupLocation = ViewModel.StartPosition;
+
+				if (ViewModel.NormalButtons.Count == 0)
 				{
 					this.MaxWidth = 462;
 				}
@@ -55,13 +64,13 @@ namespace TaskDialogInterop
 					FooterInner.BorderThickness.Bottom);
 
 				// Hide the special button areas if they are empty
-				if ((this.DataContext as TaskDialogViewModel).CommandLinks.Count == 0)
+				if (ViewModel.CommandLinks.Count == 0)
 					CommandLinks.Visibility = System.Windows.Visibility.Collapsed;
-				if ((this.DataContext as TaskDialogViewModel).RadioButtons.Count == 0)
+				if (ViewModel.RadioButtons.Count == 0)
 					RadioButtons.Visibility = System.Windows.Visibility.Collapsed;
 
 				// Play the appropriate sound
-				switch ((this.DataContext as TaskDialogViewModel).MainIconType)
+				switch (ViewModel.MainIconType)
 				{
 					default:
 					case VistaTaskDialogIcon.None:
@@ -80,16 +89,14 @@ namespace TaskDialogInterop
 				}
 			}
 		}
-		/// <summary>
-		/// Handles the SourceInitialized event of the TaskDialog control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 		private void TaskDialog_SourceInitialized(object sender, EventArgs e)
 		{
-			if (this.DataContext != null && this.DataContext is TaskDialogViewModel)
+			if (ViewModel != null)
 			{
-				if ((this.DataContext as TaskDialogViewModel).AllowDialogCancellation)
+				ViewModel.NotifyConstructed();
+				ViewModel.NotifyCreated();
+
+				if (ViewModel.AllowDialogCancellation)
 				{
 					SafeNativeMethods.SetWindowIconVisibility(this, false);
 				}
@@ -100,22 +107,17 @@ namespace TaskDialogInterop
 				}
 			}
 		}
-		/// <summary>
-		/// Handles the KeyDown event of the TaskDialog control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.Windows.Input.KeyEventArgs"/> instance containing the event data.</param>
 		private void TaskDialog_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (this.DataContext != null && this.DataContext is TaskDialogViewModel)
+			if (ViewModel != null)
 			{
 				// Block Alt-F4 if it isn't allowed
-				if (!(this.DataContext as TaskDialogViewModel).AllowDialogCancellation
+				if (!ViewModel.AllowDialogCancellation
 					&& e.Key == Key.System && e.SystemKey == Key.F4)
 					e.Handled = true;
 
 				// Handel Esc manually if the override has been set
-				if ((this.DataContext as TaskDialogViewModel).AllowDialogCancellation
+				if (ViewModel.AllowDialogCancellation
 					&& e.Key == Key.Escape)
 				{
 					e.Handled = true;
@@ -124,23 +126,79 @@ namespace TaskDialogInterop
 				}
 			}
 		}
-		/// <summary>
-		/// Handles the Click event of NormalButton controls.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+		private void TaskDialog_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			e.Cancel = ViewModel.ShouldCancelClosing();
+		}
+		private void TaskDialog_Closed(object sender, EventArgs e)
+		{
+			ViewModel.NotifyClosed();
+		}
+		private void DataContext_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "Content")
+				ConvertToHyperlinkedText(ContentText, ViewModel.Content);
+			if (e.PropertyName == "ExpandedInfo")
+				ConvertToHyperlinkedText(ExpandedInfo, ViewModel.ExpandedInfo);
+			if (e.PropertyName == "FooterText")
+				ConvertToHyperlinkedText(FooterText, ViewModel.FooterText);
+		}
 		private void NormalButton_Click(object sender, RoutedEventArgs e)
 		{
 			this.Close();
 		}
-		/// <summary>
-		/// Handles the Click event of CommandLink controls.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
 		private void CommandLink_Click(object sender, RoutedEventArgs e)
 		{
 			this.Close();
+		}
+		private void Hyperlink_Click(object sender, EventArgs e)
+		{
+			if (sender is Hyperlink)
+			{
+				string uri = (sender as Hyperlink).Tag.ToString();
+
+				if (ViewModel.HyperlinkCommand.CanExecute(uri))
+					ViewModel.HyperlinkCommand.Execute(uri);
+			}
+		}
+
+		private void ConvertToHyperlinkedText(TextBlock textBlock, string text)
+		{
+			foreach (Inline inline in textBlock.Inlines)
+			{
+				if (inline is Hyperlink)
+				{
+					(inline as Hyperlink).Click -= Hyperlink_Click;
+				}
+			}
+
+			textBlock.Inlines.Clear();
+
+			if (String.IsNullOrEmpty(text))
+				return;
+
+			List<Hyperlink> hyperlinks = new List<Hyperlink>();
+
+			foreach (Match match in _hyperlinkCaptureRegex.Matches(text))
+			{
+				var hyperlink = new Hyperlink();
+
+				hyperlink.Inlines.Add(match.Groups["text"].Value);
+				hyperlink.Tag = match.Groups["link"].Value;
+				hyperlink.Click += Hyperlink_Click;
+
+				hyperlinks.Add(hyperlink);
+			}
+
+			string[] substrings = _hyperlinkRegex.Split(text);
+
+			for (int i = 0; i < substrings.Length; i++)
+			{
+				textBlock.Inlines.Add(substrings[i]);
+
+				if (i < hyperlinks.Count)
+					textBlock.Inlines.Add(hyperlinks[i]);
+			}
 		}
 	}
 }
