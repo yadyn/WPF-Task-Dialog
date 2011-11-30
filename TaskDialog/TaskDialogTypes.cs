@@ -6,11 +6,11 @@ namespace TaskDialogInterop
 	/// <summary>
 	/// The signature of the callback that recieves notificaitons from a Task Dialog.
 	/// </summary>
-	/// <param name="config">The configuration options for the Task Dialog that is calling.</param>
+	/// <param name="dialog">The active dialog. Use this to manipulate various properties of the dialog as it is displayed.</param>
 	/// <param name="args">The notification arguments including the type of notification and information for the notification.</param>
 	/// <param name="callbackData">The value set on TaskDialog.CallbackData</param>
 	/// <returns>Return value meaning varies depending on the Notification member of args.</returns>
-	public delegate bool TaskDialogCallback(TaskDialogOptions config, VistaTaskDialogNotificationArgs args, object callbackData);
+	public delegate bool TaskDialogCallback(IActiveTaskDialog dialog, VistaTaskDialogNotificationArgs args, object callbackData);
 
 	/// <summary>
 	/// Specifies the standard buttons that are displayed on a task dialog.
@@ -156,6 +156,23 @@ namespace TaskDialogInterop
 		/// </remarks>
 		public bool AllowDialogCancellation;
 		/// <summary>
+		/// Indicates that a Progress Bar is to be displayed.
+		/// </summary>
+		/// <remarks>
+		/// You can set the state, whether paused, in error, etc., as well as
+		/// the range and current value by setting a callback and timer to
+		/// control the dialog at custom intervals.
+		/// </remarks>
+		public bool ShowProgressBar;
+		/// <summary>
+		/// Indicates that an Marquee Progress Bar is to be displayed.
+		/// </summary>
+		/// <remarks>
+		/// You can set start and stop the animation by setting a callback and
+		/// timer to control the dialog at custom intervals.
+		/// </remarks>
+		public bool ShowMarqueeProgressBar;
+		/// <summary>
 		/// A callback that receives messages from the Task Dialog when
 		/// various events occur.
 		/// </summary>
@@ -213,5 +230,93 @@ namespace TaskDialogInterop
 			IsDefault = isDefault;
 			IsCancel = isCancel;
 		}
+	}
+	/// <summary>
+	/// Defines methods for manipulating an active dialog during a callback.
+	/// </summary>
+	public interface IActiveTaskDialog
+	{
+		// TODO Support more of the methods exposed by VistaActiveTaskDialog class
+
+		/// <summary>
+		/// Used to indicate whether the hosted progress bar should be displayed in marquee mode or not.
+		/// </summary>
+		/// <param name="marquee">Specifies whether the progress bar sbould be shown in Marquee mode.
+		/// A value of true turns on Marquee mode.</param>
+		/// <returns>If the function succeeds the return value is true.</returns>
+		bool SetMarqueeProgressBar(bool marquee);
+		/// <summary>
+		/// Sets the state of the progress bar.
+		/// </summary>
+		/// <param name="newState">The state to set the progress bar.</param>
+		/// <returns>If the function succeeds the return value is true.</returns>
+		bool SetProgressBarState(VistaProgressBarState newState);
+		/// <summary>
+		/// Set the minimum and maximum values for the hosted progress bar.
+		/// </summary>
+		/// <param name="minRange">Minimum range value. By default, the minimum value is zero.</param>
+		/// <param name="maxRange">Maximum range value.  By default, the maximum value is 100.</param>
+		/// <returns>If the function succeeds the return value is true.</returns>
+		bool SetProgressBarRange(Int16 minRange, Int16 maxRange);
+		/// <summary>
+		/// Set the current position for a progress bar.
+		/// </summary>
+		/// <param name="newPosition">The new position.</param>
+		/// <returns>Returns the previous value if successful, or zero otherwise.</returns>
+		int SetProgressBarPosition(int newPosition);
+		/// <summary>
+		/// Sets the animation state of the Marquee Progress Bar.
+		/// </summary>
+		/// <param name="startMarquee">true starts the marquee animation and false stops it.</param>
+		/// <param name="speed">The time in milliseconds between refreshes.</param>
+		void SetProgressBarMarquee(bool startMarquee, uint speed);
+		/// <summary>
+		/// Updates the content text.
+		/// </summary>
+		/// <param name="content">The new value.</param>
+		/// <returns>If the function succeeds the return value is true.</returns>
+		bool SetContent(string content);
+		/// <summary>
+		/// Updates the Expanded Information text.
+		/// </summary>
+		/// <param name="expandedInformation">The new value.</param>
+		/// <returns>If the function succeeds the return value is true.</returns>
+		bool SetExpandedInformation(string expandedInformation);
+		/// <summary>
+		/// Updates the Footer text.
+		/// </summary>
+		/// <param name="footer">The new value.</param>
+		/// <returns>If the function succeeds the return value is true.</returns>
+		bool SetFooter(string footer);
+		/// <summary>
+		/// Updates the Main Instruction.
+		/// </summary>
+		/// <param name="mainInstruction">The new value.</param>
+		/// <returns>If the function succeeds the return value is true.</returns>
+		bool SetMainInstruction(string mainInstruction);
+		/// <summary>
+		/// Updates the main instruction icon. Note the type (standard via enum or
+		/// custom via Icon type) must be used when upating the icon.
+		/// </summary>
+		/// <param name="icon">Task Dialog standard icon.</param>
+		void UpdateMainIcon(VistaTaskDialogIcon icon);
+		/// <summary>
+		/// Updates the main instruction icon. Note the type (standard via enum or
+		/// custom via Icon type) must be used when upating the icon.
+		/// </summary>
+		/// <param name="icon">The icon to set.</param>
+		void UpdateMainIcon(Icon icon);
+		/// <summary>
+		/// Updates the footer icon. Note the type (standard via enum or
+		/// custom via Icon type) must be used when upating the icon.
+		/// </summary>
+		/// <param name="icon">Task Dialog standard icon.</param>
+		void UpdateFooterIcon(VistaTaskDialogIcon icon);
+		/// <summary>
+		/// Updates the footer icon. Note the type (standard via enum or
+		/// custom via Icon type) must be used when upating the icon.
+		/// </summary>
+		/// <param name="icon">The icon to set.</param>
+		void UpdateFooterIcon(Icon icon);
 	}
 }

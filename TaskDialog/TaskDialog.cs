@@ -491,21 +491,21 @@ namespace TaskDialogInterop
 			vtd.FooterIcon = options.FooterIcon;
 			vtd.CustomFooterIcon = options.CustomFooterIcon;
 			vtd.EnableHyperlinks = DetectHyperlinks(options.Content, options.ExpandedInfo, options.FooterText);
-			vtd.ShowProgressBar = false;
 			vtd.AllowDialogCancellation =
 				(options.AllowDialogCancellation
 				|| hasCustomCancel
 				|| options.CommonButtons == TaskDialogCommonButtons.Close
 				|| options.CommonButtons == TaskDialogCommonButtons.OKCancel
 				|| options.CommonButtons == TaskDialogCommonButtons.YesNoCancel);
-			vtd.CallbackTimer = false;
+			vtd.CallbackTimer = false; // TODO Support Callback Timers (required for progress bars to be updated properly)
 			vtd.ExpandedByDefault = options.ExpandedByDefault;
 			vtd.ExpandFooterArea = options.ExpandToFooter;
 			vtd.PositionRelativeToWindow = true;
 			vtd.RightToLeftLayout = false;
 			vtd.NoDefaultRadioButton = false;
 			vtd.CanBeMinimized = false;
-			vtd.ShowMarqueeProgressBar = false;
+			vtd.ShowProgressBar = options.ShowProgressBar;
+			vtd.ShowMarqueeProgressBar = options.ShowMarqueeProgressBar;
 			vtd.UseCommandLinks = (options.CommandButtons != null && options.CommandButtons.Length > 0);
 			vtd.UseCommandLinksNoIcon = false;
 			vtd.VerificationText = options.VerificationText;

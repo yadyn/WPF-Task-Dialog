@@ -261,6 +261,7 @@ namespace TaskDialogInterop
 		/// The state of the dialog expando when the notification is about the expando.
 		/// </summary>
 		private bool expanded;
+		private TaskDialogOptions config;
 
 		/// <summary>
 		/// What the TaskDialog callback is a notification of.
@@ -312,6 +313,17 @@ namespace TaskDialogInterop
 		{
 			get { return this.expanded; }
 			set { this.expanded = value; }
+		}
+		/// <summary>
+		/// Gets or sets the configuration options for the dialog.
+		/// </summary>
+		/// <remarks>
+		/// Changes to any of the options will be ignored.
+		/// </remarks>
+		public TaskDialogOptions Config
+		{
+			get { return this.config; }
+			set { this.config = value; }
 		}
 	}
 
@@ -1209,7 +1221,10 @@ namespace TaskDialogInterop
 			{
 				// Prepare arguments for the callback to the user we are insulating from Interop casting sillyness.
 
+				// Future: Consider reusing a single ActiveTaskDialog object and mark it as destroyed on the destry notification.
+				VistaActiveTaskDialog activeDialog = new VistaActiveTaskDialog(hwnd);
 				VistaTaskDialogNotificationArgs args = new VistaTaskDialogNotificationArgs();
+				args.Config = this.config;
 				args.Notification = (VistaTaskDialogNotification)msg;
 				switch (args.Notification)
 				{
@@ -1231,7 +1246,7 @@ namespace TaskDialogInterop
 						break;
 				}
 
-				return (callback(this.config, args, this.callbackData) ? 1 : 0);
+				return (callback(activeDialog, args, this.callbackData) ? 1 : 0);
 			}
 
 			return 0; // false;

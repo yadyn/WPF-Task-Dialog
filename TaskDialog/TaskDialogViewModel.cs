@@ -11,7 +11,7 @@ namespace TaskDialogInterop
 	/// <summary>
 	/// Provides commands and properties to the emulated TaskDialog view.
 	/// </summary>
-	public class TaskDialogViewModel : INotifyPropertyChanged
+	public class TaskDialogViewModel : IActiveTaskDialog, INotifyPropertyChanged
 	{
 		private static bool? _isInDesignMode;
 		[System.Diagnostics.CodeAnalysis.SuppressMessage(
@@ -51,6 +51,10 @@ namespace TaskDialogInterop
 		private bool _expandedInfoVisible;
 		private bool _verificationChecked;
 		private bool _preventClose;
+		private bool _progressBarMarqueeEnabled;
+		private double _progressBarMin;
+		private double _progressBarMax;
+		private double _progressBarValue;
 
 		private ICommand _commandNormalButton;
 		private ICommand _commandCommandLink;
@@ -62,6 +66,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public TaskDialogViewModel()
 		{
+			_progressBarMin = 0d;
+			_progressBarMax = 100d;
 		}
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TaskDialogViewModel"/> class.
@@ -103,6 +109,12 @@ namespace TaskDialogInterop
 			{
 				return String.IsNullOrEmpty(options.Title) ? System.AppDomain.CurrentDomain.FriendlyName : options.Title;
 			}
+			private set
+			{
+				options.Title = value;
+
+				RaisePropertyChangedEvent("Title");
+			}
 		}
 		/// <summary>
 		/// Gets the principal text for the dialog.
@@ -113,6 +125,12 @@ namespace TaskDialogInterop
 			{
 				return options.MainInstruction;
 			}
+			private set
+			{
+				options.MainInstruction = value;
+
+				RaisePropertyChangedEvent("MainInstruction");
+			}
 		}
 		/// <summary>
 		/// Gets the supplemental text for the dialog.
@@ -122,6 +140,12 @@ namespace TaskDialogInterop
 			get
 			{
 				return options.Content;
+			}
+			private set
+			{
+				options.Content = value;
+
+				RaisePropertyChangedEvent("Content");
 			}
 		}
 		/// <summary>
@@ -153,6 +177,12 @@ namespace TaskDialogInterop
 			{
 				return options.VerificationText;
 			}
+			private set
+			{
+				options.VerificationText = value;
+
+				RaisePropertyChangedEvent("VerificationText");
+			}
 		}
 		/// <summary>
 		/// Gets or sets a value indicating whether expanded info is visible.
@@ -176,6 +206,7 @@ namespace TaskDialogInterop
 
 				var args = new VistaTaskDialogNotificationArgs();
 
+				args.Config = this.options;
 				args.Notification = VistaTaskDialogNotification.ExpandoButtonClicked;
 				args.Expanded = _expandedInfoVisible;
 
@@ -222,6 +253,7 @@ namespace TaskDialogInterop
 
 				var args = new VistaTaskDialogNotificationArgs();
 
+				args.Config = this.options;
 				args.Notification = VistaTaskDialogNotification.VerificationClicked;
 				args.VerificationFlagChecked = _verificationChecked;
 
@@ -237,6 +269,12 @@ namespace TaskDialogInterop
 			{
 				return options.FooterText;
 			}
+			private set
+			{
+				options.FooterText = value;
+
+				RaisePropertyChangedEvent("FooterText");
+			}
 		}
 		/// <summary>
 		/// Gets the type of the main icon.
@@ -246,6 +284,12 @@ namespace TaskDialogInterop
 			get
 			{
 				return options.MainIcon;
+			}
+			private set
+			{
+				options.MainIcon = value;
+
+				RaisePropertyChangedEvent("MainIconType");
 			}
 		}
 		/// <summary>
@@ -293,6 +337,81 @@ namespace TaskDialogInterop
 					|| ((options.CommandButtons == null || options.CommandButtons.Length == 0)
 						&& (options.RadioButtons == null || options.RadioButtons.Length == 0)
 						&& (options.CustomButtons == null || options.CustomButtons.Length == 0));
+			}
+		}
+		/// <summary>
+		/// Gets a value indicating whether to show a progress bar.
+		/// </summary>
+		public bool ShowProgressBar
+		{
+			get
+			{
+				return options.ShowProgressBar || options.ShowMarqueeProgressBar;
+			}
+		}
+		/// <summary>
+		/// Gets a value indicating whether to show an indeterminate progress bar or a regular one.
+		/// </summary>
+		public bool ProgressBarIndeterminate
+		{
+			get
+			{
+				return options.ShowMarqueeProgressBar && _progressBarMarqueeEnabled;
+			}
+			private set
+			{
+				options.ShowMarqueeProgressBar = value;
+
+				RaisePropertyChangedEvent("ShowProgressBar");
+				RaisePropertyChangedEvent("ProgressBarIndeterminate");
+			}
+		}
+		/// <summary>
+		/// Gets or sets the progress bar's minimum value.
+		/// </summary>
+		public double ProgressBarMinimum
+		{
+			get
+			{
+				return _progressBarMin;
+			}
+			private set
+			{
+				_progressBarMin = value;
+
+				RaisePropertyChangedEvent("ProgressBarMinimum");
+			}
+		}
+		/// <summary>
+		/// Gets or sets the progress bar's maximum value.
+		/// </summary>
+		public double ProgressBarMaximum
+		{
+			get
+			{
+				return _progressBarMax;
+			}
+			private set
+			{
+				_progressBarMax = value;
+
+				RaisePropertyChangedEvent("ProgressBarMaximum");
+			}
+		}
+		/// <summary>
+		/// Gets or sets the progress bar's current value.
+		/// </summary>
+		public double ProgressBarValue
+		{
+			get
+			{
+				return _progressBarValue;
+			}
+			private set
+			{
+				_progressBarValue = value;
+
+				RaisePropertyChangedEvent("ProgressBarValue");
 			}
 		}
 		/// <summary>
@@ -454,6 +573,7 @@ namespace TaskDialogInterop
 
 							var args = new VistaTaskDialogNotificationArgs();
 
+							args.Config = this.options;
 							args.Notification = VistaTaskDialogNotification.ButtonClicked;
 							args.ButtonId = i;
 
@@ -497,6 +617,7 @@ namespace TaskDialogInterop
 
 							var args = new VistaTaskDialogNotificationArgs();
 
+							args.Config = this.options;
 							args.Notification = VistaTaskDialogNotification.RadioButtonClicked;
 							args.ButtonId = i;
 
@@ -520,6 +641,7 @@ namespace TaskDialogInterop
 						{
 							var args = new VistaTaskDialogNotificationArgs();
 
+							args.Config = this.options;
 							args.Notification = VistaTaskDialogNotification.HyperlinkClicked;
 							args.Hyperlink = uri;
 
@@ -551,6 +673,7 @@ namespace TaskDialogInterop
 		{
 			var args = new VistaTaskDialogNotificationArgs();
 
+			args.Config = this.options;
 			args.Notification = VistaTaskDialogNotification.DialogConstructed;
 
 			OnCallback(args);
@@ -562,6 +685,7 @@ namespace TaskDialogInterop
 		{
 			var args = new VistaTaskDialogNotificationArgs();
 
+			args.Config = this.options;
 			args.Notification = VistaTaskDialogNotification.Created;
 
 			OnCallback(args);
@@ -573,6 +697,7 @@ namespace TaskDialogInterop
 		{
 			var args = new VistaTaskDialogNotificationArgs();
 
+			args.Config = this.options;
 			args.Notification = VistaTaskDialogNotification.Destroyed;
 
 			OnCallback(args);
@@ -605,7 +730,7 @@ namespace TaskDialogInterop
 		{
 			if (options.Callback != null)
 			{
-				HandleCallbackReturn(e, options.Callback(options, e, options.CallbackData));
+				HandleCallbackReturn(e, options.Callback(this, e, options.CallbackData));
 			}
 		}
 
@@ -721,6 +846,97 @@ namespace TaskDialogInterop
 			}
 
 			return fixedLabels;
+		}
+
+		bool IActiveTaskDialog.SetMarqueeProgressBar(bool marquee)
+		{
+			//options.ShowProgressBar = false; // do we need this? does setting marquee to true override in the native implementation?
+			
+			ProgressBarIndeterminate = marquee;
+
+			return true;
+		}
+		bool IActiveTaskDialog.SetProgressBarState(VistaProgressBarState newState)
+		{
+			// TODO Support progress bar state colors on the emulated form
+			// Might be able to do it with some triggers... binding directly to the
+			//Foreground property will overwrite default OS progress bar color
+			return false;
+		}
+		bool IActiveTaskDialog.SetProgressBarRange(short minRange, short maxRange)
+		{
+			ProgressBarMinimum = Convert.ToDouble(minRange);
+			ProgressBarMaximum = Convert.ToDouble(maxRange);
+
+			return true;
+		}
+		int IActiveTaskDialog.SetProgressBarPosition(int newPosition)
+		{
+			int prevValue = Convert.ToInt32(ProgressBarValue);
+
+			ProgressBarValue = Convert.ToDouble(newPosition);
+
+			return prevValue;
+		}
+		void IActiveTaskDialog.SetProgressBarMarquee(bool startMarquee, uint speed)
+		{
+			// speed setting is ignored
+
+			_progressBarMarqueeEnabled = startMarquee;
+
+			RaisePropertyChangedEvent("ProgressBarIndeterminate");
+		}
+		bool IActiveTaskDialog.SetContent(string content)
+		{
+			Content = content;
+
+			return true;
+		}
+		bool IActiveTaskDialog.SetExpandedInformation(string expandedInformation)
+		{
+			options.ExpandedInfo = expandedInformation;
+
+			RaisePropertyChangedEvent("ContentExpandedInfo");
+			RaisePropertyChangedEvent("FooterExpandedInfo");
+
+			return true;
+		}
+		bool IActiveTaskDialog.SetFooter(string footer)
+		{
+			FooterText = footer;
+
+			return true;
+		}
+		bool IActiveTaskDialog.SetMainInstruction(string mainInstruction)
+		{
+			MainInstruction = mainInstruction;
+
+			return true;
+		}
+		void IActiveTaskDialog.UpdateMainIcon(VistaTaskDialogIcon icon)
+		{
+			options.MainIcon = icon;
+
+			RaisePropertyChangedEvent("MainIconType");
+			RaisePropertyChangedEvent("MainIcon");
+		}
+		void IActiveTaskDialog.UpdateMainIcon(Icon icon)
+		{
+			options.CustomMainIcon = icon;
+
+			RaisePropertyChangedEvent("MainIcon");
+		}
+		void IActiveTaskDialog.UpdateFooterIcon(VistaTaskDialogIcon icon)
+		{
+			options.FooterIcon = icon;
+
+			RaisePropertyChangedEvent("FooterIcon");
+		}
+		void IActiveTaskDialog.UpdateFooterIcon(Icon icon)
+		{
+			options.CustomFooterIcon = icon;
+
+			RaisePropertyChangedEvent("FooterIcon");
 		}
 	}
 }

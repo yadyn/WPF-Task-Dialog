@@ -187,7 +187,7 @@ namespace WPFTest
 			config.CustomMainIcon.Dispose();
 		}
 
-		private bool taskDialog_Callback(TaskDialogOptions config, VistaTaskDialogNotificationArgs args, object callbackData)
+		private bool taskDialog_Callback(IActiveTaskDialog dialog, VistaTaskDialogNotificationArgs args, object callbackData)
 		{
 			bool result = false;
 
