@@ -89,6 +89,17 @@ namespace TaskDialogInterop
 		/// </summary>
 		public string ExpandedInfo;
 		/// <summary>
+		/// Indicates that the expanded info should be displayed when the
+		/// dialog is initially displayed.
+		/// </summary>
+		public bool ExpandedByDefault;
+		/// <summary>
+		/// Indicates that the expanded info should be displayed at the bottom
+		/// of the dialog's footer area instead of immediately after the
+		/// dialog's content.
+		/// </summary>
+		public bool ExpandToFooter;
+		/// <summary>
 		/// Standard buttons.
 		/// </summary>
 		public TaskDialogCommonButtons CommonButtons;

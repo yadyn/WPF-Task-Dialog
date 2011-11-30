@@ -499,8 +499,8 @@ namespace TaskDialogInterop
 				|| options.CommonButtons == TaskDialogCommonButtons.OKCancel
 				|| options.CommonButtons == TaskDialogCommonButtons.YesNoCancel);
 			vtd.CallbackTimer = false;
-			vtd.ExpandedByDefault = false;
-			vtd.ExpandFooterArea = false;
+			vtd.ExpandedByDefault = options.ExpandedByDefault;
+			vtd.ExpandFooterArea = options.ExpandToFooter;
 			vtd.PositionRelativeToWindow = true;
 			vtd.RightToLeftLayout = false;
 			vtd.NoDefaultRadioButton = false;

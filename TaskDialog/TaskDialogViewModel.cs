@@ -72,6 +72,8 @@ namespace TaskDialogInterop
 		{
 			this.options = options;
 
+			_expandedInfoVisible = options.ExpandedByDefault;
+
 			FixAllButtonLabelAccessKeys();
 
 			// If radio buttons are defined, set the dialog result to the default selected radio
@@ -122,13 +124,23 @@ namespace TaskDialogInterop
 			}
 		}
 		/// <summary>
-		/// Gets the expanded info text for the dialog.
+		/// Gets the expanded info text for the dialog's content area.
 		/// </summary>
-		public string ExpandedInfo
+		public string ContentExpandedInfo
 		{
 			get
 			{
-				return options.ExpandedInfo;
+				return options.ExpandToFooter ? null : options.ExpandedInfo;
+			}
+		}
+		/// <summary>
+		/// Gets the expanded info text for the dialog's footer area.
+		/// </summary>
+		public string FooterExpandedInfo
+		{
+			get
+			{
+				return options.ExpandToFooter ? options.ExpandedInfo : null;
 			}
 		}
 		/// <summary>
@@ -158,6 +170,8 @@ namespace TaskDialogInterop
 				_expandedInfoVisible = value;
 
 				RaisePropertyChangedEvent("ExpandedInfoVisible");
+				RaisePropertyChangedEvent("ContentExpandedInfoVisible");
+				RaisePropertyChangedEvent("FooterExpandedInfoVisible");
 
 				var args = new VistaTaskDialogNotificationArgs();
 
@@ -165,6 +179,26 @@ namespace TaskDialogInterop
 				args.Expanded = _expandedInfoVisible;
 
 				OnCallback(args);
+			}
+		}
+		/// <summary>
+		/// Gets or sets a value indicating whether content area expanded info is visible.
+		/// </summary>
+		public bool ContentExpandedInfoVisible
+		{
+			get
+			{
+				return !options.ExpandToFooter && _expandedInfoVisible;
+			}
+		}
+		/// <summary>
+		/// Gets or sets a value indicating whether footer area expanded info is visible.
+		/// </summary>
+		public bool FooterExpandedInfoVisible
+		{
+			get
+			{
+				return options.ExpandToFooter && _expandedInfoVisible;
 			}
 		}
 		/// <summary>

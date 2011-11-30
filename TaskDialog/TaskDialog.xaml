@@ -39,6 +39,7 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		<Border x:Name="ContentArea" Padding="7,3,0,7">
 			<Grid>
@@ -61,7 +62,7 @@
 					</Grid.RowDefinitions>
 					<TextBlock x:Name="MainInstruction" Text="{Binding MainInstruction, Mode=OneWay}" FontSize="16" Margin="3,7,5,3" Foreground="#FF0033B3" Visibility="{Binding MainInstruction, Converter={StaticResource NotNullVisibilityConverter}, Mode=OneWay}"/>
 					<TextBlock x:Name="ContentText" Grid.Row="1" Margin="3,12,3,8" Visibility="{Binding Content, Converter={StaticResource NotNullVisibilityConverter}, Mode=OneWay}" />
-					<TextBlock x:Name="ExpandedInfo" Grid.Row="2" Margin="3,0,3,8" Visibility="{Binding IsChecked, Converter={StaticResource BooleanVisibilityConverter}, ElementName=ShowDetailsButton, Mode=OneWay}" />
+					<TextBlock x:Name="ContentExpandedInfo" Grid.Row="2" Margin="3,0,3,8" Visibility="{Binding ContentExpandedInfoVisible, Converter={StaticResource BooleanVisibilityConverter}, Mode=OneWay}" />
 					<ItemsControl x:Name="CommandLinks" Grid.Row="3" Margin="4,17,11,3" ItemsSource="{Binding CommandLinks}" ItemsPanel="{DynamicResource ItemsPanelTemplate}" ItemTemplate="{DynamicResource DataTemplate}">
 						<ItemsControl.Resources>
 							<ItemsPanelTemplate x:Key="ItemsPanelTemplate">
@@ -92,7 +93,7 @@
 					<ColumnDefinition Width="1*"/>
 				</Grid.ColumnDefinitions>
 				<StackPanel Orientation="Vertical">
-					<ToggleButton x:Name="ShowDetailsButton" Margin="1,3,0,3" Visibility="{Binding ExpandedInfo, Converter={StaticResource NotNullVisibilityConverter}, Mode=OneWay}" HorizontalAlignment="Left" Template="{DynamicResource ButtonControlTemplate}" IsChecked="{Binding ExpandedInfoVisible, Mode=OneWayToSource}">
+					<ToggleButton x:Name="ShowDetailsButton" Margin="1,3,0,3" Visibility="{Binding ExpandedInfo, Converter={StaticResource NotNullVisibilityConverter}, Mode=OneWay}" HorizontalAlignment="Left" Template="{DynamicResource ButtonControlTemplate}" IsChecked="{Binding ExpandedInfoVisible, Mode=TwoWay}">
 						<ToggleButton.Resources>
 							<ControlTemplate x:Key="ButtonControlTemplate" TargetType="{x:Type ToggleButton}">
 								<StackPanel Orientation="Horizontal" Background="Transparent">
@@ -165,8 +166,13 @@
 						<ColumnDefinition Width="1*" />
 					</Grid.ColumnDefinitions>
 					<Image x:Name="FooterIcon" Source="{Binding FooterIcon, Mode=OneWay}" VerticalAlignment="Top" Width="16" Height="16" Margin="3,0"/>
-					<TextBlock x:Name="FooterText" Grid.Column="1" Margin="4,0"/>
+					<TextBlock x:Name="FooterText" Grid.Column="1" Margin="4,0" TextWrapping="Wrap"/>
 				</Grid>
+			</Border>
+		</Border>
+		<Border x:Name="FooterExpandedArea" Grid.Row="3" BorderThickness="0,1,0,0" Visibility="{Binding FooterExpandedInfoVisible, Converter={StaticResource BooleanVisibilityConverter}, Mode=OneWay}" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
+			<Border x:Name="FooterExpandedInner" BorderThickness="0,1,0,0" Padding="9" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}">
+				<TextBlock x:Name="FooterExpandedInfo" Margin="4,0" TextWrapping="Wrap"/>
 			</Border>
 		</Border>
 	</Grid>

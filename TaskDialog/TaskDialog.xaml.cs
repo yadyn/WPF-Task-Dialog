@@ -46,7 +46,8 @@ namespace TaskDialogInterop
 				ViewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(DataContext_PropertyChanged);
 
 				ConvertToHyperlinkedText(ContentText, ViewModel.Content);
-				ConvertToHyperlinkedText(ExpandedInfo, ViewModel.ExpandedInfo);
+				ConvertToHyperlinkedText(ContentExpandedInfo, ViewModel.ContentExpandedInfo);
+				ConvertToHyperlinkedText(FooterExpandedInfo, ViewModel.FooterExpandedInfo);
 				ConvertToHyperlinkedText(FooterText, ViewModel.FooterText);
 
 				this.WindowStartupLocation = ViewModel.StartPosition;
@@ -138,8 +139,10 @@ namespace TaskDialogInterop
 		{
 			if (e.PropertyName == "Content")
 				ConvertToHyperlinkedText(ContentText, ViewModel.Content);
-			if (e.PropertyName == "ExpandedInfo")
-				ConvertToHyperlinkedText(ExpandedInfo, ViewModel.ExpandedInfo);
+			if (e.PropertyName == "ContentExpandedInfo")
+				ConvertToHyperlinkedText(ContentExpandedInfo, ViewModel.ContentExpandedInfo);
+			if (e.PropertyName == "FooterExpandedInfo")
+				ConvertToHyperlinkedText(FooterExpandedInfo, ViewModel.FooterExpandedInfo);
 			if (e.PropertyName == "FooterText")
 				ConvertToHyperlinkedText(FooterText, ViewModel.FooterText);
 		}
