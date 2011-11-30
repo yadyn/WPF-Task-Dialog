@@ -57,15 +57,10 @@ namespace TaskDialogInterop
 		/// </summary>
 		Command = 20,
 		/// <summary>
-		/// The dialog box return value is a custom radio (usually sent from
-		/// a radio button).
-		/// </summary>
-		Radio = 21,
-		/// <summary>
 		/// The dialog box return value is a custom button (usually sent from
 		/// a custom-defined button).
 		/// </summary>
-		Custom = 22
+		Custom = 21
 	}
 	/// <summary>
 	/// Specifies data for the return values of a task dialog box.
