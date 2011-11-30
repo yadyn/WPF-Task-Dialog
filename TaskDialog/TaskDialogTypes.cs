@@ -126,6 +126,11 @@ namespace TaskDialogInterop
 		/// </summary>
 		public string VerificationText;
 		/// <summary>
+		/// Indicates that the verification checkbox in the dialog is checked
+		/// when the dialog is initially displayed.
+		/// </summary>
+		public bool VerificationByDefault;
+		/// <summary>
 		/// A small 16x16 icon that signifies the purpose of the footer text,
 		/// using one of the built-in system icons.
 		/// </summary>

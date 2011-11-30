@@ -509,7 +509,7 @@ namespace TaskDialogInterop
 			vtd.UseCommandLinks = (options.CommandButtons != null && options.CommandButtons.Length > 0);
 			vtd.UseCommandLinksNoIcon = false;
 			vtd.VerificationText = options.VerificationText;
-			vtd.VerificationFlagChecked = false;
+			vtd.VerificationFlagChecked = options.VerificationByDefault;
 			vtd.ExpandedControlText = "Hide details";
 			vtd.CollapsedControlText = "Show details";
 			vtd.Callback = options.Callback;

@@ -73,6 +73,7 @@ namespace TaskDialogInterop
 			this.options = options;
 
 			_expandedInfoVisible = options.ExpandedByDefault;
+			_verificationChecked = options.VerificationByDefault;
 
 			FixAllButtonLabelAccessKeys();
 
