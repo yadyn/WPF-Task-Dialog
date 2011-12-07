@@ -21,9 +21,15 @@ namespace WPFTest
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		private bool _downloadTimerReset;
+		private int _downloadedPercent;
+		private Random _downloadRandomizer;
+
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			_downloadRandomizer = new Random();
 		}
 
 		private void UpdateResult(TaskDialogResult res)
@@ -98,7 +104,7 @@ namespace WPFTest
 			config.FooterText = "Optional footer text with an icon or <a href=\"testUri\">hyperlink</a> can be included.";
 			config.FooterIcon = VistaTaskDialogIcon.Warning;
 			config.AllowDialogCancellation = true;
-			config.Callback = taskDialog_Callback;
+			config.Callback = taskDialog_Callback1;
 
 			TaskDialogResult res = TaskDialog.Show(config);
 
@@ -187,7 +193,26 @@ namespace WPFTest
 			config.CustomMainIcon.Dispose();
 		}
 
-		private bool taskDialog_Callback(IActiveTaskDialog dialog, VistaTaskDialogNotificationArgs args, object callbackData)
+		private void button7_Click(object sender, RoutedEventArgs e)
+		{
+			TaskDialogOptions config = new TaskDialogOptions();
+
+			config.Owner = this;
+			config.Title = "Downloading File...";
+			config.MainInstruction = "Your file 'en_visual_studio_2010_ultimate_x86_dvd_509116.iso' is currently downloading";
+			config.Content = "Time elapsed: 00:00 | Download rate: 0 KB/s";
+			config.CustomButtons = new string[] { "&Reset Timer", "&Cancel" };
+			config.AllowDialogCancellation = true;
+			config.ShowProgressBar = true;
+			config.EnableCallbackTimer = true;
+			config.Callback = taskDialog_Callback2;
+
+			TaskDialogResult res = TaskDialog.Show(config);
+
+			UpdateResult(res);
+		}
+
+		private bool taskDialog_Callback1(IActiveTaskDialog dialog, VistaTaskDialogNotificationArgs args, object callbackData)
 		{
 			bool result = false;
 
@@ -196,6 +221,53 @@ namespace WPFTest
 				case VistaTaskDialogNotification.HyperlinkClicked:
 					//result = true; // prevents HREF from being processed automatically by ShellExecute
 					MessageBox.Show("Hyperlink clicked: " + args.Hyperlink);
+					break;
+			}
+
+			return result;
+		}
+		private bool taskDialog_Callback2(IActiveTaskDialog dialog, VistaTaskDialogNotificationArgs args, object callbackData)
+		{
+			bool result = false;
+
+			switch (args.Notification)
+			{
+				case VistaTaskDialogNotification.Created:
+					_downloadedPercent = 0;
+					dialog.SetProgressBarRange(0, 100);
+					break;
+				case VistaTaskDialogNotification.ButtonClicked:
+					if (args.ButtonId == 500)
+					{
+						_downloadTimerReset = true;
+						result = true; // prevent dialog from closing
+					}
+					break;
+				case VistaTaskDialogNotification.Timer:
+					if (_downloadedPercent < 100 && _downloadRandomizer.Next(0, 10) == 0)
+					{
+						_downloadedPercent++;
+
+						dialog.SetProgressBarPosition(_downloadedPercent);
+						dialog.SetWindowTitle(
+							String.Format(
+								"{0:P0} Complete Downloading File...",
+								(Convert.ToDouble(_downloadedPercent) / 100d)));
+					}
+
+					// 131072 = 1 MB in bytes
+					dialog.SetContent(
+						String.Format(
+							"Time elapsed: {0} | Download rate: {1}/s",
+							TimeSpan.FromMilliseconds(args.TimerTickCount).ToString(@"h\:mm\:ss"),
+							GetByteScaleSizeBinary(_downloadRandomizer.Next(0, 131072))));
+
+					if (_downloadTimerReset)
+					{
+						// TRUE: reset tick count (args.TimerTickCount)
+						result = true;
+						_downloadTimerReset = false;
+					}
 					break;
 			}
 
@@ -230,6 +302,40 @@ namespace WPFTest
 		private void checkBox1_CheckedChanged(object sender, RoutedEventArgs e)
 		{
 			TaskDialog.ForceEmulationMode = checkBox1.IsChecked ?? false;
+		}
+
+		private static string GetByteScaleSizeBinary(long size)
+		{
+			double divisor = 1d;
+
+			string negativePrefix = (size < 0) ? "-" : "";
+
+			long workingSize = Math.Abs(size);
+
+			if (workingSize >= 1099511627776)
+			{
+				divisor = 1099511627776d;
+				return negativePrefix + ((int)(Convert.ToDouble(workingSize) / divisor)).ToString() + " TB";
+			}
+			else if (workingSize >= 1073741824)
+			{
+				divisor = 1073741824d;
+				return negativePrefix + ((int)(Convert.ToDouble(workingSize) / divisor)).ToString() + " GB";
+			}
+			else if (workingSize >= 1048576 && size < 1073741824)
+			{
+				divisor = 1048576d;
+				return negativePrefix + ((int)(Convert.ToDouble(workingSize) / divisor)).ToString() + " MB";
+			}
+			else if (workingSize > 1024 && size < 1048576)
+			{
+				divisor = 1024d;
+				return negativePrefix + ((int)(Convert.ToDouble(workingSize) / divisor)).ToString() + " kB";
+			}
+			else
+			{
+				return negativePrefix + workingSize.ToString() + " bytes";
+			}
 		}
 	}
 }
