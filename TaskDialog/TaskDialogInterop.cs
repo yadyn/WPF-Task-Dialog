@@ -1246,7 +1246,9 @@ namespace TaskDialogInterop
 						break;
 				}
 
-				return (callback(activeDialog, args, this.callbackData) ? 1 : 0);
+				bool result = callback(activeDialog, args, this.callbackData);
+
+				return (result ? 1 : 0);
 			}
 
 			return 0; // false;

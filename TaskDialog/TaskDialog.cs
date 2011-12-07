@@ -497,7 +497,7 @@ namespace TaskDialogInterop
 				|| options.CommonButtons == TaskDialogCommonButtons.Close
 				|| options.CommonButtons == TaskDialogCommonButtons.OKCancel
 				|| options.CommonButtons == TaskDialogCommonButtons.YesNoCancel);
-			vtd.CallbackTimer = false; // TODO Support Callback Timers (required for progress bars to be updated properly)
+			vtd.CallbackTimer = options.EnableCallbackTimer;
 			vtd.ExpandedByDefault = options.ExpandedByDefault;
 			vtd.ExpandFooterArea = options.ExpandToFooter;
 			vtd.PositionRelativeToWindow = true;
@@ -578,6 +578,7 @@ namespace TaskDialogInterop
 			int? customButtonResult = null;
 
 			diagResult = tdvm.DialogResult;
+			radioButtonResult = tdvm.RadioResult - RadioButtonIDOffset;
 			verificationChecked = tdvm.VerificationChecked;
 
 			if (diagResult >= CommandButtonIDOffset)
@@ -585,11 +586,11 @@ namespace TaskDialogInterop
 				simpResult = TaskDialogSimpleResult.Command;
 				commandButtonResult = diagResult - CommandButtonIDOffset;
 			}
-			else if (diagResult >= RadioButtonIDOffset)
-			{
-				simpResult = (TaskDialogSimpleResult)diagResult;
-				radioButtonResult = diagResult - RadioButtonIDOffset;
-			}
+			//else if (diagResult >= RadioButtonIDOffset)
+			//{
+			//    simpResult = (TaskDialogSimpleResult)diagResult;
+			//    radioButtonResult = diagResult - RadioButtonIDOffset;
+			//}
 			else if (diagResult >= CustomButtonIDOffset)
 			{
 				simpResult = TaskDialogSimpleResult.Custom;

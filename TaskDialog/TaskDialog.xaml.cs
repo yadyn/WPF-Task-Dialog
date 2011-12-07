@@ -30,6 +30,7 @@ namespace TaskDialogInterop
 			this.Loaded += new RoutedEventHandler(TaskDialog_Loaded);
 			this.SourceInitialized += new EventHandler(TaskDialog_SourceInitialized);
 			this.KeyDown += new KeyEventHandler(TaskDialog_KeyDown);
+			base.ContentRendered += new EventHandler(TaskDialog_ContentRendered);
 			this.Closing += new System.ComponentModel.CancelEventHandler(TaskDialog_Closing);
 			base.Closed += new EventHandler(TaskDialog_Closed);
 		}
@@ -43,7 +44,8 @@ namespace TaskDialogInterop
 		{
 			if (ViewModel != null)
 			{
-				ViewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(DataContext_PropertyChanged);
+				ViewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(ViewModel_PropertyChanged);
+				ViewModel.RequestClose +=new EventHandler(ViewModel_RequestClose);
 
 				ConvertToHyperlinkedText(ContentText, ViewModel.Content);
 				ConvertToHyperlinkedText(ContentExpandedInfo, ViewModel.ContentExpandedInfo);
@@ -127,6 +129,10 @@ namespace TaskDialogInterop
 				}
 			}
 		}
+		private void TaskDialog_ContentRendered(object sender, EventArgs e)
+		{
+			ViewModel.NotifyShown();
+		}
 		private void TaskDialog_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			e.Cancel = ViewModel.ShouldCancelClosing();
@@ -135,7 +141,7 @@ namespace TaskDialogInterop
 		{
 			ViewModel.NotifyClosed();
 		}
-		private void DataContext_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == "Content")
 				ConvertToHyperlinkedText(ContentText, ViewModel.Content);
@@ -146,13 +152,15 @@ namespace TaskDialogInterop
 			if (e.PropertyName == "FooterText")
 				ConvertToHyperlinkedText(FooterText, ViewModel.FooterText);
 		}
-		private void NormalButton_Click(object sender, RoutedEventArgs e)
+		private void ViewModel_RequestClose(object sender, EventArgs e)
 		{
 			this.Close();
 		}
+		private void NormalButton_Click(object sender, RoutedEventArgs e)
+		{
+		}
 		private void CommandLink_Click(object sender, RoutedEventArgs e)
 		{
-			this.Close();
 		}
 		private void Hyperlink_Click(object sender, EventArgs e)
 		{

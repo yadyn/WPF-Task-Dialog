@@ -355,6 +355,19 @@ namespace TaskDialogInterop
 		internal static extern IntPtr SendMessageWithString(IntPtr hWnd, uint Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
 
 		/// <summary>
+		/// Changes the text of the specified window's title bar (if it has one).
+		/// </summary>
+		/// <param name="hwnd">A handle to the window or control whose text is to be changed.</param>
+		/// <param name="lpString">The new title or control text. </param>
+		/// <returns>
+		/// If the function succeeds, the return value is nonzero.
+		/// If the function fails, the return value is zero.
+		/// To get extended error information, call GetLastError. 
+		/// </returns>
+		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+		internal static extern bool SetWindowText(IntPtr hwnd, String lpString);
+
+		/// <summary>
 		/// TASKDIALOGCONFIG taken from commctl.h.
 		/// </summary>
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1049:TypesThatOwnNativeResourcesShouldBeDisposable", Justification = "Native resources are all owned by managed code and should not be disposed here.")]

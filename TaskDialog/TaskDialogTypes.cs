@@ -181,6 +181,16 @@ namespace TaskDialogInterop
 		/// Reference object that is passed to the callback.
 		/// </summary>
 		public object CallbackData;
+		/// <summary>
+		/// Indicates that the task dialog's callback is to be called
+		/// approximately every 200 milliseconds.
+		/// </summary>
+		/// <remarks>
+		/// Enable this in order to do updates on the task dialog periodically,
+		/// such as for a progress bar, current download speed, or estimated
+		/// time to complete, etc.
+		/// </remarks>
+		public bool EnableCallbackTimer;
 	}
 	/// <summary>
 	/// Provides data for all task dialog buttons.
@@ -270,6 +280,12 @@ namespace TaskDialogInterop
 		/// <param name="startMarquee">true starts the marquee animation and false stops it.</param>
 		/// <param name="speed">The time in milliseconds between refreshes.</param>
 		void SetProgressBarMarquee(bool startMarquee, uint speed);
+		/// <summary>
+		/// Updates the window title text.
+		/// </summary>
+		/// <param name="title">The new value.</param>
+		/// <returns>If the function succeeds the return value is true.</returns>
+		bool SetWindowTitle(string title);
 		/// <summary>
 		/// Updates the content text.
 		/// </summary>

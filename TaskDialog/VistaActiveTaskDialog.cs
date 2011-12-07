@@ -154,6 +154,18 @@ namespace TaskDialogInterop
 		}
 
 		/// <summary>
+		/// Updates the window title text.
+		/// </summary>
+		/// <param name="title">The new value.</param>
+		/// <returns>If the function succeeds the return value is true.</returns>
+		public bool SetWindowTitle(string title)
+		{
+			return VistaUnsafeNativeMethods.SetWindowText(
+				this.handle,
+				title);
+		}
+
+		/// <summary>
 		/// Updates the content text.
 		/// </summary>
 		/// <param name="content">The new value.</param>

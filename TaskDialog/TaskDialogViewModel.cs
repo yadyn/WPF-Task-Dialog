@@ -13,6 +13,8 @@ namespace TaskDialogInterop
 	/// </summary>
 	public class TaskDialogViewModel : IActiveTaskDialog, INotifyPropertyChanged
 	{
+		private static readonly TimeSpan CallbackTimerInterval = new TimeSpan(0, 0, 0, 0, 200);
+
 		private static bool? _isInDesignMode;
 		[System.Diagnostics.CodeAnalysis.SuppressMessage(
 			"Microsoft.Security",
@@ -48,6 +50,7 @@ namespace TaskDialogInterop
 		private List<TaskDialogButtonData> _commandLinks;
 		private List<TaskDialogButtonData> _radioButtons;
 		private int _dialogResult = -1;
+		private int _radioResult = -1;
 		private bool _expandedInfoVisible;
 		private bool _verificationChecked;
 		private bool _preventClose;
@@ -55,6 +58,8 @@ namespace TaskDialogInterop
 		private double _progressBarMin;
 		private double _progressBarMax;
 		private double _progressBarValue;
+		private System.Windows.Threading.DispatcherTimer _callbackTimer;
+		private DateTime _callbackTimerStart;
 
 		private ICommand _commandNormalButton;
 		private ICommand _commandCommandLink;
@@ -81,12 +86,21 @@ namespace TaskDialogInterop
 			_expandedInfoVisible = options.ExpandedByDefault;
 			_verificationChecked = options.VerificationByDefault;
 
+			if (options.EnableCallbackTimer)
+			{
+				// By default it will run on the default dispatcher and with Background priority
+				_callbackTimer = new System.Windows.Threading.DispatcherTimer();
+
+				_callbackTimer.Interval = CallbackTimerInterval;
+				_callbackTimer.Tick += new EventHandler(CallbackTimer_Tick);
+			}
+
 			FixAllButtonLabelAccessKeys();
 
-			// If radio buttons are defined, set the dialog result to the default selected radio
+			// If radio buttons are defined, set the radio result to the default selected radio
 			if (RadioButtons.Count > 0)
 			{
-				_dialogResult = RadioButtons[DefaultButtonIndex].ID;
+				_radioResult = RadioButtons[DefaultButtonIndex].ID;
 			}
 		}
 
@@ -169,19 +183,14 @@ namespace TaskDialogInterop
 			}
 		}
 		/// <summary>
-		/// Gets the verification text.
+		/// Gets a value indicating whether or not any expanded info text has
+		/// been set.
 		/// </summary>
-		public string VerificationText
+		public bool HasExpandedInfo
 		{
 			get
 			{
-				return options.VerificationText;
-			}
-			private set
-			{
-				options.VerificationText = value;
-
-				RaisePropertyChangedEvent("VerificationText");
+				return !String.IsNullOrEmpty(options.ExpandedInfo);
 			}
 		}
 		/// <summary>
@@ -231,6 +240,22 @@ namespace TaskDialogInterop
 			get
 			{
 				return options.ExpandToFooter && _expandedInfoVisible;
+			}
+		}
+		/// <summary>
+		/// Gets the verification text.
+		/// </summary>
+		public string VerificationText
+		{
+			get
+			{
+				return options.VerificationText;
+			}
+			private set
+			{
+				options.VerificationText = value;
+
+				RaisePropertyChangedEvent("VerificationText");
 			}
 		}
 		/// <summary>
@@ -545,13 +570,23 @@ namespace TaskDialogInterop
 			}
 		}
 		/// <summary>
-		/// Gets the value of the button, command, or radio that was ultimately chosen.
+		/// Gets the value of the button or command that was ultimately chosen.
 		/// </summary>
 		public int DialogResult
 		{
 			get
 			{
 				return _dialogResult;
+			}
+		}
+		/// <summary>
+		/// Gets the value of the chosen radio option.
+		/// </summary>
+		public int RadioResult
+		{
+			get
+			{
+				return _radioResult;
 			}
 		}
 
@@ -566,10 +601,7 @@ namespace TaskDialogInterop
 				{
 					_commandNormalButton = new RelayCommand<int>((i) =>
 						{
-							if (RadioButtons.Count == 0)
-							{
-								_dialogResult = i;
-							}
+							_dialogResult = i;
 
 							var args = new VistaTaskDialogNotificationArgs();
 
@@ -578,6 +610,8 @@ namespace TaskDialogInterop
 							args.ButtonId = i;
 
 							OnCallback(args);
+
+							RaiseRequestCloseEvent();
 						});
 				}
 
@@ -596,6 +630,8 @@ namespace TaskDialogInterop
 					_commandCommandLink = new RelayCommand<int>((i) =>
 						{
 							_dialogResult = i;
+
+							RaiseRequestCloseEvent();
 						});
 				}
 
@@ -613,7 +649,7 @@ namespace TaskDialogInterop
 				{
 					_commandRadioButton = new RelayCommand<int>((i) =>
 						{
-							_dialogResult = i;
+							_radioResult = i;
 
 							var args = new VistaTaskDialogNotificationArgs();
 
@@ -657,6 +693,10 @@ namespace TaskDialogInterop
 		/// Occurs when a property value changes.
 		/// </summary>
 		public event PropertyChangedEventHandler PropertyChanged;
+		/// <summary>
+		/// Occurs when a close call should be performed.
+		/// </summary>
+		public event EventHandler RequestClose;
 
 		/// <summary>
 		/// Returns a value indicating whether or not the dialog should cancel a closing event.
@@ -691,6 +731,17 @@ namespace TaskDialogInterop
 			OnCallback(args);
 		}
 		/// <summary>
+		/// Notifies any callback handlers periodically if a callback timer has been set.
+		/// </summary>
+		public void NotifyShown()
+		{
+			if (options.EnableCallbackTimer)
+			{
+				_callbackTimerStart = DateTime.Now;
+				_callbackTimer.Start();
+			}
+		}
+		/// <summary>
 		/// Notifies any callback handlers that the dialog is destroyed.
 		/// </summary>
 		public void NotifyClosed()
@@ -712,6 +763,13 @@ namespace TaskDialogInterop
 			OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
 		}
 		/// <summary>
+		/// Raises the <see cref="E:RequestClose"/> event.
+		/// </summary>
+		protected void RaiseRequestCloseEvent()
+		{
+			OnRequestClose(EventArgs.Empty);
+		}
+		/// <summary>
 		/// Raises the <see cref="E:PropertyChanged"/> event.
 		/// </summary>
 		/// <param name="e">The <see cref="System.ComponentModel.PropertyChangedEventArgs"/> instance containing the event data.</param>
@@ -720,6 +778,17 @@ namespace TaskDialogInterop
 			if (PropertyChanged != null)
 			{
 				PropertyChanged(this, e);
+			}
+		}
+		/// <summary>
+		/// Raises the <see cref="E:RequestClose"/> event.
+		/// </summary>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		protected void OnRequestClose(EventArgs e)
+		{
+			if (RequestClose != null)
+			{
+				RequestClose(this, e);
 			}
 		}
 		/// <summary>
@@ -747,9 +816,20 @@ namespace TaskDialogInterop
 					break;
 				case VistaTaskDialogNotification.Timer:
 					// TRUE : reset tickcount
-					// Timer functionality not exposed right now, though, so do nothing
+					if (returnValue)
+						_callbackTimerStart = DateTime.Now;
 					break;
 			}
+		}
+		private void CallbackTimer_Tick(object sender, EventArgs e)
+		{
+			var args = new VistaTaskDialogNotificationArgs();
+
+			args.Config = this.options;
+			args.Notification = VistaTaskDialogNotification.Timer;
+			args.TimerTickCount = Convert.ToUInt32(Math.Round(DateTime.Now.Subtract(_callbackTimerStart).TotalMilliseconds, 0));
+
+			OnCallback(args);
 		}
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
 		private System.Windows.Media.ImageSource ConvertIconToImageSource(VistaTaskDialogIcon icon, Icon customIcon, bool isLarge)
@@ -885,6 +965,12 @@ namespace TaskDialogInterop
 			_progressBarMarqueeEnabled = startMarquee;
 
 			RaisePropertyChangedEvent("ProgressBarIndeterminate");
+		}
+		bool IActiveTaskDialog.SetWindowTitle(string title)
+		{
+			Title = title;
+
+			return true;
 		}
 		bool IActiveTaskDialog.SetContent(string content)
 		{
