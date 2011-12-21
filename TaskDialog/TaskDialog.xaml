@@ -23,7 +23,7 @@
 				<ResourceDictionary Source="ResourceDictionaries/Common.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-			<local:NotNullVisibilityConverter x:Key="NotNullVisibilityConverter"/>
+			<local:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
 			<BitmapImage x:Key="ExpArrUp1" UriSource="Resources/exparr-up1.bmp" />
 			<BitmapImage x:Key="ExpArrUp2" UriSource="Resources/exparr-up2.bmp" />
 			<BitmapImage x:Key="ExpArrUp3" UriSource="Resources/exparr-up3.bmp" />
@@ -53,7 +53,7 @@
 					   Source="{Binding MainIcon, Mode=OneWay}"
 					   Margin="3,7,7,8" VerticalAlignment="Top"
 					   Width="32" Height="32"
-					   Visibility="{Binding MainIcon, Converter={StaticResource NotNullVisibilityConverter}, Mode=OneWay}" />
+					   Visibility="{Binding MainIcon, Converter={StaticResource NotNullToVisibilityConverter}, Mode=OneWay}" />
 				<Grid Grid.Column="1">
 					<Grid.Resources>
 						<Style TargetType="{x:Type TextBlock}">
@@ -71,10 +71,10 @@
 							   Text="{Binding MainInstruction, Mode=OneWay}"
 							   FontSize="16" Margin="3,7,5,3"
 							   Foreground="#FF0033B3"
-							   Visibility="{Binding MainInstruction, Converter={StaticResource NotNullVisibilityConverter}, Mode=OneWay}"/>
+							   Visibility="{Binding MainInstruction, Converter={StaticResource NotNullToVisibilityConverter}, Mode=OneWay}"/>
 					<TextBlock x:Name="ContentText" Grid.Row="1"
 							   Margin="3,12,3,8"
-							   Visibility="{Binding Content, Converter={StaticResource NotNullVisibilityConverter}, Mode=OneWay}" />
+							   Visibility="{Binding Content, Converter={StaticResource NotNullToVisibilityConverter}, Mode=OneWay}" />
 					<TextBlock x:Name="ContentExpandedInfo" Grid.Row="2"
 							   Margin="3,0,3,8"
 							   Visibility="{Binding ContentExpandedInfoVisible, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
@@ -192,7 +192,7 @@
 					</ToggleButton>
 					<CheckBox x:Name="VerificationCheckBox"
 							  Margin="4,3"
-							  Visibility="{Binding VerificationText, Converter={StaticResource NotNullVisibilityConverter}, Mode=OneWay}"
+							  Visibility="{Binding VerificationText, Converter={StaticResource NotNullToVisibilityConverter}, Mode=OneWay}"
 							  HorizontalAlignment="Left" MaxWidth="215"
 							  IsChecked="{Binding VerificationChecked, Mode=TwoWay}">
 						<CheckBox.Content>
@@ -226,7 +226,7 @@
 		</Border>
 		<Border x:Name="FooterArea" Grid.Row="2"
 				BorderThickness="0,1,0,0"
-				Visibility="{Binding FooterText, Converter={StaticResource NotNullVisibilityConverter}, Mode=OneWay}"
+				Visibility="{Binding FooterText, Converter={StaticResource NotNullToVisibilityConverter}, Mode=OneWay}"
 				Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
 				BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
 			<Border x:Name="FooterInner"

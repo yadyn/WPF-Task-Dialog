@@ -10,7 +10,7 @@ namespace TaskDialogInterop
 	/// <summary>
 	/// Converts a null check into a negated visibility value.
 	/// </summary>
-	internal class NotNullVisibilityConverter : IValueConverter
+	internal class NotNullToVisibilityConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{

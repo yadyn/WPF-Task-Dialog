@@ -1,7 +1,7 @@
 ﻿<Window x:Class="WPFTest.MainWindow"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		Title="MainWindow"
+		Title="Task Dialog Tester"
 		Width="410"
 		SizeToContent="Height"
 		ResizeMode="CanMinimize"
