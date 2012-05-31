@@ -455,11 +455,13 @@ namespace TaskDialogInterop
 						&& options.CommonButtons == TaskDialogCommonButtons.None)
 					{
 						_normalButtons = new List<TaskDialogButtonData>();
-						_normalButtons.Add(new TaskDialogButtonData(
-							(int)VistaTaskDialogCommonButtons.Close,
-							VistaTaskDialogCommonButtons.Close.ToString(),
-							NormalButtonCommand,
-							true, true));
+						
+						if(!ShowProgressBar)
+							_normalButtons.Add(new TaskDialogButtonData(
+								(int)VistaTaskDialogCommonButtons.Close,
+								VistaTaskDialogCommonButtons.Close.ToString(),
+								NormalButtonCommand,
+								true, true));
 					}
 					else if (RadioButtons.Count > 0)
 					{
