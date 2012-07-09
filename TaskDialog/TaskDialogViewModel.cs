@@ -755,6 +755,11 @@ namespace TaskDialogInterop
 		/// </summary>
 		public void NotifyClosed()
 		{
+			if (options.EnableCallbackTimer)
+			{
+				_callbackTimer.Stop();
+			}
+
 			var args = new VistaTaskDialogNotificationArgs();
 
 			args.Config = this.options;
