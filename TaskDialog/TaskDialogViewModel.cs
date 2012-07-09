@@ -942,6 +942,21 @@ namespace TaskDialogInterop
 			return fixedLabels;
 		}
 
+		bool IActiveTaskDialog.ClickButton(int buttonId)
+		{
+			if (NormalButtons.Any(b => b.ID == buttonId))
+			{
+				NormalButtonCommand.Execute(buttonId);
+				return true;
+			}
+			else if (CommandLinks.Any(cl => cl.ID == buttonId))
+			{
+				CommandLinkCommand.Execute(buttonId);
+				return true;
+			}
+
+			return false;
+		}
 		bool IActiveTaskDialog.SetMarqueeProgressBar(bool marquee)
 		{
 			//options.ShowProgressBar = false; // do we need this? does setting marquee to true override in the native implementation?

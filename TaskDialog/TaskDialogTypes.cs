@@ -249,6 +249,13 @@ namespace TaskDialogInterop
 		// TODO Support more of the methods exposed by VistaActiveTaskDialog class
 
 		/// <summary>
+		/// Simulate the action of a button click in the TaskDialog. This can be a DialogResult value 
+		/// or the ButtonID set on a TaskDialogButton set on TaskDialog.Buttons.
+		/// </summary>
+		/// <param name="buttonId">Indicates the button ID to be selected.</param>
+		/// <returns>If the function succeeds the return value is true.</returns>
+		bool ClickButton(int buttonId);
+		/// <summary>
 		/// Used to indicate whether the hosted progress bar should be displayed in marquee mode or not.
 		/// </summary>
 		/// <param name="marquee">Specifies whether the progress bar sbould be shown in Marquee mode.

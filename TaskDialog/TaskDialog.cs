@@ -252,6 +252,110 @@ namespace TaskDialogInterop
 			return Show(options).Result;
 		}
 
+		/// <summary>
+		/// Gets the buttonId for a common button. If the common button set includes more than
+		/// one button, the index number specifies which.
+		/// </summary>
+		/// <param name="commonButtons">The common button set to use.</param>
+		/// <param name="index">The zero-based index into the button set.</param>
+		/// <returns>An integer representing the button, used for example with callbacks and the ClickButton method.</returns>
+		public static int GetButtonIdForCommonButton(TaskDialogCommonButtons commonButtons, int index)
+		{
+			int buttonId = 0;
+
+			switch (commonButtons)
+			{
+				default:
+				case TaskDialogCommonButtons.None:
+				case TaskDialogCommonButtons.Close:
+					// We'll set to 0 even for Close, as it doesn't matter that we
+					//get the value right since there is only one button anyway
+					buttonId = 0;
+					break;
+				case TaskDialogCommonButtons.OKCancel:
+					if (index == 0)
+						buttonId = (int)VistaTaskDialogCommonButtons.OK;
+					else if (index == 1)
+						buttonId = (int)VistaTaskDialogCommonButtons.Cancel;
+					else
+						buttonId = 0;
+					break;
+				case TaskDialogCommonButtons.RetryCancel:
+					if (index == 0)
+						buttonId = (int)VistaTaskDialogCommonButtons.Retry;
+					else if (index == 1)
+						buttonId = (int)VistaTaskDialogCommonButtons.Cancel;
+					else
+						buttonId = 0;
+					break;
+				case TaskDialogCommonButtons.YesNo:
+					if (index == 0)
+						buttonId = (int)VistaTaskDialogCommonButtons.Yes;
+					else if (index == 1)
+						buttonId = (int)VistaTaskDialogCommonButtons.No;
+					else
+						buttonId = 0;
+					break;
+				case TaskDialogCommonButtons.YesNoCancel:
+					if (index == 0)
+						buttonId = (int)VistaTaskDialogCommonButtons.Yes;
+					else if (index == 1)
+						buttonId = (int)VistaTaskDialogCommonButtons.No;
+					else if (index == 2)
+						buttonId = (int)VistaTaskDialogCommonButtons.Cancel;
+					else
+						buttonId = 0;
+					break;
+			}
+
+			return buttonId;
+		}
+		/// <summary>
+		/// Gets the buttonId for a command button.
+		/// </summary>
+		/// <param name="index">The zero-based index into the array of command buttons.</param>
+		/// <returns>An integer representing the button, used for example with callbacks and the ClickButton method.</returns>
+		/// <remarks>
+		/// When creating the config options for the dialog and specifying command buttons,
+		/// typically you pass in an array of button label strings. The index specifies which
+		/// button to get an id for. If you passed in Save, Don't Save, and Cancel, then index 2
+		/// specifies the Cancel radio button.
+		/// </remarks>
+		public static int GetButtonIdForCommandButton(int index)
+		{
+			return CommandButtonIDOffset + index;
+		}
+		/// <summary>
+		/// Gets the buttonId for a radio button.
+		/// </summary>
+		/// <param name="index">The zero-based index into the array of radio buttons.</param>
+		/// <returns>An integer representing the button, used for example with callbacks and the ClickButton method.</returns>
+		/// <remarks>
+		/// When creating the config options for the dialog and specifying radio buttons,
+		/// typically you pass in an array of radio label strings. The index specifies which
+		/// button to get an id for. If you passed in Automatic, Manual, and Disabled, then index 1
+		/// specifies the Manual radio button.
+		/// </remarks>
+		public static int GetButtonIdForRadioButton(int index)
+		{
+			return RadioButtonIDOffset + index;
+		}
+		/// <summary>
+		/// Gets the buttonId for a custom button.
+		/// </summary>
+		/// <param name="index">The zero-based index into the array of custom buttons.</param>
+		/// <returns>An integer representing the button, used for example with callbacks and the ClickButton method.</returns>
+		/// <remarks>
+		/// When creating the config options for the dialog and specifying custom buttons,
+		/// typically you pass in an array of button label strings. The index specifies which
+		/// button to get an id for. If you passed in Save, Don't Save, and Cancel, then index 2
+		/// specifies the Cancel custom button.
+		/// </remarks>
+		public static int GetButtonIdForCustomButton(int index)
+		{
+			return CustomButtonIDOffset + index;
+		}
+
 		internal static VistaTaskDialogCommonButtons ConvertCommonButtons(TaskDialogCommonButtons commonButtons)
 		{
 			VistaTaskDialogCommonButtons vtdCommonButtons = VistaTaskDialogCommonButtons.None;
@@ -313,57 +417,6 @@ namespace TaskDialogInterop
 
 			return new TaskDialogButtonData(id, "_" + commonButton.ToString(), command, isDefault, isCancel);
 		}
-		internal static int GetButtonIdForCommonButton(TaskDialogCommonButtons commonButtons, int index)
-		{
-			int buttonId = 0;
-
-			switch (commonButtons)
-			{
-				default:
-				case TaskDialogCommonButtons.None:
-				case TaskDialogCommonButtons.Close:
-					// We'll set to 0 even for Close, as it doesn't matter that we
-					//get the value right since there is only one button anyway
-					buttonId = 0;
-					break;
-				case TaskDialogCommonButtons.OKCancel:
-					if (index == 0)
-						buttonId = (int)VistaTaskDialogCommonButtons.OK;
-					else if (index == 1)
-						buttonId = (int)VistaTaskDialogCommonButtons.Cancel;
-					else
-						buttonId = 0;
-					break;
-				case TaskDialogCommonButtons.RetryCancel:
-					if (index == 0)
-						buttonId = (int)VistaTaskDialogCommonButtons.Retry;
-					else if (index == 1)
-						buttonId = (int)VistaTaskDialogCommonButtons.Cancel;
-					else
-						buttonId = 0;
-					break;
-				case TaskDialogCommonButtons.YesNo:
-					if (index == 0)
-						buttonId = (int)VistaTaskDialogCommonButtons.Yes;
-					else if (index == 1)
-						buttonId = (int)VistaTaskDialogCommonButtons.No;
-					else
-						buttonId = 0;
-					break;
-				case TaskDialogCommonButtons.YesNoCancel:
-					if (index == 0)
-						buttonId = (int)VistaTaskDialogCommonButtons.Yes;
-					else if (index == 1)
-						buttonId = (int)VistaTaskDialogCommonButtons.No;
-					else if (index == 2)
-						buttonId = (int)VistaTaskDialogCommonButtons.Cancel;
-					else
-						buttonId = 0;
-					break;
-			}
-
-			return buttonId;
-		}
 
 		/// <summary>
 		/// Raises the <see cref="E:Showing"/> event.
@@ -405,7 +458,7 @@ namespace TaskDialogInterop
 					try
 					{
 						VistaTaskDialogButton button = new VistaTaskDialogButton();
-						button.ButtonId = CommandButtonIDOffset + i;
+						button.ButtonId = GetButtonIdForCommandButton(i);
 						button.ButtonText = options.CommandButtons[i];
 						lst.Add(button);
 					}
@@ -427,7 +480,7 @@ namespace TaskDialogInterop
 					try
 					{
 						VistaTaskDialogButton button = new VistaTaskDialogButton();
-						button.ButtonId = RadioButtonIDOffset + i;
+						button.ButtonId = GetButtonIdForRadioButton(i);
 						button.ButtonText = options.RadioButtons[i];
 						lst.Add(button);
 					}
@@ -453,7 +506,7 @@ namespace TaskDialogInterop
 					try
 					{
 						VistaTaskDialogButton button = new VistaTaskDialogButton();
-						button.ButtonId = CustomButtonIDOffset + i;
+						button.ButtonId = GetButtonIdForCustomButton(i);
 						button.ButtonText = options.CustomButtons[i];
 
 						if (!hasCustomCancel)

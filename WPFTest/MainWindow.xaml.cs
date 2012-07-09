@@ -254,6 +254,12 @@ namespace WPFTest
 								"{0:P0} Complete Downloading File...",
 								(Convert.ToDouble(_downloadedPercent) / 100d)));
 					}
+					else if (_downloadedPercent >= 100)
+					{
+						// Download finished
+						// Close the dialog by simulating a click on the cancel button
+						dialog.ClickButton(TaskDialog.GetButtonIdForCustomButton(1));
+					}
 
 					// 131072 = 1 MB in bytes
 					dialog.SetContent(

@@ -53,7 +53,7 @@ namespace TaskDialogInterop
 
 		/// <summary>
 		/// Simulate the action of a button click in the TaskDialog. This can be a DialogResult value 
-		/// or the ButtonID set on a TasDialogButton set on TaskDialog.Buttons.
+		/// or the ButtonID set on a TaskDialogButton set on TaskDialog.Buttons.
 		/// </summary>
 		/// <param name="buttonId">Indicates the button ID to be selected.</param>
 		/// <returns>If the function succeeds the return value is true.</returns>
