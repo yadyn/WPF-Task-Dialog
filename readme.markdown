@@ -4,6 +4,8 @@ It is a drop-in assembly that lets you call up Task Dialogs in your WPF app.
 Uses the native [TaskDialogIndirect][1] API calls when available (Vista/7) and
 falls back to an emulated WPF dialog when not (XP and earlier).
 
+Now [available via NuGet][6]! Search for "taskdialog" and give it a whirl!
+
 ## Background ##
 
 I've made very good use of Hedley Muscroft's [WinForms emulator and wrapper][2]
@@ -83,3 +85,4 @@ You can read more as well as see screenshots [here][4].
 [3]: http://yadyn.blogspot.com/2010/12/yet-another-taskdialog-wrapper-this.html
 [4]: http://www.codeproject.com/KB/WPF/WPFTaskDialogEmulator.aspx
 [5]: http://www.codeproject.com/info/cpol10.aspx
+[6]: https://nuget.org/packages/WPFTaskDialog
