@@ -448,7 +448,16 @@ namespace TaskDialogInterop
 			{
 				if (_normalButtons == null)
 				{
-					// Even if no buttons are specified, show a Close button at minimum
+					// Even if no buttons are specified, show an OK button at minimum
+					
+					// I wish I could support no buttons, but this is what the native dialog
+					//does if you don't specify anything
+					
+					// See MSDN docs: http://msdn.microsoft.com/en-us/library/bb787473%28v=vs.85%29.aspx
+					// Under dwCommonButtons:
+					// "If no common buttons are specified and no custom buttons are specified using
+					//the cButtons and pButtons members, the task dialog will contain the OK button by default."
+
 					if (CommandLinks.Count == 0
 						&& RadioButtons.Count == 0
 						&& (options.CustomButtons == null || options.CustomButtons.Length == 0)
@@ -456,8 +465,8 @@ namespace TaskDialogInterop
 					{
 						_normalButtons = new List<TaskDialogButtonData>();
 						_normalButtons.Add(new TaskDialogButtonData(
-							(int)VistaTaskDialogCommonButtons.Close,
-							VistaTaskDialogCommonButtons.Close.ToString(),
+							(int)VistaTaskDialogCommonButtons.OK,
+							VistaTaskDialogCommonButtons.OK.ToString(),
 							NormalButtonCommand,
 							true, true));
 					}
