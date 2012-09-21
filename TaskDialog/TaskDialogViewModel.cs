@@ -470,15 +470,6 @@ namespace TaskDialogInterop
 							NormalButtonCommand,
 							true, true));
 					}
-					else if (RadioButtons.Count > 0)
-					{
-						_normalButtons = new List<TaskDialogButtonData>();
-						_normalButtons.Add(new TaskDialogButtonData(
-							(int)VistaTaskDialogCommonButtons.OK,
-							VistaTaskDialogCommonButtons.OK.ToString(),
-							NormalButtonCommand,
-							true, false));
-					}
 					else if (options.CustomButtons != null)
 					{
 						int i = 0;
