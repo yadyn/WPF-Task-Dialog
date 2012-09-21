@@ -135,6 +135,7 @@ namespace TaskDialogInterop
 		}
 		private void TaskDialog_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
+			ViewModel.NotifyClosing();
 			e.Cancel = ViewModel.ShouldCancelClosing();
 		}
 		private void TaskDialog_Closed(object sender, EventArgs e)

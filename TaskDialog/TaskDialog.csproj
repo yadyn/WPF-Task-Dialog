@@ -13,6 +13,8 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <Utf8Output>true</Utf8Output>
+    <ExpressionBlendVersion>4.0.20901.0</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -97,7 +99,9 @@
     <Resource Include="Resources\exparr-up2.bmp" />
     <Resource Include="Resources\exparr-up3.bmp" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\cmdarr3.png" />
+  </ItemGroup>
   <ItemGroup>
     <Page Include="CommandLink.xaml">
       <Generator>MSBuild:Compile</Generator>

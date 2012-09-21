@@ -113,6 +113,7 @@
 											 GroupName="default"
 											 Content="{Binding Text, Mode=OneWay}"
 											 IsChecked="{Binding IsDefault, Mode=OneWay}"
+											 IsEnabled="{Binding IsEnabled, Mode=OneWay}"
 											 Command="{Binding Command, Mode=OneWay}"
 											 CommandParameter="{Binding ID, Mode=OneWay}"/>
 							</DataTemplate>
@@ -218,6 +219,7 @@
 									CommandParameter="{Binding ID, Mode=OneWay}"
 									IsCancel="{Binding IsCancel, Mode=OneWay}"
 									IsDefault="{Binding IsDefault, Mode=OneWay}"
+									IsEnabled="{Binding IsEnabled, Mode=OneWay}"
 									Click="NormalButton_Click"/>
 						</DataTemplate>
 					</ItemsControl.Resources>

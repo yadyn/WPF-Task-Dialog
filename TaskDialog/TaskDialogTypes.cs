@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 
 namespace TaskDialogInterop
@@ -203,8 +204,10 @@ namespace TaskDialogInterop
 	/// <summary>
 	/// Provides data for all task dialog buttons.
 	/// </summary>
-	public class TaskDialogButtonData
+	public class TaskDialogButtonData : INotifyPropertyChanged
 	{
+		private bool _isEnabled;
+
 		/// <summary>
 		/// Gets the button's ID value to return when clicked.
 		/// </summary>
@@ -222,6 +225,19 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool IsCancel { get; private set; }
 		/// <summary>
+		/// Gets or sets a value indicating whether or not the button should be enabled.
+		/// </summary>
+		public bool IsEnabled
+		{
+			get { return _isEnabled; }
+			set
+			{
+				_isEnabled = value;
+
+				RaisePropertyChanged("IsEnabled");
+			}
+		}
+		/// <summary>
 		/// Gets the button's command.
 		/// </summary>
 		public System.Windows.Input.ICommand Command { get; private set; }
@@ -231,6 +247,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		public TaskDialogButtonData()
 		{
+			_isEnabled = true;
 		}
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TaskDialogButtonData"/> struct.
@@ -241,12 +258,37 @@ namespace TaskDialogInterop
 		/// <param name="isDefault">Whether the button should be the default.</param>
 		/// <param name="isCancel">Whether the button should be a cancel.</param>
 		public TaskDialogButtonData(int id, string text, System.Windows.Input.ICommand command = null, bool isDefault = false, bool isCancel = false)
+			: this()
 		{
 			ID = id;
 			Text = text;
 			Command = command;
 			IsDefault = isDefault;
 			IsCancel = isCancel;
+		}
+
+		/// <summary>
+		/// Occurs when a property value changes.
+		/// </summary>
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		/// <summary>
+		/// Raises the <see cref="E:PropertyChanged"/> event.
+		/// </summary>
+		/// <param name="propertyName">The property name of the property that has changed.</param>
+		protected void RaisePropertyChanged(string propertyName)
+		{
+			OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+		}
+
+		/// <summary>
+		/// Raises the <see cref="E:PropertyChanged"/> event.
+		/// </summary>
+		/// <param name="e">The <see cref="System.ComponentModel.PropertyChangedEventArgs"/> instance containing the event data.</param>
+		protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+		{
+			if (PropertyChanged != null)
+				PropertyChanged(this, e);
 		}
 	}
 	/// <summary>
@@ -287,6 +329,36 @@ namespace TaskDialogInterop
 		/// <param name="index">The zero-based index into the button set.</param>
 		/// <returns>If the function succeeds the return value is true.</returns>
 		bool ClickRadioButton(int index);
+		/// <summary>
+		/// Sets the state of a button to enabled or disabled.
+		/// </summary>
+		/// <param name="buttonId">The id of the button to set.</param>
+		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
+		void SetButtonEnabledState(int buttonId, bool enabled);
+		/// <summary>
+		/// Sets the state of a command link button to enabled or disabled.
+		/// </summary>
+		/// <param name="index">The id of the button to set.</param>
+		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
+		void SetCommandButtonEnabledState(int index, bool enabled);
+		/// <summary>
+		/// Sets the state of a common button to enabled or disabled.
+		/// </summary>
+		/// <param name="index">The id of the button to set.</param>
+		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
+		void SetCommonButtonEnabledState(int index, bool enabled);
+		/// <summary>
+		/// Sets the state of a custom button to enabled or disabled.
+		/// </summary>
+		/// <param name="index">The id of the button to set.</param>
+		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
+		void SetCustomButtonEnabledState(int index, bool enabled);
+		/// <summary>
+		/// Sets the state of a radio button to enabled or disabled.
+		/// </summary>
+		/// <param name="index">The id of the button to set.</param>
+		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
+		void SetRadioButtonEnabledState(int index, bool enabled);
 		/// <summary>
 		/// Used to indicate whether the hosted progress bar should be displayed in marquee mode or not.
 		/// </summary>

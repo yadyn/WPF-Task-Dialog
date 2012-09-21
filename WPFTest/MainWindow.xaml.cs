@@ -201,8 +201,7 @@ namespace WPFTest
 			config.Title = "Downloading File...";
 			config.MainInstruction = "Your file 'en_visual_studio_2010_ultimate_x86_dvd_509116.iso' is currently downloading";
 			config.Content = "Time elapsed: 00:00 | Download rate: 0 KB/s";
-			config.CustomButtons = new string[] { "&Reset timer", "Select first", "&Cancel" };
-			config.RadioButtons = new string[] { "Radio Option 1", "Radio Option 2", "Radio Option 3", "Radio Option 4", "Radio Option 5" };
+			config.CustomButtons = new string[] { "&Reset timer", "&Cancel" };
 			config.AllowDialogCancellation = true;
 			config.ShowProgressBar = true;
 			config.EnableCallbackTimer = true;
@@ -243,14 +242,9 @@ namespace WPFTest
 						_downloadTimerReset = true;
 						result = true; // prevent dialog from closing
 					}
-					else if (args.ButtonIndex == 1)
-					{
-						dialog.ClickRadioButton(0);
-						result = true; // prevent dialog from closing
-					}
 					break;
 				case VistaTaskDialogNotification.Timer:
-					if (_downloadedPercent < 100 && _downloadRandomizer.Next(0, 4) == 0)
+					if (_downloadedPercent < 100 && _downloadRandomizer.Next(0, 3) == 0)
 					{
 						_downloadedPercent++;
 
@@ -264,10 +258,10 @@ namespace WPFTest
 					{
 						// Download finished
 						// Close the dialog by simulating a click on the cancel button
-						dialog.ClickCustomButton(2);
+						dialog.ClickCustomButton(1);
 
 						// Alternative method:
-						//dialog.ClickButton(TaskDialog.GetButtonIdForCustomButton(2));
+						//dialog.ClickButton(TaskDialog.GetButtonIdForCustomButton(1));
 					}
 
 					// 131072 = 1 MB in bytes

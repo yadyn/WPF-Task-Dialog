@@ -124,6 +124,71 @@ namespace TaskDialogInterop
 		}
 
 		/// <summary>
+		/// Enable or disable a button in the TaskDialog. 
+		/// The passed buttonID is the ButtonID set on a TaskDialogButton set on TaskDialog.Buttons
+		/// or a common button ID.
+		/// </summary>
+		/// <param name="buttonId">Indicates the button ID to be enabled or diabled.</param>
+		/// <param name="enabled">Enambe the button if true. Disable the button if false.</param>
+		public void SetButtonEnabledState(int buttonId, bool enabled)
+		{
+			if (buttonId >= TaskDialog.RadioButtonIDOffset && buttonId < TaskDialog.CommandButtonIDOffset)
+			{
+				// TDM_ENABLE_RADIO_BUTTON = WM_USER+112, // lParam = 0 (disable), lParam != 0 (enable), wParam = Radio Button ID
+				VistaUnsafeNativeMethods.SendMessage(
+					this.handle,
+					(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_ENABLE_RADIO_BUTTON,
+					(IntPtr)buttonId,
+					(IntPtr)(enabled ? 0 : 1));
+			}
+			else
+			{
+				// TDM_ENABLE_BUTTON = WM_USER+111, // lParam = 0 (disable), lParam != 0 (enable), wParam = Button ID
+				VistaUnsafeNativeMethods.SendMessage(
+					this.handle,
+					(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_ENABLE_BUTTON,
+					(IntPtr)buttonId,
+					(IntPtr)(enabled ? 0 : 1));
+			}
+		}
+		/// <summary>
+		/// Sets the state of a command link button to enabled or disabled.
+		/// </summary>
+		/// <param name="index">The id of the button to set.</param>
+		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
+		public void SetCommandButtonEnabledState(int index, bool enabled)
+		{
+			SetButtonEnabledState(TaskDialog.GetButtonIdForCommandButton(index), enabled);
+		}
+		/// <summary>
+		/// Sets the state of a common button to enabled or disabled.
+		/// </summary>
+		/// <param name="index">The id of the button to set.</param>
+		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
+		public void SetCommonButtonEnabledState(int index, bool enabled)
+		{
+			SetButtonEnabledState(index, enabled);
+		}
+		/// <summary>
+		/// Sets the state of a custom button to enabled or disabled.
+		/// </summary>
+		/// <param name="index">The id of the button to set.</param>
+		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
+		public void SetCustomButtonEnabledState(int index, bool enabled)
+		{
+			SetButtonEnabledState(TaskDialog.GetButtonIdForCustomButton(index), enabled);
+		}
+		/// <summary>
+		/// Sets the state of a radio button to enabled or disabled.
+		/// </summary>
+		/// <param name="index">The id of the button to set.</param>
+		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
+		public void SetRadioButtonEnabledState(int index, bool enabled)
+		{
+			SetButtonEnabledState(TaskDialog.GetButtonIdForRadioButton(index), enabled);
+		}
+
+		/// <summary>
 		/// Used to indicate whether the hosted progress bar should be displayed in marquee mode or not.
 		/// </summary>
 		/// <param name="marquee">Specifies whether the progress bar sbould be shown in Marquee mode.
@@ -283,39 +348,6 @@ namespace TaskDialogInterop
 				(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_SET_ELEMENT_TEXT,
 				(IntPtr)VistaUnsafeNativeMethods.TASKDIALOG_ELEMENTS.TDE_MAIN_INSTRUCTION,
 				mainInstruction) != IntPtr.Zero;
-		}
-
-		/// <summary>
-		/// Enable or disable a button in the TaskDialog. 
-		/// The passed buttonID is the ButtonID set on a TaskDialogButton set on TaskDialog.Buttons
-		/// or a common button ID.
-		/// </summary>
-		/// <param name="buttonId">Indicates the button ID to be enabled or diabled.</param>
-		/// <param name="enable">Enambe the button if true. Disable the button if false.</param>
-		public void EnableButton(int buttonId, bool enable)
-		{
-			// TDM_ENABLE_BUTTON = WM_USER+111, // lParam = 0 (disable), lParam != 0 (enable), wParam = Button ID
-			VistaUnsafeNativeMethods.SendMessage(
-				this.handle,
-				(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_ENABLE_BUTTON,
-				(IntPtr)buttonId,
-				(IntPtr)(enable ? 0 : 1 ));
-		}
-
-		/// <summary>
-		/// Enable or disable a radio button in the TaskDialog. 
-		/// The passed buttonID is the ButtonID set on a TaskDialogButton set on TaskDialog.RadioButtons.
-		/// </summary>
-		/// <param name="buttonId">Indicates the button ID to be enabled or diabled.</param>
-		/// <param name="enable">Enambe the button if true. Disable the button if false.</param>
-		public void EnableRadioButton(int buttonId, bool enable)
-		{
-			// TDM_ENABLE_RADIO_BUTTON = WM_USER+112, // lParam = 0 (disable), lParam != 0 (enable), wParam = Radio Button ID
-			VistaUnsafeNativeMethods.SendMessage(
-				this.handle,
-				(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_ENABLE_RADIO_BUTTON,
-				(IntPtr)buttonId,
-				(IntPtr)(enable ? 0 : 1));
 		}
 
 		/// <summary>

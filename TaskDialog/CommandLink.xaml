@@ -17,6 +17,7 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="ResourceDictionaries/Common.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
+			<BitmapImage x:Key="CmdArr3" UriSource="Resources/cmdarr3.png" />
 			<BitmapImage x:Key="CmdArr2" UriSource="Resources/cmdarr2.png" />
 			<BitmapImage x:Key="CmdArr1" UriSource="Resources/cmdarr1.png" />
 			<local:CommandLinkTextConverter x:Key="CommandLinkTextConverter"/>
@@ -25,7 +26,12 @@
 	</UserControl.Resources>
 
 	<Grid x:Name="LayoutRoot">
-		<Button x:Name="CommandLinkButton" Style="{DynamicResource NoChromeButton}" Template="{DynamicResource CommandButtonControlTemplate}" Command="{Binding Command, Mode=OneWay}" CommandParameter="{Binding ID, Mode=OneWay}">
+		<Button x:Name="CommandLinkButton"
+			Command="{Binding Command, Mode=OneWay}"
+			CommandParameter="{Binding ID, Mode=OneWay}"
+			IsEnabled="{Binding IsEnabled, Mode=OneWay}"
+			Style="{DynamicResource NoChromeButton}"
+			Template="{DynamicResource CommandButtonControlTemplate}">
 			<Button.Resources>
 				<ControlTemplate x:Key="CommandButtonControlTemplate" TargetType="{x:Type Button}">
 					<Border x:Name="CommandLinkBorder" BorderThickness="1" CornerRadius="2" Padding="9" BorderBrush="Transparent">
@@ -39,55 +45,73 @@
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualStateGroup.Transitions>
-									<VisualTransition From="MouseOver" GeneratedDuration="0:0:1" To="Normal"/>
-									<VisualTransition From="Pressed" GeneratedDuration="0:0:0.5"/>
+									<VisualTransition GeneratedDuration="0:0:1"/>
+									<VisualTransition GeneratedDuration="0:0:0.25" To="Disabled"/>
+									<VisualTransition From="Disabled" GeneratedDuration="0:0:0.25"/>
+									<VisualTransition GeneratedDuration="0:0:0.25" To="Pressed"/>
+									<VisualTransition GeneratedDuration="0:0:0.5" To="MouseOver"/>
 								</VisualStateGroup.Transitions>
 								<VisualState x:Name="Normal"/>
 								<VisualState x:Name="MouseOver">
 									<Storyboard>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="CommandLinkText">
-											<EasingColorKeyFrame KeyTime="0:0:0.5" Value="#FF074AE5"/>
+											<EasingColorKeyFrame KeyTime="0" Value="#FF074AE5"/>
 										</ColorAnimationUsingKeyFrames>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="CommandLinkTextExtra">
-											<EasingColorKeyFrame KeyTime="0:0:0.5" Value="#FF074AE5"/>
+											<EasingColorKeyFrame KeyTime="0" Value="#FF074AE5"/>
 										</ColorAnimationUsingKeyFrames>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" Storyboard.TargetName="CommandLinkBorder">
-											<EasingColorKeyFrame KeyTime="0:0:0.5" Value="#FFC6C6C6"/>
+											<EasingColorKeyFrame KeyTime="0" Value="#FFC6C6C6"/>
 										</ColorAnimationUsingKeyFrames>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="CommandLinkBorder">
-											<EasingColorKeyFrame KeyTime="0:0:0.5" Value="WhiteSmoke"/>
+											<EasingColorKeyFrame KeyTime="0" Value="WhiteSmoke"/>
 										</ColorAnimationUsingKeyFrames>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[2].(GradientStop.Color)" Storyboard.TargetName="CommandLinkBorder">
-											<EasingColorKeyFrame KeyTime="0:0:0.5" Value="WhiteSmoke"/>
+											<EasingColorKeyFrame KeyTime="0" Value="WhiteSmoke"/>
 										</ColorAnimationUsingKeyFrames>
 										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CommandLinkIcon2">
-											<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1"/>
+											<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
 										</DoubleAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
 								<VisualState x:Name="Pressed">
 									<Storyboard>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" Storyboard.TargetName="CommandLinkBorder">
-											<EasingColorKeyFrame KeyTime="0:0:0.25" Value="#FFADADAD"/>
+											<EasingColorKeyFrame KeyTime="0" Value="#FFADADAD"/>
 										</ColorAnimationUsingKeyFrames>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="CommandLinkBorder">
-											<EasingColorKeyFrame KeyTime="0:0:0.25" Value="#FFF2F3F3"/>
+											<EasingColorKeyFrame KeyTime="0" Value="#FFF2F3F3"/>
 										</ColorAnimationUsingKeyFrames>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="CommandLinkBorder">
-											<EasingColorKeyFrame KeyTime="0:0:0.25" Value="#FFF2F3F3"/>
+											<EasingColorKeyFrame KeyTime="0" Value="#FFF2F3F3"/>
 										</ColorAnimationUsingKeyFrames>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[2].(GradientStop.Color)" Storyboard.TargetName="CommandLinkBorder">
-											<EasingColorKeyFrame KeyTime="0:0:0.25" Value="#FFF2F3F3"/>
+											<EasingColorKeyFrame KeyTime="0" Value="#FFF2F3F3"/>
 										</ColorAnimationUsingKeyFrames>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="CommandLinkText">
-											<EasingColorKeyFrame KeyTime="0:0:0.25" Value="#FF062073"/>
+											<EasingColorKeyFrame KeyTime="0" Value="#FF062073"/>
 										</ColorAnimationUsingKeyFrames>
 										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="CommandLinkTextExtra">
-											<EasingColorKeyFrame KeyTime="0:0:0.25" Value="#FF062073"/>
+											<EasingColorKeyFrame KeyTime="0" Value="#FF062073"/>
 										</ColorAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
-								<VisualState x:Name="Disabled"/>
+								<VisualState x:Name="Disabled">
+									<Storyboard>
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CommandLinkTextExtra">
+											<EasingDoubleKeyFrame KeyTime="0" Value="0.5"/>
+										</DoubleAnimationUsingKeyFrames>
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CommandLinkText">
+											<EasingDoubleKeyFrame KeyTime="0" Value="0.5"/>
+										</DoubleAnimationUsingKeyFrames>
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CommandLinkIcon3">
+											<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+										</DoubleAnimationUsingKeyFrames>
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CommandLinkIcon1">
+											<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+										</DoubleAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 						<Grid x:Name="CommandLinkLayout">
@@ -109,15 +133,16 @@
 								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="Auto"/>
 							</Grid.RowDefinitions>
-							<Image x:Name="CommandLinkIcon" Source="{DynamicResource CmdArr1}">
+							<Image x:Name="CommandLinkIcon1" Source="{DynamicResource CmdArr1}">
 								<Image.Effect>
 									<DropShadowEffect Direction="190" BlurRadius="5" ShadowDepth="2" Opacity="0.4"/>
 								</Image.Effect>
 							</Image>
 							<Image x:Name="CommandLinkIcon2" Source="{DynamicResource CmdArr2}" Opacity="0"/>
-							<TextBlock x:Name="CommandLinkText" Grid.Column="1" FontSize="16">
-								<AccessText Text="{Binding Text, ConverterParameter=1, Converter={StaticResource CommandLinkTextConverter}, Mode=OneWay}"/>
-							</TextBlock>
+							<Image x:Name="CommandLinkIcon3" Source="{DynamicResource CmdArr3}" Opacity="0"/>
+							<TextBlock x:Name="CommandLinkText" Grid.Column="1" FontSize="16"><InlineUIContainer>
+									<AccessText Text="{Binding Text, ConverterParameter=1, Converter={StaticResource CommandLinkTextConverter}, Mode=OneWay}"/>
+								</InlineUIContainer></TextBlock>
 							<TextBlock x:Name="CommandLinkTextExtra" Grid.Column="1" Grid.Row="1" Text="{Binding Text, ConverterParameter=2, Converter={StaticResource CommandLinkTextConverter}, Mode=OneWay}" FontSize="12" Visibility="{Binding Text, Converter={StaticResource CommandLinkExtraTextVisibilityConverter}, Mode=OneWay}" Margin="0,1,0,0"/>
 						</Grid>
 					</Border>

@@ -54,6 +54,7 @@ namespace TaskDialogInterop
 		private bool _expandedInfoVisible;
 		private bool _verificationChecked;
 		private bool _preventClose;
+		private bool _requestingClose;
 		private bool _progressBarMarqueeEnabled;
 		private double _progressBarMin;
 		private double _progressBarMax;
@@ -459,7 +460,6 @@ namespace TaskDialogInterop
 					//the cButtons and pButtons members, the task dialog will contain the OK button by default."
 
 					if (CommandLinks.Count == 0
-						&& RadioButtons.Count == 0
 						&& (options.CustomButtons == null || options.CustomButtons.Length == 0)
 						&& options.CommonButtons == TaskDialogCommonButtons.None)
 					{
@@ -497,6 +497,10 @@ namespace TaskDialogInterop
 								DefaultButtonIndex == i++,
 								(VistaTaskDialogCommonButtons)button == VistaTaskDialogCommonButtons.Cancel || (VistaTaskDialogCommonButtons)button == VistaTaskDialogCommonButtons.Close))
 							.ToList();
+
+						// Fix for Retry/Cancel out of order
+						if (options.CommonButtons == TaskDialogCommonButtons.RetryCancel)
+							_normalButtons.Reverse();
 					}
 					else
 					{
@@ -632,6 +636,15 @@ namespace TaskDialogInterop
 						{
 							_dialogResult = i;
 
+							var args = new VistaTaskDialogNotificationArgs();
+
+							args.Config = this.options;
+							args.Notification = VistaTaskDialogNotification.ButtonClicked;
+							args.ButtonId = i;
+							args.ButtonIndex = i % 500;
+
+							OnCallback(args);
+
 							RaiseRequestCloseEvent();
 						});
 				}
@@ -744,6 +757,24 @@ namespace TaskDialogInterop
 			}
 		}
 		/// <summary>
+		/// Notifies any callback handlers that the close button was clicked.
+		/// </summary>
+		public void NotifyClosing()
+		{
+			// Caused by clicking X or Alt+F4 or Esc, so notify via callback
+			if (!_requestingClose)
+			{
+				var args = new VistaTaskDialogNotificationArgs();
+
+				args.Config = this.options;
+				args.Notification = VistaTaskDialogNotification.ButtonClicked;
+				args.ButtonId = (int)TaskDialogSimpleResult.Cancel;
+				args.ButtonIndex = (int)TaskDialogSimpleResult.Cancel;
+
+				OnCallback(args);
+			}
+		}
+		/// <summary>
 		/// Notifies any callback handlers that the dialog is destroyed.
 		/// </summary>
 		public void NotifyClosed()
@@ -774,6 +805,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		protected void RaiseRequestCloseEvent()
 		{
+			_requestingClose = true;
 			OnRequestClose(EventArgs.Empty);
 		}
 		/// <summary>
@@ -957,7 +989,6 @@ namespace TaskDialogInterop
 		}
 		bool IActiveTaskDialog.ClickCommandButton(int index)
 		{
-			// Avoid out-of-range exceptions
 			if (CommandLinks.Count > index)
 			{
 				CommandLinkCommand.Execute(CommandLinks[index].ID);
@@ -968,7 +999,6 @@ namespace TaskDialogInterop
 		}
 		bool IActiveTaskDialog.ClickCommonButton(int index)
 		{
-			// Avoid out-of-range exceptions
 			if (NormalButtons.Count > index)
 			{
 				NormalButtonCommand.Execute(NormalButtons[index].ID);
@@ -979,7 +1009,6 @@ namespace TaskDialogInterop
 		}
 		bool IActiveTaskDialog.ClickCustomButton(int index)
 		{
-			// Avoid out-of-range exceptions
 			if (NormalButtons.Count > index)
 			{
 				NormalButtonCommand.Execute(NormalButtons[index].ID);
@@ -990,7 +1019,6 @@ namespace TaskDialogInterop
 		}
 		bool IActiveTaskDialog.ClickRadioButton(int index)
 		{
-			// Avoid out-of-range exceptions
 			if (RadioButtons.Count > index)
 			{
 				RadioButtonCommand.Execute(RadioButtons[index].ID);
@@ -998,6 +1026,35 @@ namespace TaskDialogInterop
 			}
 
 			return false;
+		}
+		void IActiveTaskDialog.SetButtonEnabledState(int buttonId, bool enabled)
+		{
+			if (NormalButtons.Any(b => b.ID == buttonId))
+				NormalButtons.First(b => b.ID == buttonId).IsEnabled = enabled;
+			else if (CommandLinks.Any(cl => cl.ID == buttonId))
+				CommandLinks.First(b => b.ID == buttonId).IsEnabled = enabled;
+			else if (RadioButtons.Any(rb => rb.ID == buttonId))
+				RadioButtons.First(b => b.ID == buttonId).IsEnabled = enabled;
+		}
+		void IActiveTaskDialog.SetCommandButtonEnabledState(int index, bool enabled)
+		{
+			if (CommandLinks.Count > index)
+				CommandLinks[index].IsEnabled = enabled;
+		}
+		void IActiveTaskDialog.SetCommonButtonEnabledState(int index, bool enabled)
+		{
+			if (NormalButtons.Count > index)
+				NormalButtons[index].IsEnabled = enabled;
+		}
+		void IActiveTaskDialog.SetCustomButtonEnabledState(int index, bool enabled)
+		{
+			if (NormalButtons.Count > index)
+				NormalButtons[index].IsEnabled = enabled;
+		}
+		void IActiveTaskDialog.SetRadioButtonEnabledState(int index, bool enabled)
+		{
+			if (RadioButtons.Count > index)
+				RadioButtons[index].IsEnabled = enabled;
 		}
 		bool IActiveTaskDialog.SetMarqueeProgressBar(bool marquee)
 		{
