@@ -139,7 +139,7 @@ namespace TaskDialogInterop
 					this.handle,
 					(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_ENABLE_RADIO_BUTTON,
 					(IntPtr)buttonId,
-					(IntPtr)(enabled ? 0 : 1));
+					(IntPtr)(enabled ? 1 : 0));
 			}
 			else
 			{
@@ -148,13 +148,13 @@ namespace TaskDialogInterop
 					this.handle,
 					(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_ENABLE_BUTTON,
 					(IntPtr)buttonId,
-					(IntPtr)(enabled ? 0 : 1));
+					(IntPtr)(enabled ? 1 : 0));
 			}
 		}
 		/// <summary>
 		/// Sets the state of a command link button to enabled or disabled.
 		/// </summary>
-		/// <param name="index">The id of the button to set.</param>
+		/// <param name="index">The zero-based index of the button to set.</param>
 		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
 		public void SetCommandButtonEnabledState(int index, bool enabled)
 		{
@@ -163,7 +163,7 @@ namespace TaskDialogInterop
 		/// <summary>
 		/// Sets the state of a common button to enabled or disabled.
 		/// </summary>
-		/// <param name="index">The id of the button to set.</param>
+		/// <param name="index">The zero-based index of the button to set.</param>
 		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
 		public void SetCommonButtonEnabledState(int index, bool enabled)
 		{
@@ -172,7 +172,7 @@ namespace TaskDialogInterop
 		/// <summary>
 		/// Sets the state of a custom button to enabled or disabled.
 		/// </summary>
-		/// <param name="index">The id of the button to set.</param>
+		/// <param name="index">The zero-based index of the button to set.</param>
 		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
 		public void SetCustomButtonEnabledState(int index, bool enabled)
 		{
@@ -181,11 +181,66 @@ namespace TaskDialogInterop
 		/// <summary>
 		/// Sets the state of a radio button to enabled or disabled.
 		/// </summary>
-		/// <param name="index">The id of the button to set.</param>
+		/// <param name="index">The zero-based index of the button to set.</param>
 		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
 		public void SetRadioButtonEnabledState(int index, bool enabled)
 		{
 			SetButtonEnabledState(TaskDialog.GetButtonIdForRadioButton(index), enabled);
+		}
+
+		/// <summary>
+		/// Designate whether a given Task Dialog button or command link should have a User Account Control (UAC) shield icon.
+		/// </summary>
+		/// <param name="buttonId">ID of the push button or command link to be updated.</param>
+		/// <param name="elevationRequired">False to designate that the action invoked by the button does not require elevation;
+		/// true to designate that the action does require elevation.</param>
+		public void SetButtonElevationRequiredState(int buttonId, bool elevationRequired)
+		{
+			// TDM_SET_BUTTON_ELEVATION_REQUIRED_STATE = WM_USER+115, // wParam = Button ID, lParam = 0 (elevation not required), lParam != 0 (elevation required)
+			VistaUnsafeNativeMethods.SendMessage(
+				this.handle,
+				(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_SET_BUTTON_ELEVATION_REQUIRED_STATE,
+				(IntPtr)buttonId,
+				(IntPtr)(elevationRequired ? new IntPtr(1) : IntPtr.Zero));
+		}
+		/// <summary>
+		/// Sets the elevation required state of a command link button, adding a shield icon.
+		/// </summary>
+		/// <param name="index">The zero-based index of the button to set.</param>
+		/// <param name="elevationRequired"><c>true</c> to show a shield icon; <c>false</c> to remove</param>
+		/// <remarks>
+		/// Note that this is purely for visual effect. You will still need to perform
+		/// the necessary code to trigger a UAC prompt for the user.
+		/// </remarks>
+		public void SetCommandButtonElevationRequiredState(int index, bool elevationRequired)
+		{
+			SetButtonElevationRequiredState(TaskDialog.GetButtonIdForCommandButton(index), elevationRequired);
+		}
+		/// <summary>
+		/// Sets the elevation required state of a common button, adding a shield icon.
+		/// </summary>
+		/// <param name="index">The zero-based index of the button to set.</param>
+		/// <param name="elevationRequired"><c>true</c> to show a shield icon; <c>false</c> to remove</param>
+		/// <remarks>
+		/// Note that this is purely for visual effect. You will still need to perform
+		/// the necessary code to trigger a UAC prompt for the user.
+		/// </remarks>
+		public void SetCommonButtonElevationRequiredState(int index, bool elevationRequired)
+		{
+			SetButtonElevationRequiredState(index, elevationRequired);
+		}
+		/// <summary>
+		/// Sets the elevation required state of a custom button, adding a shield icon.
+		/// </summary>
+		/// <param name="index">The zero-based index of the button to set.</param>
+		/// <param name="elevationRequired"><c>true</c> to enable the button; <c>false</c> to disable</param>
+		/// <remarks>
+		/// Note that this is purely for visual effect. You will still need to perform
+		/// the necessary code to trigger a UAC prompt for the user.
+		/// </remarks>
+		public void SetCustomButtonElevationRequiredState(int index, bool elevationRequired)
+		{
+			SetButtonElevationRequiredState(TaskDialog.GetButtonIdForCustomButton(index), elevationRequired);
 		}
 
 		/// <summary>
@@ -423,22 +478,6 @@ namespace TaskDialogInterop
 				(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_UPDATE_ELEMENT_TEXT,
 				(IntPtr)VistaUnsafeNativeMethods.TASKDIALOG_ELEMENTS.TDE_MAIN_INSTRUCTION,
 				mainInstruction);
-		}
-
-		/// <summary>
-		/// Designate whether a given Task Dialog button or command link should have a User Account Control (UAC) shield icon.
-		/// </summary>
-		/// <param name="buttonId">ID of the push button or command link to be updated.</param>
-		/// <param name="elevationRequired">False to designate that the action invoked by the button does not require elevation;
-		/// true to designate that the action does require elevation.</param>
-		public void SetButtonElevationRequiredState(int buttonId, bool elevationRequired)
-		{
-			// TDM_SET_BUTTON_ELEVATION_REQUIRED_STATE = WM_USER+115, // wParam = Button ID, lParam = 0 (elevation not required), lParam != 0 (elevation required)
-			VistaUnsafeNativeMethods.SendMessage(
-				this.handle,
-				(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_SET_BUTTON_ELEVATION_REQUIRED_STATE,
-				(IntPtr)buttonId,
-				(IntPtr)(elevationRequired ? new IntPtr(1) : IntPtr.Zero));
 		}
 
 		/// <summary>

@@ -1056,6 +1056,28 @@ namespace TaskDialogInterop
 			if (RadioButtons.Count > index)
 				RadioButtons[index].IsEnabled = enabled;
 		}
+		void IActiveTaskDialog.SetButtonElevationRequiredState(int buttonId, bool elevationRequired)
+		{
+			if (NormalButtons.Any(b => b.ID == buttonId))
+				NormalButtons.First(b => b.ID == buttonId).IsElevationRequired = elevationRequired;
+			else if (CommandLinks.Any(cl => cl.ID == buttonId))
+				CommandLinks.First(b => b.ID == buttonId).IsElevationRequired = elevationRequired;
+		}
+		void IActiveTaskDialog.SetCommandButtonElevationRequiredState(int index, bool elevationRequired)
+		{
+			if (CommandLinks.Count > index)
+				CommandLinks[index].IsElevationRequired = elevationRequired;
+		}
+		void IActiveTaskDialog.SetCommonButtonElevationRequiredState(int index, bool elevationRequired)
+		{
+			if (NormalButtons.Count > index)
+				NormalButtons[index].IsElevationRequired = elevationRequired;
+		}
+		void IActiveTaskDialog.SetCustomButtonElevationRequiredState(int index, bool elevationRequired)
+		{
+			if (NormalButtons.Count > index)
+				NormalButtons[index].IsElevationRequired = elevationRequired;
+		}
 		bool IActiveTaskDialog.SetMarqueeProgressBar(bool marquee)
 		{
 			//options.ShowProgressBar = false; // do we need this? does setting marquee to true override in the native implementation?

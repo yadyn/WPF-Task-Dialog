@@ -33,6 +33,7 @@
 			<BitmapImage x:Key="ExpArr1" UriSource="Resources/exparr-down1.bmp" />
 			<BitmapImage x:Key="ExpArr2" UriSource="Resources/exparr-down2.bmp" />
 			<BitmapImage x:Key="ExpArr3" UriSource="Resources/exparr-down3.bmp" />
+			<BitmapImage x:Key="CmdElevated" UriSource="Resources/shield-16.png" />
 		</ResourceDictionary>
 	</Window.Resources>
 
@@ -212,15 +213,20 @@
 							<WrapPanel Orientation="Horizontal" HorizontalAlignment="Right"/>
 						</ItemsPanelTemplate>
 						<DataTemplate x:Key="ButtonsDataTemplate">
-							<Button Content="{Binding Text}"
-									Margin="4,3" Padding="12,1"
+							<Button Margin="4,3" Padding="12,1"
 									MinWidth="66" MinHeight="21"
 									Command="{Binding Command, Mode=OneWay}"
 									CommandParameter="{Binding ID, Mode=OneWay}"
 									IsCancel="{Binding IsCancel, Mode=OneWay}"
 									IsDefault="{Binding IsDefault, Mode=OneWay}"
 									IsEnabled="{Binding IsEnabled, Mode=OneWay}"
-									Click="NormalButton_Click"/>
+									Click="NormalButton_Click">
+								<StackPanel Orientation="Horizontal">
+									<Image Source="{DynamicResource CmdElevated}"
+										Visibility="{Binding IsElevationRequired, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+									<ContentPresenter RecognizesAccessKey="True" Content="{Binding Text}"/>
+								</StackPanel>
+							</Button>
 						</DataTemplate>
 					</ItemsControl.Resources>
 				</ItemsControl>

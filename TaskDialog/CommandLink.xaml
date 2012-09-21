@@ -20,6 +20,9 @@
 			<BitmapImage x:Key="CmdArr3" UriSource="Resources/cmdarr3.png" />
 			<BitmapImage x:Key="CmdArr2" UriSource="Resources/cmdarr2.png" />
 			<BitmapImage x:Key="CmdArr1" UriSource="Resources/cmdarr1.png" />
+			<BitmapImage x:Key="CmdShld" UriSource="Resources/shield-16.png" />
+			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+			<local:NotBooleanToVisibilityConverter x:Key="NotBooleanToVisibilityConverter"/>
 			<local:CommandLinkTextConverter x:Key="CommandLinkTextConverter"/>
 			<local:CommandLinkExtraTextVisibilityConverter x:Key="CommandLinkExtraTextVisibilityConverter"/>
 		</ResourceDictionary>
@@ -104,6 +107,9 @@
 										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CommandLinkText">
 											<EasingDoubleKeyFrame KeyTime="0" Value="0.5"/>
 										</DoubleAnimationUsingKeyFrames>
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CommandLinkIcon4">
+											<EasingDoubleKeyFrame KeyTime="0" Value="0.5"/>
+										</DoubleAnimationUsingKeyFrames>
 										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CommandLinkIcon3">
 											<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
 										</DoubleAnimationUsingKeyFrames>
@@ -133,13 +139,18 @@
 								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="Auto"/>
 							</Grid.RowDefinitions>
-							<Image x:Name="CommandLinkIcon1" Source="{DynamicResource CmdArr1}">
+							<Image x:Name="CommandLinkIcon1" Source="{DynamicResource CmdArr1}"
+								Visibility="{Binding IsElevationRequired, Converter={StaticResource NotBooleanToVisibilityConverter}}">
 								<Image.Effect>
 									<DropShadowEffect Direction="190" BlurRadius="5" ShadowDepth="2" Opacity="0.4"/>
 								</Image.Effect>
 							</Image>
-							<Image x:Name="CommandLinkIcon2" Source="{DynamicResource CmdArr2}" Opacity="0"/>
-							<Image x:Name="CommandLinkIcon3" Source="{DynamicResource CmdArr3}" Opacity="0"/>
+							<Image x:Name="CommandLinkIcon2" Source="{DynamicResource CmdArr2}" Opacity="0"
+								Visibility="{Binding IsElevationRequired, Converter={StaticResource NotBooleanToVisibilityConverter}}"/>
+							<Image x:Name="CommandLinkIcon3" Source="{DynamicResource CmdArr3}" Opacity="0"
+								Visibility="{Binding IsElevationRequired, Converter={StaticResource NotBooleanToVisibilityConverter}}"/>
+							<Image x:Name="CommandLinkIcon4" Source="{DynamicResource CmdShld}" Margin="0,4,7,0"
+								Visibility="{Binding IsElevationRequired, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 							<TextBlock x:Name="CommandLinkText" Grid.Column="1" FontSize="16"><InlineUIContainer>
 									<AccessText Text="{Binding Text, ConverterParameter=1, Converter={StaticResource CommandLinkTextConverter}, Mode=OneWay}"/>
 								</InlineUIContainer></TextBlock>

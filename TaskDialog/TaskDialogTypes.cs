@@ -207,6 +207,7 @@ namespace TaskDialogInterop
 	public class TaskDialogButtonData : INotifyPropertyChanged
 	{
 		private bool _isEnabled;
+		private bool _isElevationRequired;
 
 		/// <summary>
 		/// Gets the button's ID value to return when clicked.
@@ -238,6 +239,19 @@ namespace TaskDialogInterop
 			}
 		}
 		/// <summary>
+		/// Gets or sets a value indicating whether or not the button requires elevation.
+		/// </summary>
+		public bool IsElevationRequired
+		{
+			get { return _isElevationRequired; }
+			set
+			{
+				_isElevationRequired = value;
+
+				RaisePropertyChanged("IsElevationRequired");
+			}
+		}
+		/// <summary>
 		/// Gets the button's command.
 		/// </summary>
 		public System.Windows.Input.ICommand Command { get; private set; }
@@ -248,6 +262,7 @@ namespace TaskDialogInterop
 		public TaskDialogButtonData()
 		{
 			_isEnabled = true;
+			_isElevationRequired = false;
 		}
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TaskDialogButtonData"/> struct.
@@ -338,27 +353,67 @@ namespace TaskDialogInterop
 		/// <summary>
 		/// Sets the state of a command link button to enabled or disabled.
 		/// </summary>
-		/// <param name="index">The id of the button to set.</param>
+		/// <param name="index">The zero-based index of the button to set.</param>
 		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
 		void SetCommandButtonEnabledState(int index, bool enabled);
 		/// <summary>
 		/// Sets the state of a common button to enabled or disabled.
 		/// </summary>
-		/// <param name="index">The id of the button to set.</param>
+		/// <param name="index">The zero-based index of the button to set.</param>
 		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
 		void SetCommonButtonEnabledState(int index, bool enabled);
 		/// <summary>
 		/// Sets the state of a custom button to enabled or disabled.
 		/// </summary>
-		/// <param name="index">The id of the button to set.</param>
+		/// <param name="index">The zero-based index of the button to set.</param>
 		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
 		void SetCustomButtonEnabledState(int index, bool enabled);
 		/// <summary>
 		/// Sets the state of a radio button to enabled or disabled.
 		/// </summary>
-		/// <param name="index">The id of the button to set.</param>
+		/// <param name="index">The zero-based index of the button to set.</param>
 		/// <param name="enabled"><c>true</c> to enable the button; <c>false</c> to disable</param>
 		void SetRadioButtonEnabledState(int index, bool enabled);
+		/// <summary>
+		/// Sets the elevation required state of a button, adding a shield icon.
+		/// </summary>
+		/// <param name="buttonId">The id of the button to set.</param>
+		/// <param name="elevationRequired"><c>true</c> to show a shield icon; <c>false</c> to remove</param>
+		/// <remarks>
+		/// Note that this is purely for visual effect. You will still need to perform
+		/// the necessary code to trigger a UAC prompt for the user.
+		/// </remarks>
+		void SetButtonElevationRequiredState(int buttonId, bool elevationRequired);
+		/// <summary>
+		/// Sets the elevation required state of a command link button, adding a shield icon.
+		/// </summary>
+		/// <param name="index">The zero-based index of the button to set.</param>
+		/// <param name="elevationRequired"><c>true</c> to show a shield icon; <c>false</c> to remove</param>
+		/// <remarks>
+		/// Note that this is purely for visual effect. You will still need to perform
+		/// the necessary code to trigger a UAC prompt for the user.
+		/// </remarks>
+		void SetCommandButtonElevationRequiredState(int index, bool elevationRequired);
+		/// <summary>
+		/// Sets the elevation required state of a common button, adding a shield icon.
+		/// </summary>
+		/// <param name="index">The zero-based index of the button to set.</param>
+		/// <param name="elevationRequired"><c>true</c> to show a shield icon; <c>false</c> to remove</param>
+		/// <remarks>
+		/// Note that this is purely for visual effect. You will still need to perform
+		/// the necessary code to trigger a UAC prompt for the user.
+		/// </remarks>
+		void SetCommonButtonElevationRequiredState(int index, bool elevationRequired);
+		/// <summary>
+		/// Sets the elevation required state of a custom button, adding a shield icon.
+		/// </summary>
+		/// <param name="index">The zero-based index of the button to set.</param>
+		/// <param name="elevationRequired"><c>true</c> to enable the button; <c>false</c> to disable</param>
+		/// <remarks>
+		/// Note that this is purely for visual effect. You will still need to perform
+		/// the necessary code to trigger a UAC prompt for the user.
+		/// </remarks>
+		void SetCustomButtonElevationRequiredState(int index, bool elevationRequired);
 		/// <summary>
 		/// Used to indicate whether the hosted progress bar should be displayed in marquee mode or not.
 		/// </summary>

@@ -26,6 +26,30 @@ namespace TaskDialogInterop
 		}
 	}
 	/// <summary>
+	/// Converts a boolean into a negated visibility value.
+	/// </summary>
+	internal class NotBooleanToVisibilityConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			if (value == null)
+				return DependencyProperty.UnsetValue;
+			if (value.GetType() != typeof(bool))
+				throw new InvalidOperationException();
+
+			return ((!(bool)value) ? Visibility.Visible : Visibility.Collapsed);
+		}
+		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			if (value == null)
+				return DependencyProperty.UnsetValue;
+			if (value.GetType() != typeof(Visibility))
+				throw new InvalidOperationException();
+
+			return (((Visibility)value) != Visibility.Visible);
+		}
+	}
+	/// <summary>
 	/// Chops up multiline command link text appropriately.
 	/// </summary>
 	internal class CommandLinkTextConverter : IValueConverter

@@ -6,5 +6,6 @@
 	Text="Command _Link 1&#x0a;Line 2&#x0a;Line 3"
 	IsDefault="False"
 	IsCancel="False"
-	IsEnabled="True">
+	IsEnabled="True"
+	IsElevationRequired="False">
 </local:TaskDialogButtonData>
