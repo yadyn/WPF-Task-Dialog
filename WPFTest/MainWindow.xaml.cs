@@ -235,7 +235,6 @@ namespace WPFTest
 				case VistaTaskDialogNotification.Created:
 					_downloadedPercent = 0;
 					dialog.SetProgressBarRange(0, 100);
-					dialog.SetCustomButtonElevationRequiredState(0, true);
 					break;
 				case VistaTaskDialogNotification.ButtonClicked:
 					if (args.ButtonIndex == 0)

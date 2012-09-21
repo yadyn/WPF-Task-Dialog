@@ -712,6 +712,10 @@ namespace TaskDialogInterop
 		/// Occurs when a close call should be performed.
 		/// </summary>
 		public event EventHandler RequestClose;
+		/// <summary>
+		/// Occurs when the verification checkbox should be focused.
+		/// </summary>
+		public event EventHandler RequestVerificationFocus;
 
 		/// <summary>
 		/// Returns a value indicating whether or not the dialog should cancel a closing event.
@@ -809,6 +813,13 @@ namespace TaskDialogInterop
 			OnRequestClose(EventArgs.Empty);
 		}
 		/// <summary>
+		/// Raises the <see cref="E:RequestClose"/> event.
+		/// </summary>
+		protected void RaiseRequestVerificationFocusEvent()
+		{
+			OnRequestVerificationFocus(EventArgs.Empty);
+		}
+		/// <summary>
 		/// Raises the <see cref="E:PropertyChanged"/> event.
 		/// </summary>
 		/// <param name="e">The <see cref="System.ComponentModel.PropertyChangedEventArgs"/> instance containing the event data.</param>
@@ -828,6 +839,17 @@ namespace TaskDialogInterop
 			if (RequestClose != null)
 			{
 				RequestClose(this, e);
+			}
+		}
+		/// <summary>
+		/// Raises the <see cref="E:RequestVerificationFocus"/> event.
+		/// </summary>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		protected void OnRequestVerificationFocus(EventArgs e)
+		{
+			if (RequestVerificationFocus != null)
+			{
+				RequestVerificationFocus(this, e);
 			}
 		}
 		/// <summary>
@@ -1026,6 +1048,18 @@ namespace TaskDialogInterop
 			}
 
 			return false;
+		}
+		void IActiveTaskDialog.ClickVerification(bool checkedState, bool setKeyboardFocusToCheckBox)
+		{
+			if (_verificationChecked != checkedState)
+			{
+				_verificationChecked = checkedState;
+
+				RaisePropertyChangedEvent("VerificationChecked");
+			}
+
+			if (setKeyboardFocusToCheckBox)
+				RaiseRequestVerificationFocusEvent();
 		}
 		void IActiveTaskDialog.SetButtonEnabledState(int buttonId, bool enabled)
 		{

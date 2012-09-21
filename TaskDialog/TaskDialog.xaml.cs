@@ -46,6 +46,7 @@ namespace TaskDialogInterop
 			{
 				ViewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(ViewModel_PropertyChanged);
 				ViewModel.RequestClose +=new EventHandler(ViewModel_RequestClose);
+				ViewModel.RequestVerificationFocus += new EventHandler(ViewModel_RequestVerificationFocus);
 
 				ConvertToHyperlinkedText(ContentText, ViewModel.Content);
 				ConvertToHyperlinkedText(ContentExpandedInfo, ViewModel.ContentExpandedInfo);
@@ -156,6 +157,10 @@ namespace TaskDialogInterop
 		private void ViewModel_RequestClose(object sender, EventArgs e)
 		{
 			this.Close();
+		}
+		private void ViewModel_RequestVerificationFocus(object sender, EventArgs e)
+		{
+			VerificationCheckBox.Focus();
 		}
 		private void NormalButton_Click(object sender, RoutedEventArgs e)
 		{

@@ -345,6 +345,12 @@ namespace TaskDialogInterop
 		/// <returns>If the function succeeds the return value is true.</returns>
 		bool ClickRadioButton(int index);
 		/// <summary>
+		/// Check or uncheck the verification checkbox in the TaskDialog. 
+		/// </summary>
+		/// <param name="checkedState">The checked state to set the verification checkbox.</param>
+		/// <param name="setKeyboardFocusToCheckBox"><c>true</c> to set the keyboard focus to the checkbox; <c>false</c> to leave focus unchanged.</param>
+		void ClickVerification(bool checkedState, bool setKeyboardFocusToCheckBox);
+		/// <summary>
 		/// Sets the state of a button to enabled or disabled.
 		/// </summary>
 		/// <param name="buttonId">The id of the button to set.</param>

@@ -124,6 +124,21 @@ namespace TaskDialogInterop
 		}
 
 		/// <summary>
+		/// Check or uncheck the verification checkbox in the TaskDialog. 
+		/// </summary>
+		/// <param name="checkedState">The checked state to set the verification checkbox.</param>
+		/// <param name="setKeyboardFocusToCheckBox">True to set the keyboard focus to the checkbox, and fasle otherwise.</param>
+		public void ClickVerification(bool checkedState, bool setKeyboardFocusToCheckBox)
+		{
+			// TDM_CLICK_VERIFICATION = WM_USER+113, // wParam = 0 (unchecked), 1 (checked), lParam = 1 (set key focus)
+			VistaUnsafeNativeMethods.SendMessage(
+				this.handle,
+				(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_CLICK_VERIFICATION,
+				(checkedState ? new IntPtr(1) : IntPtr.Zero),
+				(setKeyboardFocusToCheckBox ? new IntPtr(1) : IntPtr.Zero));
+		}
+
+		/// <summary>
 		/// Enable or disable a button in the TaskDialog. 
 		/// The passed buttonID is the ButtonID set on a TaskDialogButton set on TaskDialog.Buttons
 		/// or a common button ID.
@@ -403,21 +418,6 @@ namespace TaskDialogInterop
 				(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_SET_ELEMENT_TEXT,
 				(IntPtr)VistaUnsafeNativeMethods.TASKDIALOG_ELEMENTS.TDE_MAIN_INSTRUCTION,
 				mainInstruction) != IntPtr.Zero;
-		}
-
-		/// <summary>
-		/// Check or uncheck the verification checkbox in the TaskDialog. 
-		/// </summary>
-		/// <param name="checkedState">The checked state to set the verification checkbox.</param>
-		/// <param name="setKeyboardFocusToCheckBox">True to set the keyboard focus to the checkbox, and fasle otherwise.</param>
-		public void ClickVerification(bool checkedState, bool setKeyboardFocusToCheckBox)
-		{
-			// TDM_CLICK_VERIFICATION = WM_USER+113, // wParam = 0 (unchecked), 1 (checked), lParam = 1 (set key focus)
-			VistaUnsafeNativeMethods.SendMessage(
-				this.handle,
-				(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_CLICK_VERIFICATION,
-				(checkedState ? new IntPtr(1) : IntPtr.Zero),
-				(setKeyboardFocusToCheckBox ? new IntPtr(1) : IntPtr.Zero));
 		}
 
 		/// <summary>
