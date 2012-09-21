@@ -617,6 +617,7 @@ namespace TaskDialogInterop
 							args.Config = this.options;
 							args.Notification = VistaTaskDialogNotification.ButtonClicked;
 							args.ButtonId = i;
+							args.ButtonIndex = i % 500;
 
 							OnCallback(args);
 
@@ -665,6 +666,7 @@ namespace TaskDialogInterop
 							args.Config = this.options;
 							args.Notification = VistaTaskDialogNotification.RadioButtonClicked;
 							args.ButtonId = i;
+							args.ButtonIndex = i % 500;
 
 							OnCallback(args);
 						});
@@ -952,6 +954,55 @@ namespace TaskDialogInterop
 			else if (CommandLinks.Any(cl => cl.ID == buttonId))
 			{
 				CommandLinkCommand.Execute(buttonId);
+				return true;
+			}
+			else if (RadioButtons.Any(rb => rb.ID == buttonId))
+			{
+				RadioButtonCommand.Execute(buttonId);
+				return true;
+			}
+
+			return false;
+		}
+		bool IActiveTaskDialog.ClickCommandButton(int index)
+		{
+			// Avoid out-of-range exceptions
+			if (CommandLinks.Count > index)
+			{
+				CommandLinkCommand.Execute(CommandLinks[index].ID);
+				return true;
+			}
+
+			return false;
+		}
+		bool IActiveTaskDialog.ClickCommonButton(int index)
+		{
+			// Avoid out-of-range exceptions
+			if (NormalButtons.Count > index)
+			{
+				NormalButtonCommand.Execute(NormalButtons[index].ID);
+				return true;
+			}
+
+			return false;
+		}
+		bool IActiveTaskDialog.ClickCustomButton(int index)
+		{
+			// Avoid out-of-range exceptions
+			if (NormalButtons.Count > index)
+			{
+				NormalButtonCommand.Execute(NormalButtons[index].ID);
+				return true;
+			}
+
+			return false;
+		}
+		bool IActiveTaskDialog.ClickRadioButton(int index)
+		{
+			// Avoid out-of-range exceptions
+			if (RadioButtons.Count > index)
+			{
+				RadioButtonCommand.Execute(RadioButtons[index].ID);
 				return true;
 			}
 

@@ -9,7 +9,15 @@ namespace TaskDialogInterop
 	/// <param name="dialog">The active dialog. Use this to manipulate various properties of the dialog as it is displayed.</param>
 	/// <param name="args">The notification arguments including the type of notification and information for the notification.</param>
 	/// <param name="callbackData">The value set on TaskDialog.CallbackData</param>
-	/// <returns>Return value meaning varies depending on the Notification member of args.</returns>
+	/// <returns>
+	/// <para>Return value meaning varies depending on the Notification member of args.
+	/// In all cases, returning <c>false</c> ensures default behavior.
+	/// You can override certain behaviors by returning <c>true</c> in a few cases.</para>
+	/// <para>For ButtonClicked: <c>true</c> will keep the dialog open, <c>false</c> will cause the dialog to close and return as normal.</para>
+	/// <para>For HyperlinkClicked: <c>true</c> will prevent ShellExecute being called on the hyperlink, <c>false</c> will allow ShellExecute to be called as normal.</para>
+	/// <para>For Timer: <c>true</c> will reset the timer tick count; otherwise, <c>false</c> will do nothing.</para>
+	/// <para>For all other notifications, the return value is ignored.</para>
+	/// </returns>
 	public delegate bool TaskDialogCallback(IActiveTaskDialog dialog, VistaTaskDialogNotificationArgs args, object callbackData);
 
 	/// <summary>
@@ -255,6 +263,30 @@ namespace TaskDialogInterop
 		/// <param name="buttonId">Indicates the button ID to be selected.</param>
 		/// <returns>If the function succeeds the return value is true.</returns>
 		bool ClickButton(int buttonId);
+		/// <summary>
+		/// Simulate the action of a command link button click in the TaskDialog.
+		/// </summary>
+		/// <param name="index">The zero-based index into the button set.</param>
+		/// <returns>If the function succeeds the return value is true.</returns>
+		bool ClickCommandButton(int index);
+		/// <summary>
+		/// Simulate the action of a common button click in the TaskDialog.
+		/// </summary>
+		/// <param name="index">The zero-based index into the button set.</param>
+		/// <returns>If the function succeeds the return value is true.</returns>
+		bool ClickCommonButton(int index);
+		/// <summary>
+		/// Simulate the action of a custom button click in the TaskDialog.
+		/// </summary>
+		/// <param name="index">The zero-based index into the button set.</param>
+		/// <returns>If the function succeeds the return value is true.</returns>
+		bool ClickCustomButton(int index);
+		/// <summary>
+		/// Simulate the action of a radio button click in the TaskDialog.
+		/// </summary>
+		/// <param name="index">The zero-based index into the button set.</param>
+		/// <returns>If the function succeeds the return value is true.</returns>
+		bool ClickRadioButton(int index);
 		/// <summary>
 		/// Used to indicate whether the hosted progress bar should be displayed in marquee mode or not.
 		/// </summary>

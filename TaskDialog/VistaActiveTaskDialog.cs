@@ -59,12 +59,68 @@ namespace TaskDialogInterop
 		/// <returns>If the function succeeds the return value is true.</returns>
 		public bool ClickButton(int buttonId)
 		{
-			// TDM_CLICK_BUTTON                    = WM_USER+102, // wParam = Button ID
-			return VistaUnsafeNativeMethods.SendMessage(
-				this.handle,
-				(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_CLICK_BUTTON,
-				(IntPtr)buttonId,
-				IntPtr.Zero) != IntPtr.Zero;
+			if (buttonId >= TaskDialog.RadioButtonIDOffset && buttonId < TaskDialog.CommandButtonIDOffset)
+			{
+				// TDM_CLICK_RADIO_BUTTON = WM_USER+110, // wParam = Radio Button ID
+				return VistaUnsafeNativeMethods.SendMessage(
+					this.handle,
+					(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_CLICK_RADIO_BUTTON,
+					(IntPtr)buttonId,
+					IntPtr.Zero) != IntPtr.Zero;
+			}
+			else
+			{
+				// TDM_CLICK_BUTTON = WM_USER+102, // wParam = Button ID
+				return VistaUnsafeNativeMethods.SendMessage(
+					this.handle,
+					(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_CLICK_BUTTON,
+					(IntPtr)buttonId,
+					IntPtr.Zero) != IntPtr.Zero;
+			}
+		}
+		/// <summary>
+		/// Simulate the action of a command link button click in the TaskDialog.
+		/// </summary>
+		/// <param name="index">The zero-based index into the button set.</param>
+		/// <returns>
+		/// If the function succeeds the return value is true.
+		/// </returns>
+		public bool ClickCommandButton(int index)
+		{
+			return ClickButton(TaskDialog.GetButtonIdForCommandButton(index));
+		}
+		/// <summary>
+		/// Simulate the action of a common button click in the TaskDialog.
+		/// </summary>
+		/// <param name="index">The zero-based index into the button set.</param>
+		/// <returns>
+		/// If the function succeeds the return value is true.
+		/// </returns>
+		public bool ClickCommonButton(int index)
+		{
+			return ClickButton(index);
+		}
+		/// <summary>
+		/// Simulate the action of a custom button click in the TaskDialog.
+		/// </summary>
+		/// <param name="index">The zero-based index into the button set.</param>
+		/// <returns>
+		/// If the function succeeds the return value is true.
+		/// </returns>
+		public bool ClickCustomButton(int index)
+		{
+			return ClickButton(TaskDialog.GetButtonIdForCustomButton(index));
+		}
+		/// <summary>
+		/// Simulate the action of a radio button click in the TaskDialog.
+		/// </summary>
+		/// <param name="index">The zero-based index into the button set.</param>
+		/// <returns>
+		/// If the function succeeds the return value is true.
+		/// </returns>
+		public bool ClickRadioButton(int index)
+		{
+			return ClickButton(TaskDialog.GetButtonIdForRadioButton(index));
 		}
 
 		/// <summary>
@@ -227,21 +283,6 @@ namespace TaskDialogInterop
 				(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_SET_ELEMENT_TEXT,
 				(IntPtr)VistaUnsafeNativeMethods.TASKDIALOG_ELEMENTS.TDE_MAIN_INSTRUCTION,
 				mainInstruction) != IntPtr.Zero;
-		}
-
-		/// <summary>
-		/// Simulate the action of a radio button click in the TaskDialog. 
-		/// The passed buttonID is the ButtonID set on a TaskDialogButton set on TaskDialog.RadioButtons.
-		/// </summary>
-		/// <param name="buttonId">Indicates the button ID to be selected.</param>
-		public void ClickRadioButton(int buttonId)
-		{
-			// TDM_CLICK_RADIO_BUTTON = WM_USER+110, // wParam = Radio Button ID
-			VistaUnsafeNativeMethods.SendMessage(
-				this.handle,
-				(uint)VistaUnsafeNativeMethods.TASKDIALOG_MESSAGES.TDM_CLICK_RADIO_BUTTON,
-				(IntPtr)buttonId,
-				IntPtr.Zero);
 		}
 
 		/// <summary>

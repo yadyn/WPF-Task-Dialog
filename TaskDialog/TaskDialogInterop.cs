@@ -245,6 +245,10 @@ namespace TaskDialogInterop
 		/// </summary>
 		private int buttonId;
 		/// <summary>
+		/// The button index if the notification is about a button.
+		/// </summary>
+		private int buttonIndex;
+		/// <summary>
 		/// The HREF string of the hyperlink the notification is about.
 		/// </summary>
 		private string hyperlink;
@@ -280,6 +284,14 @@ namespace TaskDialogInterop
 		{
 			get { return this.buttonId; }
 			set { this.buttonId = value; }
+		}
+		/// <summary>
+		/// The button index if the notification is about a button.
+		/// </summary>
+		public int ButtonIndex
+		{
+			get { return this.buttonIndex; }
+			set { this.buttonIndex = value; }
 		}
 		/// <summary>
 		/// The HREF string of the hyperlink the notification is about.
@@ -1231,6 +1243,7 @@ namespace TaskDialogInterop
 					case VistaTaskDialogNotification.ButtonClicked:
 					case VistaTaskDialogNotification.RadioButtonClicked:
 						args.ButtonId = (int)wparam;
+						args.ButtonIndex = (int)wparam % 500;
 						break;
 					case VistaTaskDialogNotification.HyperlinkClicked:
 						args.Hyperlink = Marshal.PtrToStringUni(lparam);

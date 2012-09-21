@@ -319,7 +319,7 @@ namespace TaskDialogInterop
 		/// When creating the config options for the dialog and specifying command buttons,
 		/// typically you pass in an array of button label strings. The index specifies which
 		/// button to get an id for. If you passed in Save, Don't Save, and Cancel, then index 2
-		/// specifies the Cancel radio button.
+		/// specifies the Cancel button.
 		/// </remarks>
 		public static int GetButtonIdForCommandButton(int index)
 		{
