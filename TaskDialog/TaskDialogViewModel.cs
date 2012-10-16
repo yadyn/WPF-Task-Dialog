@@ -612,7 +612,10 @@ namespace TaskDialogInterop
 							args.Config = this.options;
 							args.Notification = VistaTaskDialogNotification.ButtonClicked;
 							args.ButtonId = i;
-							args.ButtonIndex = i % 500;
+							if (i > 100)
+								args.ButtonIndex = i % 500;
+							else
+								args.ButtonIndex = TaskDialog.GetButtonIndexForCommonButton(args.Config.CommonButtons, args.ButtonId);
 
 							OnCallback(args);
 
@@ -773,7 +776,10 @@ namespace TaskDialogInterop
 				args.Config = this.options;
 				args.Notification = VistaTaskDialogNotification.ButtonClicked;
 				args.ButtonId = (int)TaskDialogSimpleResult.Cancel;
-				args.ButtonIndex = (int)TaskDialogSimpleResult.Cancel;
+				args.ButtonIndex = TaskDialog.GetButtonIndexForCommonButton(options.CommonButtons, args.ButtonId);
+				//args.ButtonIndex = -1;
+				// See TaskDialogInterop.cs PrivateCallback method for why
+				//the above line is commented out
 
 				OnCallback(args);
 			}

@@ -253,6 +253,69 @@ namespace TaskDialogInterop
 		}
 
 		/// <summary>
+		/// Gets the zero-based index for a common button.
+		/// </summary>
+		/// <param name="commonButtons">The common button set to use.</param>
+		/// <param name="buttonId">The button's id.</param>
+		/// <returns>An integer representing the button index, or -1 if not found.</returns>
+		/// <remarks>
+		/// When Alt+F4, Esc, and other non-button close commands are issued, the dialog
+		/// will simulate a Cancel button click. In this case, -1 for index and a buttonid
+		/// of Cancel will let you know how the user closed the dialog.
+		/// </remarks>
+		public static int GetButtonIndexForCommonButton(TaskDialogCommonButtons commonButtons, int buttonId)
+		{
+			int index = -1;
+
+			switch (commonButtons)
+			{
+				default:
+				case TaskDialogCommonButtons.None:
+					index = -1;
+					break;
+				case TaskDialogCommonButtons.Close:
+					index = 0;
+					break;
+				case TaskDialogCommonButtons.OKCancel:
+					if (buttonId == (int)TaskDialogSimpleResult.Ok
+						|| buttonId == (int)VistaTaskDialogCommonButtons.OK)
+						index = 0;
+					else if (buttonId == (int)TaskDialogSimpleResult.Cancel
+						|| buttonId == (int)VistaTaskDialogCommonButtons.Cancel)
+						index = 1;
+					break;
+				case TaskDialogCommonButtons.RetryCancel:
+					if (buttonId == (int)TaskDialogSimpleResult.Retry
+						|| buttonId == (int)VistaTaskDialogCommonButtons.Retry)
+						index = 0;
+					else if (buttonId == (int)TaskDialogSimpleResult.Cancel
+						|| buttonId == (int)VistaTaskDialogCommonButtons.Cancel)
+						index = 1;
+					break;
+				case TaskDialogCommonButtons.YesNo:
+					if (buttonId == (int)TaskDialogSimpleResult.Yes
+						|| buttonId == (int)VistaTaskDialogCommonButtons.Yes)
+						index = 0;
+					else if (buttonId == (int)TaskDialogSimpleResult.No
+						|| buttonId == (int)VistaTaskDialogCommonButtons.No)
+						index = 1;
+					break;
+				case TaskDialogCommonButtons.YesNoCancel:
+					if (buttonId == (int)TaskDialogSimpleResult.Yes
+						|| buttonId == (int)VistaTaskDialogCommonButtons.Yes)
+						index = 0;
+					else if (buttonId == (int)TaskDialogSimpleResult.No
+						|| buttonId == (int)VistaTaskDialogCommonButtons.No)
+						index = 1;
+					else if (buttonId == (int)TaskDialogSimpleResult.Cancel
+						|| buttonId == (int)VistaTaskDialogCommonButtons.Cancel)
+						index = 2;
+					break;
+			}
+
+			return index;
+		}
+		/// <summary>
 		/// Gets the buttonId for a common button. If the common button set includes more than
 		/// one button, the index number specifies which.
 		/// </summary>

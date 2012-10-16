@@ -1243,7 +1243,29 @@ namespace TaskDialogInterop
 					case VistaTaskDialogNotification.ButtonClicked:
 					case VistaTaskDialogNotification.RadioButtonClicked:
 						args.ButtonId = (int)wparam;
-						args.ButtonIndex = (int)wparam % 500;
+
+						// The index, ideally, should be -1 or something whenever the
+						//dialog was closed by non-common-button means such as Alt+F4
+						//or using the Close action on the System menu or the red X
+						
+						// I can, with little trouble, detect this for the emulated dialog,
+						//however the native dialog gives me no indication and in fact
+						//simply reports a buttonId of 2 (Cancel) regardless of whether
+						//the actual Cancel button was used or one of the above alt methods.
+
+						// If I could hook into the native dialogs messages and detect:
+						// WM_SYSCOMMAND with WParam of SC_CLOSE
+						// ...then I could tell for sure, but I'm not sure how to listen
+						//in on its messages. My Win32-fu not good enough.
+
+						// For now, I will have the emulated dialog simply pretend like it
+						//cannot tell either until I can figure out a way to determine it
+						//with the native dialog, too.
+
+						if (args.ButtonId > 100)
+							args.ButtonIndex = args.ButtonId % 500;
+						else
+							args.ButtonIndex = TaskDialog.GetButtonIndexForCommonButton(args.Config.CommonButtons, args.ButtonId);
 						break;
 					case VistaTaskDialogNotification.HyperlinkClicked:
 						args.Hyperlink = Marshal.PtrToStringUni(lparam);
