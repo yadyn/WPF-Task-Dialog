@@ -642,15 +642,16 @@ namespace TaskDialogInterop
 
 			diagResult = vtd.Show((vtd.CanBeMinimized ? null : options.Owner), out verificationChecked, out radioButtonResult);
 
+			if (radioButtonResult >= RadioButtonIDOffset)
+			{
+				simpResult = (TaskDialogSimpleResult) diagResult;
+				radioButtonResult -= RadioButtonIDOffset;
+			}
+
 			if (diagResult >= CommandButtonIDOffset)
 			{
 				simpResult = TaskDialogSimpleResult.Command;
 				commandButtonResult = diagResult - CommandButtonIDOffset;
-			}
-			else if (radioButtonResult >= RadioButtonIDOffset)
-			{
-				simpResult = (TaskDialogSimpleResult)diagResult;
-				radioButtonResult -= RadioButtonIDOffset;
 			}
 			else if (diagResult >= CustomButtonIDOffset)
 			{

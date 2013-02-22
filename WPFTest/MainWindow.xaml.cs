@@ -151,6 +151,7 @@ namespace WPFTest
 			config.Content = "The content text for the task dialog is shown here and the text will automatically wrap as needed.";
 			config.ExpandedInfo = "Any expanded content text for the task dialog is shown here and the text will automatically wrap as needed.";
 			config.RadioButtons = new string[] { "Radio Option 1", "Radio Option 2", "Radio Option 3", "Radio Option 4", "Radio Option 5" };
+			//config.CustomButtons = new string[] { "Button 1", "Button 2", "Button 3" };
 			config.MainIcon = VistaTaskDialogIcon.Information;
 
 			TaskDialogResult res = TaskDialog.Show(config);
