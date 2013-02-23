@@ -84,6 +84,111 @@ namespace TaskDialogInterop
 		}
 
 		/// <summary>
+		/// Displays a task dialog with the given configuration options.
+		/// </summary>
+		/// <param name="allowDialogCancellation">Indicates that the dialog should be able to be closed using Alt-F4,
+		/// Escape, and the title bar's close button even if no cancel button
+		/// is specified the CommonButtons.</param>
+		/// <param name="callback">A callback that receives messages from the Task Dialog when
+		/// various events occur.</param>
+		/// <param name="callbackData">Reference object that is passed to the callback.</param>
+		/// <param name="commandButtons">Command link buttons.</param>
+		/// <param name="commonButtons">Standard buttons.</param>
+		/// <param name="content">Supplemental text that expands on the principal text.</param>
+		/// <param name="customButtons">Buttons that are not from the set of standard buttons. Use an
+		/// ampersand to denote an access key.</param>
+		/// <param name="customFooterIcon">A small 16x16 icon that signifies the purpose of the footer text,
+		/// using a custom Icon resource. If defined <see cref="FooterIcon"/>
+		/// will be ignored.</param>
+		/// <param name="customMainIcon">A large 32x32 icon that signifies the purpose of the dialog, using
+		/// a custom Icon resource. If defined <see cref="MainIcon"/> will be
+		/// ignored.</param>
+		/// <param name="defaultButtonIndex">Zero-based index of the button to have focus by default.</param>
+		/// <param name="enableCallbackTimer">Indicates that the task dialog's callback is to be called
+		/// approximately every 200 milliseconds.</param>
+		/// <param name="expandedByDefault">Indicates that the expanded info should be displayed when the
+		/// dialog is initially displayed.</param>
+		/// <param name="expandedInfo">Extra text that will be hidden by default.</param>
+		/// <param name="expandToFooter">Indicates that the expanded info should be displayed at the bottom
+		/// of the dialog's footer area instead of immediately after the
+		/// dialog's content.</param>
+		/// <param name="footerIcon">A small 16x16 icon that signifies the purpose of the footer text,
+		/// using one of the built-in system icons.</param>
+		/// <param name="footerText">Additional footer text.</param>
+		/// <param name="mainIcon">A large 32x32 icon that signifies the purpose of the dialog, using
+		/// one of the built-in system icons.</param>
+		/// <param name="mainInstruction">Principal text.</param>
+		/// <param name="owner">The owner window of the task dialog box.</param>
+		/// <param name="radioButtons">Application-defined options for the user.</param>
+		/// <param name="showMarqueeProgressBar">Indicates that an Marquee Progress Bar is to be displayed.</param>
+		/// <param name="showProgressBar">Indicates that a Progress Bar is to be displayed.</param>
+		/// <param name="title">Caption of the window.</param>
+		/// <param name="verificationByDefault">Indicates that the verification checkbox in the dialog is checked
+		/// when the dialog is initially displayed.</param>
+		/// <param name="verificationText">Text accompanied by a checkbox, typically for user feedback such as
+		/// Do-not-show-this-dialog-again options.</param>
+		/// <returns>
+		/// A <see cref="T:TaskDialogInterop.TaskDialogResult"/> value that specifies
+		/// which button is clicked by the user.
+		/// </returns>
+		public static TaskDialogResult Show(
+			bool allowDialogCancellation = false,
+			TaskDialogCallback callback = null,
+			object callbackData = null,
+			string[] commandButtons = null,
+			TaskDialogCommonButtons commonButtons = TaskDialogCommonButtons.None,
+			string content = null,
+			string[] customButtons = null,
+			System.Drawing.Icon customFooterIcon = null,
+			System.Drawing.Icon customMainIcon = null,
+			int? defaultButtonIndex = null,
+			bool enableCallbackTimer = false,
+			bool expandedByDefault = false,
+			string expandedInfo = null,
+			bool expandToFooter = false,
+			VistaTaskDialogIcon footerIcon = VistaTaskDialogIcon.None,
+			string footerText = null,
+			VistaTaskDialogIcon mainIcon = VistaTaskDialogIcon.None,
+			string mainInstruction = null,
+			Window owner = null,
+			string[] radioButtons = null,
+			bool showMarqueeProgressBar = false,
+			bool showProgressBar = false,
+			string title = null,
+			bool verificationByDefault = false,
+			string verificationText = null)
+		{
+			TaskDialogOptions options = new TaskDialogOptions();
+			options.AllowDialogCancellation = allowDialogCancellation;
+			options.Callback = callback;
+			options.CallbackData = callbackData;
+			options.CommandButtons = commandButtons;
+			options.CommonButtons = commonButtons;
+			options.Content = content;
+			options.CustomButtons = customButtons;
+			options.CustomFooterIcon = customFooterIcon;
+			options.CustomMainIcon = customMainIcon;
+			options.DefaultButtonIndex = defaultButtonIndex;
+			options.EnableCallbackTimer = enableCallbackTimer;
+			options.ExpandedByDefault = expandedByDefault;
+			options.ExpandedInfo = expandedInfo;
+			options.ExpandToFooter = expandToFooter;
+			options.FooterIcon = footerIcon;
+			options.FooterText = footerText;
+			options.MainIcon = mainIcon;
+			options.MainInstruction = mainInstruction;
+			options.Owner = owner;
+			options.RadioButtons = radioButtons;
+			options.ShowMarqueeProgressBar = showMarqueeProgressBar;
+			options.ShowProgressBar = showProgressBar;
+			options.Title = title;
+			options.VerificationByDefault = verificationByDefault;
+			options.VerificationText = verificationText;
+
+			return TaskDialog.Show(options);
+		}
+
+		/// <summary>
 		/// Displays a task dialog that has a message and that returns a result.
 		/// </summary>
 		/// <param name="owner">
