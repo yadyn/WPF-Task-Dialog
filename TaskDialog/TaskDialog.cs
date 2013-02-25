@@ -53,6 +53,11 @@ namespace TaskDialogInterop
 		{
 			TaskDialogResult result = null;
 
+			if (options.CommandButtons != null && options.CustomButtons != null)
+			{
+				throw new InvalidOperationException("CommandButtons and CustomButtons cannot be used at the same time. Replace the custom buttons with command links or use CommonButtons instead.");
+			}
+			
 			// Make a copy since we'll let Showing event possibly modify them
 			TaskDialogOptions configOptions = options;
 
