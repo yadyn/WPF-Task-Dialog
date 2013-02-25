@@ -20,6 +20,69 @@ namespace TaskDialogInterop
 		internal const int CustomButtonIDOffset = 500;
 
 		/// <summary>
+		/// Gets or sets the localized OK button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedOK { get; set; }
+		/// <summary>
+		/// Gets or sets the localized Cancel button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedCancel { get; set; }
+		/// <summary>
+		/// Gets or sets the localized Yes button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedYes { get; set; }
+		/// <summary>
+		/// Gets or sets the localized No button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedNo { get; set; }
+		/// <summary>
+		/// Gets or sets the localized Retry button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedRetry { get; set; }
+		/// <summary>
+		/// Gets or sets the localized Close button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedClose { get; set; }
+		/// <summary>
+		/// Gets or sets the localized Show Details button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedShowDetails { get; set; }
+		/// <summary>
+		/// Gets or sets the localized Hide Details button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedHideDetails { get; set; }
+
+		internal static string GetLocalizedButtonText(VistaTaskDialogCommonButtons commonButton)
+		{
+			switch (commonButton)
+			{
+				case VistaTaskDialogCommonButtons.OK:
+					return LocalizedOK ?? "_" + commonButton.ToString();
+				case VistaTaskDialogCommonButtons.Cancel:
+					return LocalizedCancel ?? "_" + commonButton.ToString();
+				case VistaTaskDialogCommonButtons.Yes:
+					return LocalizedYes ?? "_" + commonButton.ToString();
+				case VistaTaskDialogCommonButtons.No:
+					return LocalizedNo ?? "_" + commonButton.ToString();
+				case VistaTaskDialogCommonButtons.Retry:
+					return LocalizedRetry ?? "_" + commonButton.ToString();
+				case VistaTaskDialogCommonButtons.Close:
+					return LocalizedClose ?? "_" + commonButton.ToString();
+			}
+			return commonButton.ToString();
+		}
+
+		internal static string GetLocalizedShowDetailsText()
+		{
+			return LocalizedShowDetails ?? "Show details";
+		}
+
+		internal static string GetLocalizedHideDetailsText()
+		{
+			return LocalizedShowDetails ?? "Hide details";
+		}
+
+		/// <summary>
 		/// Forces the WPF-based TaskDialog window instead of using native calls.
 		/// </summary>
 		public static bool ForceEmulationMode { get; set; }
@@ -421,6 +484,9 @@ namespace TaskDialogInterop
 						|| buttonId == (int)VistaTaskDialogCommonButtons.Cancel)
 						index = 2;
 					break;
+				case TaskDialogCommonButtons.Cancel:
+					index = 0;
+					break;
 			}
 
 			return index;
@@ -441,6 +507,7 @@ namespace TaskDialogInterop
 				default:
 				case TaskDialogCommonButtons.None:
 				case TaskDialogCommonButtons.Close:
+				case TaskDialogCommonButtons.Cancel:
 					// We'll set to 0 even for Close, as it doesn't matter that we
 					//get the value right since there is only one button anyway
 					buttonId = 0;
@@ -554,6 +621,9 @@ namespace TaskDialogInterop
 				case TaskDialogCommonButtons.YesNoCancel:
 					vtdCommonButtons = VistaTaskDialogCommonButtons.Yes | VistaTaskDialogCommonButtons.No | VistaTaskDialogCommonButtons.Cancel;
 					break;
+				case TaskDialogCommonButtons.Cancel:
+					vtdCommonButtons = VistaTaskDialogCommonButtons.Cancel;
+					break;
 			}
 
 			return vtdCommonButtons;
@@ -588,7 +658,7 @@ namespace TaskDialogInterop
 					break;
 			}
 
-			return new TaskDialogButtonData(id, "_" + commonButton.ToString(), command, isDefault, isCancel);
+			return new TaskDialogButtonData(id, GetLocalizedButtonText(commonButton), command, isDefault, isCancel);
 		}
 
 		/// <summary>
@@ -721,6 +791,7 @@ namespace TaskDialogInterop
 				(options.AllowDialogCancellation
 				|| hasCustomCancel
 				|| options.CommonButtons == TaskDialogCommonButtons.Close
+				|| options.CommonButtons == TaskDialogCommonButtons.Cancel
 				|| options.CommonButtons == TaskDialogCommonButtons.OKCancel
 				|| options.CommonButtons == TaskDialogCommonButtons.YesNoCancel);
 			vtd.CallbackTimer = options.EnableCallbackTimer;
@@ -736,8 +807,8 @@ namespace TaskDialogInterop
 			vtd.UseCommandLinksNoIcon = false;
 			vtd.VerificationText = options.VerificationText;
 			vtd.VerificationFlagChecked = options.VerificationByDefault;
-			vtd.ExpandedControlText = "Hide details";
-			vtd.CollapsedControlText = "Show details";
+			vtd.ExpandedControlText = LocalizedHideDetails;
+			vtd.CollapsedControlText = GetLocalizedShowDetailsText();
 			vtd.Callback = options.Callback;
 			vtd.CallbackData = options.CallbackData;
 			vtd.Config = options;

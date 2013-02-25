@@ -49,7 +49,11 @@ namespace TaskDialogInterop
 		/// <summary>
 		/// The message box displays Retry and Cancel buttons.
 		/// </summary>
-		RetryCancel = 5
+		RetryCancel = 5,
+		/// <summary>
+		/// The message box displays a Cancel button.
+		/// </summary>
+		Cancel = 6
 	}
 	/// <summary>
 	/// Defines configuration options for showing a task dialog.

@@ -466,7 +466,7 @@ namespace TaskDialogInterop
 						_normalButtons = new List<TaskDialogButtonData>();
 						_normalButtons.Add(new TaskDialogButtonData(
 							(int)VistaTaskDialogCommonButtons.OK,
-							VistaTaskDialogCommonButtons.OK.ToString(),
+							TaskDialog.GetLocalizedButtonText(VistaTaskDialogCommonButtons.OK),
 							NormalButtonCommand,
 							true, true));
 					}
@@ -706,6 +706,15 @@ namespace TaskDialogInterop
 				return _commandHyperlink;
 			}
 		}
+
+		/// <summary>
+		/// Gets the localized Show Details button text.
+		/// </summary>
+		public string LocalizedShowDetails { get { return TaskDialog.GetLocalizedShowDetailsText(); } }
+		/// <summary>
+		/// Gets the localized Hide Details button text.
+		/// </summary>
+		public string LocalizedHideDetails { get { return TaskDialog.GetLocalizedHideDetailsText(); } }
 
 		/// <summary>
 		/// Occurs when a property value changes.
