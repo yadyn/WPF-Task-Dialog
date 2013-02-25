@@ -90,7 +90,8 @@
 								  Margin="4,17,11,3"
 								  ItemsSource="{Binding CommandLinks}"
 								  ItemsPanel="{DynamicResource ItemsPanelTemplate}"
-								  ItemTemplate="{DynamicResource DataTemplate}">
+								  ItemTemplate="{DynamicResource DataTemplate}"
+								  Focusable="False">
 						<ItemsControl.Resources>
 							<ItemsPanelTemplate x:Key="ItemsPanelTemplate">
 								<StackPanel/>
@@ -104,7 +105,8 @@
 								  Margin="10,15,10,6"
 								  ItemsSource="{Binding RadioButtons}"
 								  ItemsPanel="{DynamicResource ItemsPanelTemplate}"
-								  ItemTemplate="{DynamicResource DataTemplate}">
+								  ItemTemplate="{DynamicResource DataTemplate}"
+								  Focusable="False">
 						<ItemsControl.Resources>
 							<ItemsPanelTemplate x:Key="ItemsPanelTemplate">
 								<StackPanel/>
@@ -148,7 +150,7 @@
 										   UseLayoutRounding="True"
 										   RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 									<TextBlock x:Name="ShowDetailsLabel"
-											   Text="Show details"
+											   Text="{Binding LocalizedShowDetails, Mode=OneWay}"
 											   Margin="8,0,0,0"
 											   HorizontalAlignment="Left" VerticalAlignment="Center"/>
 								</StackPanel>
@@ -169,10 +171,10 @@
 									</MultiTrigger>
 									<Trigger Property="IsChecked" Value="True">
 										<Setter TargetName="ShowDetailsArrow" Property="Source" Value="{DynamicResource ExpArrUp1}"/>
-										<Setter TargetName="ShowDetailsLabel" Property="Text" Value="Hide details"/>
+										<Setter TargetName="ShowDetailsLabel" Property="Text" Value="{Binding LocalizedHideDetails, Mode=OneWay}"/>
 									</Trigger>
 									<Trigger Property="IsChecked" Value="False">
-										<Setter TargetName="ShowDetailsLabel" Property="Text" Value="Show details"/>
+										<Setter TargetName="ShowDetailsLabel" Property="Text" Value="{Binding LocalizedShowDetails, Mode=OneWay}"/>
 									</Trigger>
 									<MultiTrigger>
 										<MultiTrigger.Conditions>
@@ -207,7 +209,8 @@
 				<ItemsControl x:Name="Buttons" Grid.Column="1"
 							  ItemsSource="{Binding NormalButtons}"
 							  ItemsPanel="{DynamicResource ButtonsItemsPanelTemplate}"
-							  ItemTemplate="{DynamicResource ButtonsDataTemplate}">
+							  ItemTemplate="{DynamicResource ButtonsDataTemplate}"
+							  Focusable="False">
 					<ItemsControl.Resources>
 						<ItemsPanelTemplate x:Key="ButtonsItemsPanelTemplate">
 							<WrapPanel Orientation="Horizontal" HorizontalAlignment="Right"/>

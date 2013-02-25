@@ -20,6 +20,69 @@ namespace TaskDialogInterop
 		internal const int CustomButtonIDOffset = 500;
 
 		/// <summary>
+		/// Gets or sets the localized OK button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedOK { get; set; }
+		/// <summary>
+		/// Gets or sets the localized Cancel button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedCancel { get; set; }
+		/// <summary>
+		/// Gets or sets the localized Yes button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedYes { get; set; }
+		/// <summary>
+		/// Gets or sets the localized No button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedNo { get; set; }
+		/// <summary>
+		/// Gets or sets the localized Retry button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedRetry { get; set; }
+		/// <summary>
+		/// Gets or sets the localized Close button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedClose { get; set; }
+		/// <summary>
+		/// Gets or sets the localized Show Details button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedShowDetails { get; set; }
+		/// <summary>
+		/// Gets or sets the localized Hide Details button text. Use the underline "_" for accelerator keys.
+		/// </summary>
+		public static string LocalizedHideDetails { get; set; }
+
+		internal static string GetLocalizedButtonText(VistaTaskDialogCommonButtons commonButton)
+		{
+			switch (commonButton)
+			{
+				case VistaTaskDialogCommonButtons.OK:
+					return LocalizedOK ?? "_" + commonButton.ToString();
+				case VistaTaskDialogCommonButtons.Cancel:
+					return LocalizedCancel ?? "_" + commonButton.ToString();
+				case VistaTaskDialogCommonButtons.Yes:
+					return LocalizedYes ?? "_" + commonButton.ToString();
+				case VistaTaskDialogCommonButtons.No:
+					return LocalizedNo ?? "_" + commonButton.ToString();
+				case VistaTaskDialogCommonButtons.Retry:
+					return LocalizedRetry ?? "_" + commonButton.ToString();
+				case VistaTaskDialogCommonButtons.Close:
+					return LocalizedClose ?? "_" + commonButton.ToString();
+			}
+			return commonButton.ToString();
+		}
+
+		internal static string GetLocalizedShowDetailsText()
+		{
+			return LocalizedShowDetails ?? "Show details";
+		}
+
+		internal static string GetLocalizedHideDetailsText()
+		{
+			return LocalizedShowDetails ?? "Hide details";
+		}
+
+		/// <summary>
 		/// Forces the WPF-based TaskDialog window instead of using native calls.
 		/// </summary>
 		public static bool ForceEmulationMode { get; set; }
@@ -53,6 +116,11 @@ namespace TaskDialogInterop
 		{
 			TaskDialogResult result = null;
 
+			if (options.CommandButtons != null && options.CustomButtons != null)
+			{
+				throw new InvalidOperationException("CommandButtons and CustomButtons cannot be used at the same time. Replace the custom buttons with command links or use CommonButtons instead.");
+			}
+			
 			// Make a copy since we'll let Showing event possibly modify them
 			TaskDialogOptions configOptions = options;
 
@@ -81,6 +149,111 @@ namespace TaskDialogInterop
 			OnClosed(new TaskDialogClosedEventArgs(result));
 
 			return result;
+		}
+
+		/// <summary>
+		/// Displays a task dialog with the given configuration options.
+		/// </summary>
+		/// <param name="allowDialogCancellation">Indicates that the dialog should be able to be closed using Alt-F4,
+		/// Escape, and the title bar's close button even if no cancel button
+		/// is specified the CommonButtons.</param>
+		/// <param name="callback">A callback that receives messages from the Task Dialog when
+		/// various events occur.</param>
+		/// <param name="callbackData">Reference object that is passed to the callback.</param>
+		/// <param name="commandButtons">Command link buttons.</param>
+		/// <param name="commonButtons">Standard buttons.</param>
+		/// <param name="content">Supplemental text that expands on the principal text.</param>
+		/// <param name="customButtons">Buttons that are not from the set of standard buttons. Use an
+		/// ampersand to denote an access key.</param>
+		/// <param name="customFooterIcon">A small 16x16 icon that signifies the purpose of the footer text,
+		/// using a custom Icon resource. If defined <see cref="FooterIcon"/>
+		/// will be ignored.</param>
+		/// <param name="customMainIcon">A large 32x32 icon that signifies the purpose of the dialog, using
+		/// a custom Icon resource. If defined <see cref="MainIcon"/> will be
+		/// ignored.</param>
+		/// <param name="defaultButtonIndex">Zero-based index of the button to have focus by default.</param>
+		/// <param name="enableCallbackTimer">Indicates that the task dialog's callback is to be called
+		/// approximately every 200 milliseconds.</param>
+		/// <param name="expandedByDefault">Indicates that the expanded info should be displayed when the
+		/// dialog is initially displayed.</param>
+		/// <param name="expandedInfo">Extra text that will be hidden by default.</param>
+		/// <param name="expandToFooter">Indicates that the expanded info should be displayed at the bottom
+		/// of the dialog's footer area instead of immediately after the
+		/// dialog's content.</param>
+		/// <param name="footerIcon">A small 16x16 icon that signifies the purpose of the footer text,
+		/// using one of the built-in system icons.</param>
+		/// <param name="footerText">Additional footer text.</param>
+		/// <param name="mainIcon">A large 32x32 icon that signifies the purpose of the dialog, using
+		/// one of the built-in system icons.</param>
+		/// <param name="mainInstruction">Principal text.</param>
+		/// <param name="owner">The owner window of the task dialog box.</param>
+		/// <param name="radioButtons">Application-defined options for the user.</param>
+		/// <param name="showMarqueeProgressBar">Indicates that an Marquee Progress Bar is to be displayed.</param>
+		/// <param name="showProgressBar">Indicates that a Progress Bar is to be displayed.</param>
+		/// <param name="title">Caption of the window.</param>
+		/// <param name="verificationByDefault">Indicates that the verification checkbox in the dialog is checked
+		/// when the dialog is initially displayed.</param>
+		/// <param name="verificationText">Text accompanied by a checkbox, typically for user feedback such as
+		/// Do-not-show-this-dialog-again options.</param>
+		/// <returns>
+		/// A <see cref="T:TaskDialogInterop.TaskDialogResult"/> value that specifies
+		/// which button is clicked by the user.
+		/// </returns>
+		public static TaskDialogResult Show(
+			bool allowDialogCancellation = false,
+			TaskDialogCallback callback = null,
+			object callbackData = null,
+			string[] commandButtons = null,
+			TaskDialogCommonButtons commonButtons = TaskDialogCommonButtons.None,
+			string content = null,
+			string[] customButtons = null,
+			System.Drawing.Icon customFooterIcon = null,
+			System.Drawing.Icon customMainIcon = null,
+			int? defaultButtonIndex = null,
+			bool enableCallbackTimer = false,
+			bool expandedByDefault = false,
+			string expandedInfo = null,
+			bool expandToFooter = false,
+			VistaTaskDialogIcon footerIcon = VistaTaskDialogIcon.None,
+			string footerText = null,
+			VistaTaskDialogIcon mainIcon = VistaTaskDialogIcon.None,
+			string mainInstruction = null,
+			Window owner = null,
+			string[] radioButtons = null,
+			bool showMarqueeProgressBar = false,
+			bool showProgressBar = false,
+			string title = null,
+			bool verificationByDefault = false,
+			string verificationText = null)
+		{
+			TaskDialogOptions options = new TaskDialogOptions();
+			options.AllowDialogCancellation = allowDialogCancellation;
+			options.Callback = callback;
+			options.CallbackData = callbackData;
+			options.CommandButtons = commandButtons;
+			options.CommonButtons = commonButtons;
+			options.Content = content;
+			options.CustomButtons = customButtons;
+			options.CustomFooterIcon = customFooterIcon;
+			options.CustomMainIcon = customMainIcon;
+			options.DefaultButtonIndex = defaultButtonIndex;
+			options.EnableCallbackTimer = enableCallbackTimer;
+			options.ExpandedByDefault = expandedByDefault;
+			options.ExpandedInfo = expandedInfo;
+			options.ExpandToFooter = expandToFooter;
+			options.FooterIcon = footerIcon;
+			options.FooterText = footerText;
+			options.MainIcon = mainIcon;
+			options.MainInstruction = mainInstruction;
+			options.Owner = owner;
+			options.RadioButtons = radioButtons;
+			options.ShowMarqueeProgressBar = showMarqueeProgressBar;
+			options.ShowProgressBar = showProgressBar;
+			options.Title = title;
+			options.VerificationByDefault = verificationByDefault;
+			options.VerificationText = verificationText;
+
+			return TaskDialog.Show(options);
 		}
 
 		/// <summary>
@@ -311,6 +484,9 @@ namespace TaskDialogInterop
 						|| buttonId == (int)VistaTaskDialogCommonButtons.Cancel)
 						index = 2;
 					break;
+				case TaskDialogCommonButtons.Cancel:
+					index = 0;
+					break;
 			}
 
 			return index;
@@ -331,6 +507,7 @@ namespace TaskDialogInterop
 				default:
 				case TaskDialogCommonButtons.None:
 				case TaskDialogCommonButtons.Close:
+				case TaskDialogCommonButtons.Cancel:
 					// We'll set to 0 even for Close, as it doesn't matter that we
 					//get the value right since there is only one button anyway
 					buttonId = 0;
@@ -444,6 +621,9 @@ namespace TaskDialogInterop
 				case TaskDialogCommonButtons.YesNoCancel:
 					vtdCommonButtons = VistaTaskDialogCommonButtons.Yes | VistaTaskDialogCommonButtons.No | VistaTaskDialogCommonButtons.Cancel;
 					break;
+				case TaskDialogCommonButtons.Cancel:
+					vtdCommonButtons = VistaTaskDialogCommonButtons.Cancel;
+					break;
 			}
 
 			return vtdCommonButtons;
@@ -478,7 +658,7 @@ namespace TaskDialogInterop
 					break;
 			}
 
-			return new TaskDialogButtonData(id, "_" + commonButton.ToString(), command, isDefault, isCancel);
+			return new TaskDialogButtonData(id, GetLocalizedButtonText(commonButton), command, isDefault, isCancel);
 		}
 
 		/// <summary>
@@ -611,6 +791,7 @@ namespace TaskDialogInterop
 				(options.AllowDialogCancellation
 				|| hasCustomCancel
 				|| options.CommonButtons == TaskDialogCommonButtons.Close
+				|| options.CommonButtons == TaskDialogCommonButtons.Cancel
 				|| options.CommonButtons == TaskDialogCommonButtons.OKCancel
 				|| options.CommonButtons == TaskDialogCommonButtons.YesNoCancel);
 			vtd.CallbackTimer = options.EnableCallbackTimer;
@@ -626,8 +807,8 @@ namespace TaskDialogInterop
 			vtd.UseCommandLinksNoIcon = false;
 			vtd.VerificationText = options.VerificationText;
 			vtd.VerificationFlagChecked = options.VerificationByDefault;
-			vtd.ExpandedControlText = "Hide details";
-			vtd.CollapsedControlText = "Show details";
+			vtd.ExpandedControlText = LocalizedHideDetails;
+			vtd.CollapsedControlText = GetLocalizedShowDetailsText();
 			vtd.Callback = options.Callback;
 			vtd.CallbackData = options.CallbackData;
 			vtd.Config = options;
@@ -642,15 +823,16 @@ namespace TaskDialogInterop
 
 			diagResult = vtd.Show((vtd.CanBeMinimized ? null : options.Owner), out verificationChecked, out radioButtonResult);
 
+			if (radioButtonResult >= RadioButtonIDOffset)
+			{
+				simpResult = (TaskDialogSimpleResult) diagResult;
+				radioButtonResult -= RadioButtonIDOffset;
+			}
+
 			if (diagResult >= CommandButtonIDOffset)
 			{
 				simpResult = TaskDialogSimpleResult.Command;
 				commandButtonResult = diagResult - CommandButtonIDOffset;
-			}
-			else if (radioButtonResult >= RadioButtonIDOffset)
-			{
-				simpResult = (TaskDialogSimpleResult)diagResult;
-				radioButtonResult -= RadioButtonIDOffset;
 			}
 			else if (diagResult >= CustomButtonIDOffset)
 			{
