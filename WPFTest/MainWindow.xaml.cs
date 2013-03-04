@@ -34,7 +34,7 @@ namespace WPFTest
 
 		private void UpdateResult(TaskDialogResult res)
 		{
-			if (res == null)
+			if (res == TaskDialogResult.Empty)
 			{
 				lbResult.Text = "Task Dialog Result";
 				return;
@@ -100,9 +100,9 @@ namespace WPFTest
 			config.ExpandedInfo = "Any expanded content text for the task dialog is shown here and the text will automatically wrap as needed.";
 			config.VerificationText = "Don't show me this message again";
 			config.CustomButtons = new string[] { "&Save", "Do&n't save", "&Cancel" };
-			config.MainIcon = VistaTaskDialogIcon.Shield;
+			config.MainIcon = TaskDialogIcon.Shield;
 			config.FooterText = "Optional footer text with an icon or <a href=\"testUri\">hyperlink</a> can be included.";
-			config.FooterIcon = VistaTaskDialogIcon.Warning;
+			config.FooterIcon = TaskDialogIcon.Warning;
 			config.AllowDialogCancellation = true;
 			config.Callback = taskDialog_Callback1;
 
@@ -122,8 +122,8 @@ namespace WPFTest
 					null,
 					null,
 					TaskDialogCommonButtons.Close,
-					VistaTaskDialogIcon.Error,
-					VistaTaskDialogIcon.None);
+					TaskDialogIcon.Error,
+					TaskDialogIcon.None);
 
 			UpdateResult(res);
 		}
@@ -136,7 +136,7 @@ namespace WPFTest
 					"WARNING: Formatting will erase ALL data on this disk. To format the disk, click OK. To quit, click Cancel.",
 					"Format Local Disk (F:)",
 					TaskDialogCommonButtons.OKCancel,
-					VistaTaskDialogIcon.Warning);
+					TaskDialogIcon.Warning);
 
 			UpdateResult(res);
 		}
@@ -151,7 +151,7 @@ namespace WPFTest
 			config.Content = "The content text for the task dialog is shown here and the text will automatically wrap as needed.";
 			config.ExpandedInfo = "Any expanded content text for the task dialog is shown here and the text will automatically wrap as needed.";
 			config.RadioButtons = new string[] { "Radio Option 1", "Radio Option 2", "Radio Option 3", "Radio Option 4", "Radio Option 5" };
-			config.MainIcon = VistaTaskDialogIcon.Information;
+			config.MainIcon = TaskDialogIcon.Information;
 
 			TaskDialogResult res = TaskDialog.Show(config);
 
@@ -168,7 +168,7 @@ namespace WPFTest
 			config.Content = "The content text for the task dialog is shown here and the text will automatically wrap as needed.";
 			config.ExpandedInfo = "Any expanded content text for the task dialog is shown here and the text will automatically wrap as needed.";
 			config.CommandButtons = new string[] { "Command &Link 1", "Command Link 2\nLine 2\nLine 3", "Command Link 3" };
-			config.MainIcon = VistaTaskDialogIcon.Information;
+			config.MainIcon = TaskDialogIcon.Information;
 
 			TaskDialogResult res = TaskDialog.Show(config);
 
@@ -212,13 +212,13 @@ namespace WPFTest
 			UpdateResult(res);
 		}
 
-		private bool taskDialog_Callback1(IActiveTaskDialog dialog, VistaTaskDialogNotificationArgs args, object callbackData)
+		private bool taskDialog_Callback1(IActiveTaskDialog dialog, TaskDialogNotificationArgs args, object callbackData)
 		{
 			bool result = false;
 
 			switch (args.Notification)
 			{
-				case VistaTaskDialogNotification.HyperlinkClicked:
+				case TaskDialogNotification.HyperlinkClicked:
 					//result = true; // prevents HREF from being processed automatically by ShellExecute
 					MessageBox.Show("Hyperlink clicked: " + args.Hyperlink);
 					break;
@@ -226,24 +226,24 @@ namespace WPFTest
 
 			return result;
 		}
-		private bool taskDialog_Callback2(IActiveTaskDialog dialog, VistaTaskDialogNotificationArgs args, object callbackData)
+		private bool taskDialog_Callback2(IActiveTaskDialog dialog, TaskDialogNotificationArgs args, object callbackData)
 		{
 			bool result = false;
 
 			switch (args.Notification)
 			{
-				case VistaTaskDialogNotification.Created:
+				case TaskDialogNotification.Created:
 					_downloadedPercent = 0;
 					dialog.SetProgressBarRange(0, 100);
 					break;
-				case VistaTaskDialogNotification.ButtonClicked:
+				case TaskDialogNotification.ButtonClicked:
 					if (args.ButtonIndex == 0)
 					{
 						_downloadTimerReset = true;
 						result = true; // prevent dialog from closing
 					}
 					break;
-				case VistaTaskDialogNotification.Timer:
+				case TaskDialogNotification.Timer:
 					if (_downloadedPercent < 100 && _downloadRandomizer.Next(0, 3) == 0)
 					{
 						_downloadedPercent++;

@@ -20,13 +20,13 @@ namespace TaskDialogInterop
 		public static void SetWindowCloseButtonVisibility(Window window, bool showCloseButton)
 		{
 			System.Windows.Interop.WindowInteropHelper wih = new System.Windows.Interop.WindowInteropHelper(window);
-			
-			int style = NativeMethods.GetWindowLong(wih.Handle, NativeMethods.GWL_STYLE);
+
+			int style = NativeMethods.GetWindowLong(wih.Handle, Win32Constants.GWL_STYLE);
 
 			if (showCloseButton)
-				NativeMethods.SetWindowLong(wih.Handle, NativeMethods.GWL_STYLE, style & NativeMethods.WS_SYSMENU);
+				NativeMethods.SetWindowLong(wih.Handle, Win32Constants.GWL_STYLE, style & Win32Constants.WS_SYSMENU);
 			else
-				NativeMethods.SetWindowLong(wih.Handle, NativeMethods.GWL_STYLE, style & ~NativeMethods.WS_SYSMENU);
+				NativeMethods.SetWindowLong(wih.Handle, Win32Constants.GWL_STYLE, style & ~Win32Constants.WS_SYSMENU);
 		}
 		/// <summary>
 		/// Sets the window's icon visibility.
@@ -43,18 +43,18 @@ namespace TaskDialogInterop
 				// Change the extended window style
 				if (showIcon)
 				{
-					int extendedStyle = NativeMethods.GetWindowLong(wih.Handle, NativeMethods.GWL_EXSTYLE);
-					NativeMethods.SetWindowLong(wih.Handle, NativeMethods.GWL_EXSTYLE, extendedStyle | ~NativeMethods.WS_EX_DLGMODALFRAME);
+					int extendedStyle = NativeMethods.GetWindowLong(wih.Handle, Win32Constants.GWL_EXSTYLE);
+					NativeMethods.SetWindowLong(wih.Handle, Win32Constants.GWL_EXSTYLE, extendedStyle | ~Win32Constants.WS_EX_DLGMODALFRAME);
 				}
 				else
 				{
-					int extendedStyle = NativeMethods.GetWindowLong(wih.Handle, NativeMethods.GWL_EXSTYLE);
-					NativeMethods.SetWindowLong(wih.Handle, NativeMethods.GWL_EXSTYLE, extendedStyle | NativeMethods.WS_EX_DLGMODALFRAME);
+					int extendedStyle = NativeMethods.GetWindowLong(wih.Handle, Win32Constants.GWL_EXSTYLE);
+					NativeMethods.SetWindowLong(wih.Handle, Win32Constants.GWL_EXSTYLE, extendedStyle | Win32Constants.WS_EX_DLGMODALFRAME);
 				}
 
 				// Update the window's non-client area to reflect the changes
 				NativeMethods.SetWindowPos(wih.Handle, IntPtr.Zero, 0, 0, 0, 0,
-					NativeMethods.SWP_NOMOVE | NativeMethods.SWP_NOSIZE | NativeMethods.SWP_NOZORDER | NativeMethods.SWP_FRAMECHANGED);
+					Win32Constants.SWP_NOMOVE | Win32Constants.SWP_NOSIZE | Win32Constants.SWP_NOZORDER | Win32Constants.SWP_FRAMECHANGED);
 			}
 			// For XP and older
 			// TODO Setting Window Icon visibility doesn't work in XP
@@ -64,10 +64,10 @@ namespace TaskDialogInterop
 				// 1 - ICON_BIG   (alt-tab)
 
 				if (showIcon)
-					NativeMethods.SendMessage(wih.Handle, NativeMethods.WM_SETICON, new IntPtr(0),
-						NativeMethods.DefWindowProc(wih.Handle, NativeMethods.WM_SETICON, new IntPtr(0), IntPtr.Zero));
+					NativeMethods.SendMessage(wih.Handle, Win32Constants.WM_SETICON, new IntPtr(0),
+						NativeMethods.DefWindowProc(wih.Handle, Win32Constants.WM_SETICON, new IntPtr(0), IntPtr.Zero));
 				else
-					NativeMethods.SendMessage(wih.Handle, NativeMethods.WM_SETICON, new IntPtr(0), IntPtr.Zero);
+					NativeMethods.SendMessage(wih.Handle, Win32Constants.WM_SETICON, new IntPtr(0), IntPtr.Zero);
 			}
 		}
 	}

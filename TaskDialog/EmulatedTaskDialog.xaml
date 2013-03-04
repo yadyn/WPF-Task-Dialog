@@ -3,8 +3,9 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:c="clr-namespace:TaskDialogInterop.Data"
 	xmlns:local="clr-namespace:TaskDialogInterop"
-	x:Class="TaskDialogInterop.TaskDialog"
+	x:Class="TaskDialogInterop.EmulatedTaskDialog"
 	mc:Ignorable="d"
 	d:DesignWidth="495"
 	d:DataContext="{d:DesignData Source=DesignData/DesignerTaskDialogViewModel.xaml}"
@@ -23,7 +24,7 @@
 				<ResourceDictionary Source="ResourceDictionaries/Common.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-			<local:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
+			<c:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
 			<BitmapImage x:Key="ExpArrUp1" UriSource="Resources/exparr-up1.bmp" />
 			<BitmapImage x:Key="ExpArrUp2" UriSource="Resources/exparr-up2.bmp" />
 			<BitmapImage x:Key="ExpArrUp3" UriSource="Resources/exparr-up3.bmp" />

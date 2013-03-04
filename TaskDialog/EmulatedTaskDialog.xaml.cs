@@ -16,14 +16,14 @@ using System.Windows.Shapes;
 namespace TaskDialogInterop
 {
 	/// <summary>
-	/// Displays a task dialog.
+	/// A task dialog emulated in WPF.
 	/// </summary>
-	public partial class TaskDialog : Window
+	public partial class EmulatedTaskDialog : Window
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="TaskDialog"/> class.
+		/// Initializes a new instance of the <see cref="EmulatedTaskDialog"/> class.
 		/// </summary>
-		public TaskDialog()
+		public EmulatedTaskDialog()
 		{
 			InitializeComponent();
 
@@ -35,9 +35,9 @@ namespace TaskDialogInterop
 			base.Closed += new EventHandler(TaskDialog_Closed);
 		}
 
-		private TaskDialogViewModel ViewModel
+		private EmulatedTaskDialogViewModel ViewModel
 		{
-			get { return this.DataContext as TaskDialogViewModel; }
+			get { return this.DataContext as EmulatedTaskDialogViewModel; }
 		}
 
 		private void TaskDialog_Loaded(object sender, RoutedEventArgs e)
@@ -77,17 +77,17 @@ namespace TaskDialogInterop
 				switch (ViewModel.MainIconType)
 				{
 					default:
-					case VistaTaskDialogIcon.None:
-					case VistaTaskDialogIcon.Shield:
+					case TaskDialogIcon.None:
+					case TaskDialogIcon.Shield:
 						// No sound
 						break;
-					case VistaTaskDialogIcon.Warning:
+					case TaskDialogIcon.Warning:
 						System.Media.SystemSounds.Exclamation.Play();
 						break;
-					case VistaTaskDialogIcon.Error:
+					case TaskDialogIcon.Error:
 						System.Media.SystemSounds.Hand.Play();
 						break;
-					case VistaTaskDialogIcon.Information:
+					case TaskDialogIcon.Information:
 						System.Media.SystemSounds.Asterisk.Play();
 						break;
 				}
@@ -196,7 +196,7 @@ namespace TaskDialogInterop
 
 			List<Hyperlink> hyperlinks = new List<Hyperlink>();
 
-			foreach (Match match in _hyperlinkCaptureRegex.Matches(text))
+			foreach (Match match in TaskDialog.HyperlinkCaptureRegex.Matches(text))
 			{
 				var hyperlink = new Hyperlink();
 
@@ -207,7 +207,7 @@ namespace TaskDialogInterop
 				hyperlinks.Add(hyperlink);
 			}
 
-			string[] substrings = _hyperlinkRegex.Split(text);
+			string[] substrings = TaskDialog.HyperlinkRegex.Split(text);
 
 			for (int i = 0; i < substrings.Length; i++)
 			{

@@ -9,340 +9,288 @@ using System.Diagnostics.CodeAnalysis;
 namespace TaskDialogInterop
 {
 	/// <summary>
-	/// The TaskDialog common button flags used to specify the builtin bottons to show in the TaskDialog.
+	/// Specifies the standard buttons that are displayed on a task dialog.
 	/// </summary>
 	[Flags]
-	public enum VistaTaskDialogCommonButtons
+	public enum TaskDialogCommonButtons
 	{
 		/// <summary>
-		/// No common buttons.
+		/// The message box displays no buttons.
 		/// </summary>
 		None = 0,
 		/// <summary>
-		/// OK common button. If selected Task Dialog will return DialogResult.OK.
+		/// The message box displays an OK button. If clicked, the task dialog will return DialogResult.OK.
 		/// </summary>
 		OK = 0x0001,
 		/// <summary>
-		/// Yes common button. If selected Task Dialog will return DialogResult.Yes.
+		/// The message box displays a Yes button. If clicked, the task dialog will return DialogResult.Yes.
 		/// </summary>
 		Yes = 0x0002,
 		/// <summary>
-		/// No common button. If selected Task Dialog will return DialogResult.No.
+		/// The message box displays a No button. If clicked, the task dialog will return DialogResult.No.
 		/// </summary>
 		No = 0x0004,
 		/// <summary>
-		/// Cancel common button. If selected Task Dialog will return DialogResult.Cancel.
+		/// The message box displays a Cancel button. If clicked, the task dialog will return DialogResult.Cancel.
 		/// If this button is specified, the dialog box will respond to typical cancel actions (Alt-F4 and Escape).
 		/// </summary>
 		Cancel = 0x0008,
 		/// <summary>
-		/// Retry common button. If selected Task Dialog will return DialogResult.Retry.
+		/// The message box displays a Retry button. If clicked, the task dialog will return DialogResult.Retry.
 		/// </summary>
 		Retry = 0x0010,
 		/// <summary>
-		/// Close common button. If selected Task Dialog will return this value.
+		/// The message box displays a Close button. If clicked, the task dialog will return this value.
 		/// </summary>
 		Close = 0x0020,
+		/// <summary>
+		/// The message box displays Yes and No buttons.
+		/// </summary>
+		YesNo = Yes | No,
+		/// <summary>
+		/// The message box displays Yes, No, and Cancel buttons.
+		/// </summary>
+		YesNoCancel = Yes | No | Cancel,
+		/// <summary>
+		/// The message box displays OK and Cancel buttons.
+		/// </summary>
+		OKCancel = OK | Cancel,
+		/// <summary>
+		/// The message box displays Retry and Cancel buttons.
+		/// </summary>
+		RetryCancel = Retry | Cancel
 	}
 
 	/// <summary>
-	/// The System icons the TaskDialog supports.
+	/// Specifies pre-defined system icons supported by the task dialog.
 	/// </summary>
 	[SuppressMessage("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32")] // Type comes from CommCtrl.h
-	public enum VistaTaskDialogIcon : uint
+	public enum TaskDialogIcon : uint
 	{
 		/// <summary>
-		/// No Icon.
+		/// No icon will be displayed.
 		/// </summary>
 		None = 0,
 		/// <summary>
-		/// System warning icon.
+		/// An exclamation-point icon appears in the task dialog.
 		/// </summary>
 		Warning = 0xFFFF, // MAKEINTRESOURCEW(-1)
 		/// <summary>
-		/// System Error icon.
+		/// A stop-sign icon appears in the task dialog.
 		/// </summary>
 		Error = 0xFFFE, // MAKEINTRESOURCEW(-2)
 		/// <summary>
-		/// System Information icon.
+		/// An icon consisting of a lowercase letter i in a circle appears in the task dialog.
 		/// </summary>
 		Information = 0xFFFD, // MAKEINTRESOURCEW(-3)
 		/// <summary>
-		/// Shield icon.
+		/// A shield icon appears in the task dialog.
 		/// </summary>
 		Shield = 0xFFFC, // MAKEINTRESOURCEW(-4)
 	}
 
-  /// <summary>
-  /// Task Dialog callback notifications. 
-  /// </summary>
-  public enum VistaTaskDialogNotification
-  {
 	/// <summary>
-	/// Sent by the Task Dialog once the dialog has been created and before it is displayed.
-	/// The value returned by the callback is ignored.
+	/// Specifies notifications when handling a task dialog callback. 
 	/// </summary>
-	Created = 0,
-
-	//// Spec is not clear what this is so not supporting it.
-	///// <summary>
-	///// Sent by the Task Dialog when a navigation has occurred.
-	///// The value returned by the callback is ignored.
-	///// </summary>   
-	// Navigated = 1,
-
-	/// <summary>
-	/// Sent by the Task Dialog when the user selects a button or command link in the task dialog.
-	/// The button ID corresponding to the button selected will be available in the
-	/// TaskDialogNotificationArgs. To prevent the Task Dialog from closing, the application must
-	/// return true, otherwise the Task Dialog will be closed and the button ID returned to via
-	/// the original application call.
-	/// </summary>
-	ButtonClicked = 2,            // wParam = Button ID
-
-	/// <summary>
-	/// Sent by the Task Dialog when the user clicks on a hyperlink in the Task Dialog’s content.
-	/// The string containing the HREF of the hyperlink will be available in the
-	/// TaskDialogNotificationArgs. To prevent the TaskDialog from shell executing the hyperlink,
-	/// the application must return TRUE, otherwise ShellExecute will be called.
-	/// </summary>
-	HyperlinkClicked = 3,            // lParam = (LPCWSTR)pszHREF
-
-	/// <summary>
-	/// Sent by the Task Dialog approximately every 200 milliseconds when TaskDialog.CallbackTimer
-	/// has been set to true. The number of milliseconds since the dialog was created or the
-	/// notification returned true is available on the TaskDialogNotificationArgs. To reset
-	/// the tickcount, the application must return true, otherwise the tickcount will continue to
-	/// increment.
-	/// </summary>
-	Timer = 4,            // wParam = Milliseconds since dialog created or timer reset
-
-	/// <summary>
-	/// Sent by the Task Dialog when it is destroyed and its window handle no longer valid.
-	/// The value returned by the callback is ignored.
-	/// </summary>
-	Destroyed = 5,
-
-	/// <summary>
-	/// Sent by the Task Dialog when the user selects a radio button in the task dialog.
-	/// The button ID corresponding to the button selected will be available in the
-	/// TaskDialogNotificationArgs.
-	/// The value returned by the callback is ignored.
-	/// </summary>
-	RadioButtonClicked = 6,            // wParam = Radio Button ID
-
-	/// <summary>
-	/// Sent by the Task Dialog once the dialog has been constructed and before it is displayed.
-	/// The value returned by the callback is ignored.
-	/// </summary>
-	DialogConstructed = 7,
-
-	/// <summary>
-	/// Sent by the Task Dialog when the user checks or unchecks the verification checkbox.
-	/// The verificationFlagChecked value is available on the TaskDialogNotificationArgs.
-	/// The value returned by the callback is ignored.
-	/// </summary>
-	VerificationClicked = 8,             // wParam = 1 if checkbox checked, 0 if not, lParam is unused and always 0
-
-	/// <summary>
-	/// Sent by the Task Dialog when the user presses F1 on the keyboard while the dialog has focus.
-	/// The value returned by the callback is ignored.
-	/// </summary>
-	Help = 9,
-
-	/// <summary>
-	/// Sent by the task dialog when the user clicks on the dialog's expando button.
-	/// The expanded value is available on the TaskDialogNotificationArgs.
-	/// The value returned by the callback is ignored.
-	/// </summary>
-	ExpandoButtonClicked = 10            // wParam = 0 (dialog is now collapsed), wParam != 0 (dialog is now expanded)
-  }
-
-  /// <summary>
-  /// Progress bar state.
-  /// </summary>
-  [SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")] // Comes from CommCtrl.h PBST_* values which don't have a zero.
-  public enum VistaProgressBarState
-  {
-	/// <summary>
-	/// Normal.
-	/// </summary>
-	Normal = 1,
-
-	/// <summary>
-	/// Error state.
-	/// </summary>
-	Error = 2,
-
-	/// <summary>
-	/// Paused state.
-	/// </summary>
-	Paused = 3
-  }
-
-  /// <summary>
-  /// A custom button for the TaskDialog.
-  /// </summary>
-  [SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")] // Would be unused code as not required for usage.
-  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
-  public struct VistaTaskDialogButton
-  {
-	/// <summary>
-	/// The ID of the button. This value is returned by TaskDialog.Show when the button is clicked.
-	/// </summary>
-	private int buttonId;
-
-	/// <summary>
-	/// The string that appears on the button.
-	/// </summary>
-	[MarshalAs(UnmanagedType.LPWStr)]
-	private string buttonText;
-
-	/// <summary>
-	/// Initialize the custom button.
-	/// </summary>
-	/// <param name="id">The ID of the button. This value is returned by TaskDialog.Show when
-	/// the button is clicked. Typically this will be a value in the DialogResult enum.</param>
-	/// <param name="text">The string that appears on the button.</param>
-	public VistaTaskDialogButton(int id, string text)
-	{
-		this.buttonId = id;
-		this.buttonText = text;
-	}
-
-	/// <summary>
-	/// The ID of the button. This value is returned by TaskDialog.Show when the button is clicked.
-	/// </summary>
-	public int ButtonId
-	{
-		get { return this.buttonId; }
-		set { this.buttonId = value; }
-	}
-
-	/// <summary>
-	/// The string that appears on the button.
-	/// </summary>
-	public string ButtonText
-	{
-		get { return this.buttonText; }
-		set { this.buttonText = value; }
-	}
-  }
-
-	/// <summary>
-	/// Arguments passed to the TaskDialog callback.
-	/// </summary>
-	public class VistaTaskDialogNotificationArgs
+	public enum TaskDialogNotification
 	{
 		/// <summary>
-		/// What the TaskDialog callback is a notification of.
+		/// Sent by the Task Dialog once the dialog has been created and before it is displayed.
+		/// The value returned by the callback is ignored.
 		/// </summary>
-		private VistaTaskDialogNotification notification;
+		Created = (int)TASKDIALOG_NOTIFICATIONS.TDN_CREATED,
+
+		//// Spec is not clear what this is so not supporting it.
+		///// <summary>
+		///// Sent by the Task Dialog when a navigation has occurred.
+		///// The value returned by the callback is ignored.
+		///// </summary>   
+		// Navigated = (int)TASKDIALOG_NOTIFICATIONS.TDN_NAVIGATED,
+
 		/// <summary>
-		/// The button ID if the notification is about a button. This a DialogResult
-		/// value or the ButtonID member of a TaskDialogButton set in the
-		/// TaskDialog.Buttons or TaskDialog.RadioButtons members.
+		/// Sent by the Task Dialog when the user selects a button or command link in the task dialog.
+		/// The button ID corresponding to the button selected will be available in the
+		/// TaskDialogNotificationArgs. To prevent the Task Dialog from closing, the application must
+		/// return true, otherwise the Task Dialog will be closed and the button ID returned to via
+		/// the original application call.
+		/// </summary>
+		ButtonClicked = (int)TASKDIALOG_NOTIFICATIONS.TDN_BUTTON_CLICKED,            // wParam = Button ID
+
+		/// <summary>
+		/// Sent by the Task Dialog when the user clicks on a hyperlink in the Task Dialog’s content.
+		/// The string containing the HREF of the hyperlink will be available in the
+		/// TaskDialogNotificationArgs. To prevent the TaskDialog from shell executing the hyperlink,
+		/// the application must return TRUE, otherwise ShellExecute will be called.
+		/// </summary>
+		HyperlinkClicked = (int)TASKDIALOG_NOTIFICATIONS.TDN_HYPERLINK_CLICKED,            // lParam = (LPCWSTR)pszHREF
+
+		/// <summary>
+		/// Sent by the Task Dialog approximately every 200 milliseconds when TaskDialog.CallbackTimer
+		/// has been set to true. The number of milliseconds since the dialog was created or the
+		/// notification returned true is available on the TaskDialogNotificationArgs. To reset
+		/// the tickcount, the application must return true, otherwise the tickcount will continue to
+		/// increment.
+		/// </summary>
+		Timer = (int)TASKDIALOG_NOTIFICATIONS.TDN_TIMER,            // wParam = Milliseconds since dialog created or timer reset
+
+		/// <summary>
+		/// Sent by the Task Dialog when it is destroyed and its window handle no longer valid.
+		/// The value returned by the callback is ignored.
+		/// </summary>
+		Destroyed = (int)TASKDIALOG_NOTIFICATIONS.TDN_DESTROYED,
+
+		/// <summary>
+		/// Sent by the Task Dialog when the user selects a radio button in the task dialog.
+		/// The button ID corresponding to the button selected will be available in the
+		/// TaskDialogNotificationArgs.
+		/// The value returned by the callback is ignored.
+		/// </summary>
+		RadioButtonClicked = (int)TASKDIALOG_NOTIFICATIONS.TDN_RADIO_BUTTON_CLICKED,            // wParam = Radio Button ID
+
+		/// <summary>
+		/// Sent by the Task Dialog once the dialog has been constructed and before it is displayed.
+		/// The value returned by the callback is ignored.
+		/// </summary>
+		DialogConstructed = (int)TASKDIALOG_NOTIFICATIONS.TDN_DIALOG_CONSTRUCTED,
+
+		/// <summary>
+		/// Sent by the Task Dialog when the user checks or unchecks the verification checkbox.
+		/// The verificationFlagChecked value is available on the TaskDialogNotificationArgs.
+		/// The value returned by the callback is ignored.
+		/// </summary>
+		VerificationClicked = (int)TASKDIALOG_NOTIFICATIONS.TDN_VERIFICATION_CLICKED,             // wParam = 1 if checkbox checked, 0 if not, lParam is unused and always 0
+
+		/// <summary>
+		/// Sent by the Task Dialog when the user presses F1 on the keyboard while the dialog has focus.
+		/// The value returned by the callback is ignored.
+		/// </summary>
+		Help = (int)TASKDIALOG_NOTIFICATIONS.TDN_HELP,
+
+		/// <summary>
+		/// Sent by the task dialog when the user clicks on the dialog's expando button.
+		/// The expanded value is available on the TaskDialogNotificationArgs.
+		/// The value returned by the callback is ignored.
+		/// </summary>
+		ExpandoButtonClicked = (int)TASKDIALOG_NOTIFICATIONS.TDN_EXPANDO_BUTTON_CLICKED            // wParam = 0 (dialog is now collapsed), wParam != 0 (dialog is now expanded)
+	}
+
+	/// <summary>
+	/// Progress bar state.
+	/// </summary>
+	[SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")] // Comes from CommCtrl.h PBST_* values which don't have a zero.
+	public enum TaskDialogProgressBarState
+	{
+		/// <summary>
+		/// Sets the progress bar to the normal state.
+		/// </summary>
+		Normal = (int)PROGRESS_STATES.PBST_NORMAL,
+
+		/// <summary>
+		/// Sets the progress bar to the error state.
+		/// </summary>
+		Error = (int)PROGRESS_STATES.PBST_ERROR,
+
+		/// <summary>
+		/// Sets the progress bar to the paused state.
+		/// </summary>
+		Paused = (int)PROGRESS_STATES.PBST_PAUSE
+	}
+
+	/// <summary>
+	/// A custom button for the TaskDialog.
+	/// </summary>
+	[SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")] // Would be unused code as not required for usage.
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
+	public struct TaskDialogButton
+	{
+		/// <summary>
+		/// The ID of the button. This value is returned by TaskDialog.Show when the button is clicked.
 		/// </summary>
 		private int buttonId;
-		/// <summary>
-		/// The button index if the notification is about a button.
-		/// </summary>
-		private int buttonIndex;
-		/// <summary>
-		/// The HREF string of the hyperlink the notification is about.
-		/// </summary>
-		private string hyperlink;
-		/// <summary>
-		/// The number of milliseconds since the dialog was opened or the last time the
-		/// callback for a timer notification reset the value by returning true.
-		/// </summary>
-		private uint timerTickCount;
-		/// <summary>
-		/// The state of the verification flag when the notification is about the verification flag.
-		/// </summary>
-		private bool verificationFlagChecked;
-		/// <summary>
-		/// The state of the dialog expando when the notification is about the expando.
-		/// </summary>
-		private bool expanded;
-		private TaskDialogOptions config;
 
 		/// <summary>
-		/// What the TaskDialog callback is a notification of.
+		/// The string that appears on the button.
 		/// </summary>
-		public VistaTaskDialogNotification Notification
-		{
-			get { return this.notification; }
-			set { this.notification = value; }
-		}
+		[MarshalAs(UnmanagedType.LPWStr)]
+		private string buttonText;
+
 		/// <summary>
-		/// The button ID if the notification is about a button. This a DialogResult
-		/// value or the ButtonID member of a TaskDialogButton set in the
-		/// TaskDialog.Buttons member.
+		/// Initialize the custom button.
+		/// </summary>
+		/// <param name="id">The ID of the button. This value is returned by TaskDialog.Show when
+		/// the button is clicked. Typically this will be a value in the DialogResult enum.</param>
+		/// <param name="text">The string that appears on the button.</param>
+		public TaskDialogButton(int id, string text)
+		{
+			this.buttonId = id;
+			this.buttonText = text;
+		}
+
+		/// <summary>
+		/// The ID of the button. This value is returned by TaskDialog.Show when the button is clicked.
 		/// </summary>
 		public int ButtonId
 		{
 			get { return this.buttonId; }
 			set { this.buttonId = value; }
 		}
+
 		/// <summary>
-		/// The button index if the notification is about a button.
+		/// The string that appears on the button.
 		/// </summary>
-		public int ButtonIndex
+		public string ButtonText
 		{
-			get { return this.buttonIndex; }
-			set { this.buttonIndex = value; }
-		}
-		/// <summary>
-		/// The HREF string of the hyperlink the notification is about.
-		/// </summary>
-		public string Hyperlink
-		{
-			get { return this.hyperlink; }
-			set { this.hyperlink = value; }
-		}
-		/// <summary>
-		/// The number of milliseconds since the dialog was opened or the last time the
-		/// callback for a timer notification reset the value by returning true.
-		/// </summary>
-		public uint TimerTickCount
-		{
-			get { return this.timerTickCount; }
-			set { this.timerTickCount = value; }
-		}
-		/// <summary>
-		/// The state of the verification flag when the notification is about the verification flag.
-		/// </summary>
-		public bool VerificationFlagChecked
-		{
-			get { return this.verificationFlagChecked; }
-			set { this.verificationFlagChecked = value; }
-		}
-		/// <summary>
-		/// The state of the dialog expando when the notification is about the expando.
-		/// </summary>
-		public bool Expanded
-		{
-			get { return this.expanded; }
-			set { this.expanded = value; }
-		}
-		/// <summary>
-		/// Gets or sets the configuration options for the dialog.
-		/// </summary>
-		/// <remarks>
-		/// Changes to any of the options will be ignored.
-		/// </remarks>
-		public TaskDialogOptions Config
-		{
-			get { return this.config; }
-			set { this.config = value; }
+			get { return this.buttonText; }
+			set { this.buttonText = value; }
 		}
 	}
 
 	/// <summary>
-	/// A Task Dialog. This is like a MessageBox but with many more features. TaskDialog requires Windows Longhorn or later.
+	/// Arguments passed to the TaskDialog callback.
 	/// </summary>
-	public class VistaTaskDialog
+	public class TaskDialogNotificationArgs
+	{
+		/// <summary>
+		/// Gets what the TaskDialog callback is a notification of.
+		/// </summary>
+		public TaskDialogNotification Notification { get; internal set; }
+		/// <summary>
+		/// Gets the button ID if the notification is about a button. This a DialogResult
+		/// value or the ButtonID member of a TaskDialogButton set in the
+		/// TaskDialog.Buttons member.
+		/// </summary>
+		public int ButtonId { get; internal set; }
+		/// <summary>
+		/// Gets the button index if the notification is about a button.
+		/// </summary>
+		public int ButtonIndex { get; internal set; }
+		/// <summary>
+		/// Gets the HREF string of the hyperlink the notification is about.
+		/// </summary>
+		public string Hyperlink { get; internal set; }
+		/// <summary>
+		/// Gets the number of milliseconds since the dialog was opened or the last time the
+		/// callback for a timer notification reset the value by returning true.
+		/// </summary>
+		public uint TimerTickCount { get; internal set; }
+		/// <summary>
+		/// Gets the state of the verification flag when the notification is about the verification flag.
+		/// </summary>
+		public bool VerificationFlagChecked { get; internal set; }
+		/// <summary>
+		/// Gets the state of the dialog expando when the notification is about the expando.
+		/// </summary>
+		public bool Expanded { get; internal set; }
+		/// <summary>
+		/// Gets the configuration options for the dialog.
+		/// </summary>
+		/// <remarks>
+		/// Changes to any of the options will be ignored.
+		/// </remarks>
+		public TaskDialogOptions Config { get; internal set; }
+	}
+
+	internal class NativeTaskDialog
 	{
 		/// <summary>
 		/// The string to be used for the dialog box title. If this parameter is NULL, the filename of the executable program is used.
@@ -366,13 +314,13 @@ namespace TaskDialogInterop
 		/// If no common buttons are specified and no custom buttons are specified using the Buttons member, the
 		/// dialog box will contain the OK button by default.
 		/// </summary>
-		private VistaTaskDialogCommonButtons commonButtons;
+		private TaskDialogCommonButtons commonButtons;
 
 		/// <summary>
 		/// Specifies a built in icon for the main icon in the dialog. If this is set to none
 		/// and the CustomMainIcon is null then no main icon will be displayed.
 		/// </summary>
-		private VistaTaskDialogIcon mainIcon;
+		private TaskDialogIcon mainIcon;
 
 		/// <summary>
 		/// Specifies a custom in icon for the main icon in the dialog. If this is set to none
@@ -385,7 +333,7 @@ namespace TaskDialogInterop
 		/// dialog box. If this is set to none and the CustomFooterIcon member is null then no
 		/// footer icon will be displayed.
 		/// </summary>
-		private VistaTaskDialogIcon footerIcon;
+		private TaskDialogIcon footerIcon;
 
 		/// <summary>
 		/// Specifies a custom icon for the icon to be displayed in the footer area of the
@@ -399,17 +347,17 @@ namespace TaskDialogInterop
 		/// common buttons; OK, Yes, No, Retry and Cancel, and Buttons when you want different text
 		/// on the push buttons.
 		/// </summary>
-		private VistaTaskDialogButton[] buttons;
+		private TaskDialogButton[] buttons;
 
 		/// <summary>
 		/// Specifies the radio buttons to display in the dialog.
 		/// </summary>
-		private VistaTaskDialogButton[] radioButtons;
+		private TaskDialogButton[] radioButtons;
 
 		/// <summary>
 		/// The flags passed to TaskDialogIndirect.
 		/// </summary>
-		private VistaUnsafeNativeMethods.TASKDIALOG_FLAGS flags;
+		private TASKDIALOG_FLAGS flags;
 
 		/// <summary>
 		/// Indicates the default button for the dialog. This may be any of the values specified
@@ -486,9 +434,9 @@ namespace TaskDialogInterop
 		private uint width;
 
 		/// <summary>
-		/// Creates a default Task Dialog.
+		/// Creates a default native Task Dialog.
 		/// </summary>
-		public VistaTaskDialog()
+		public NativeTaskDialog()
 		{
 			this.Reset();
 		}
@@ -504,7 +452,7 @@ namespace TaskDialogInterop
 				OperatingSystem os = Environment.OSVersion;
 				if (os.Platform != PlatformID.Win32NT)
 					return false;
-				return (os.Version.CompareTo(VistaTaskDialog.RequiredOSVersion) >= 0);
+				return (os.Version.CompareTo(NativeTaskDialog.RequiredOSVersion) >= 0);
 			}
 		}
 
@@ -550,7 +498,7 @@ namespace TaskDialogInterop
 		/// If no common buttons are specified and no custom buttons are specified using the Buttons member, the
 		/// dialog box will contain the OK button by default.
 		/// </summary>
-		public VistaTaskDialogCommonButtons CommonButtons
+		public TaskDialogCommonButtons CommonButtons
 		{
 			get { return this.commonButtons; }
 			set { this.commonButtons = value; }
@@ -560,7 +508,7 @@ namespace TaskDialogInterop
 		/// Specifies a built in icon for the main icon in the dialog. If this is set to none
 		/// and the CustomMainIcon is null then no main icon will be displayed.
 		/// </summary>
-		public VistaTaskDialogIcon MainIcon
+		public TaskDialogIcon MainIcon
 		{
 			get { return this.mainIcon; }
 			set { this.mainIcon = value; }
@@ -581,7 +529,7 @@ namespace TaskDialogInterop
 		/// dialog box. If this is set to none and the CustomFooterIcon member is null then no
 		/// footer icon will be displayed.
 		/// </summary>
-		public VistaTaskDialogIcon FooterIcon
+		public TaskDialogIcon FooterIcon
 		{
 			get { return this.footerIcon; }
 			set { this.footerIcon = value; }
@@ -605,7 +553,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		[SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")] // Style of use is like single value. Array is of value types.
 		[SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")] // Returns a reference, not a copy.
-		public VistaTaskDialogButton[] Buttons
+		public TaskDialogButton[] Buttons
 		{
 			get
 			{
@@ -627,7 +575,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		[SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")] // Style of use is like single value. Array is of value types.
 		[SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")] // Returns a reference, not a copy.
-		public VistaTaskDialogButton[] RadioButtons
+		public TaskDialogButton[] RadioButtons
 		{
 			get
 			{
@@ -655,8 +603,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool EnableHyperlinks
 		{
-			get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS) != 0; }
-			set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS, value); }
+			get { return (this.flags & TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS) != 0; }
+			set { this.SetFlag(TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS, value); }
 		}
 
 		/// <summary>
@@ -665,8 +613,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool AllowDialogCancellation
 		{
-			get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ALLOW_DIALOG_CANCELLATION) != 0; }
-			set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ALLOW_DIALOG_CANCELLATION, value); }
+			get { return (this.flags & TASKDIALOG_FLAGS.TDF_ALLOW_DIALOG_CANCELLATION) != 0; }
+			set { this.SetFlag(TASKDIALOG_FLAGS.TDF_ALLOW_DIALOG_CANCELLATION, value); }
 		}
 
 		/// <summary>
@@ -678,8 +626,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool UseCommandLinks
 		{
-			get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS) != 0; }
-			set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS, value); }
+			get { return (this.flags & TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS) != 0; }
+			set { this.SetFlag(TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS, value); }
 		}
 
 		/// <summary>
@@ -691,8 +639,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool UseCommandLinksNoIcon
 		{
-			get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS_NO_ICON) != 0; }
-			set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS_NO_ICON, value); }
+			get { return (this.flags & TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS_NO_ICON) != 0; }
+			set { this.SetFlag(TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS_NO_ICON, value); }
 		}
 
 		/// <summary>
@@ -702,8 +650,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool ExpandFooterArea
 		{
-			get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA) != 0; }
-			set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA, value); }
+			get { return (this.flags & TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA) != 0; }
+			set { this.SetFlag(TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA, value); }
 		}
 
 		/// <summary>
@@ -713,8 +661,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool ExpandedByDefault
 		{
-			get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPANDED_BY_DEFAULT) != 0; }
-			set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPANDED_BY_DEFAULT, value); }
+			get { return (this.flags & TASKDIALOG_FLAGS.TDF_EXPANDED_BY_DEFAULT) != 0; }
+			set { this.SetFlag(TASKDIALOG_FLAGS.TDF_EXPANDED_BY_DEFAULT, value); }
 		}
 
 		/// <summary>
@@ -723,8 +671,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool VerificationFlagChecked
 		{
-			get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_VERIFICATION_FLAG_CHECKED) != 0; }
-			set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_VERIFICATION_FLAG_CHECKED, value); }
+			get { return (this.flags & TASKDIALOG_FLAGS.TDF_VERIFICATION_FLAG_CHECKED) != 0; }
+			set { this.SetFlag(TASKDIALOG_FLAGS.TDF_VERIFICATION_FLAG_CHECKED, value); }
 		}
 
 		/// <summary>
@@ -732,8 +680,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool ShowProgressBar
 		{
-			get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_SHOW_PROGRESS_BAR) != 0; }
-			set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_SHOW_PROGRESS_BAR, value); }
+			get { return (this.flags & TASKDIALOG_FLAGS.TDF_SHOW_PROGRESS_BAR) != 0; }
+			set { this.SetFlag(TASKDIALOG_FLAGS.TDF_SHOW_PROGRESS_BAR, value); }
 		}
 
 		/// <summary>
@@ -741,8 +689,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool ShowMarqueeProgressBar
 		{
-			get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_SHOW_MARQUEE_PROGRESS_BAR) != 0; }
-			set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_SHOW_MARQUEE_PROGRESS_BAR, value); }
+			get { return (this.flags & TASKDIALOG_FLAGS.TDF_SHOW_MARQUEE_PROGRESS_BAR) != 0; }
+			set { this.SetFlag(TASKDIALOG_FLAGS.TDF_SHOW_MARQUEE_PROGRESS_BAR, value); }
 		}
 
 		/// <summary>
@@ -750,8 +698,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool CallbackTimer
 		{
-			get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_CALLBACK_TIMER) != 0; }
-			set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_CALLBACK_TIMER, value); }
+			get { return (this.flags & TASKDIALOG_FLAGS.TDF_CALLBACK_TIMER) != 0; }
+			set { this.SetFlag(TASKDIALOG_FLAGS.TDF_CALLBACK_TIMER, value); }
 		}
 
 		/// <summary>
@@ -761,8 +709,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool PositionRelativeToWindow
 		{
-			get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_POSITION_RELATIVE_TO_WINDOW) != 0; }
-			set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_POSITION_RELATIVE_TO_WINDOW, value); }
+			get { return (this.flags & TASKDIALOG_FLAGS.TDF_POSITION_RELATIVE_TO_WINDOW) != 0; }
+			set { this.SetFlag(TASKDIALOG_FLAGS.TDF_POSITION_RELATIVE_TO_WINDOW, value); }
 		}
 
 		/// <summary>
@@ -770,8 +718,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool RightToLeftLayout
 		{
-			get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_RTL_LAYOUT) != 0; }
-			set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_RTL_LAYOUT, value); }
+			get { return (this.flags & TASKDIALOG_FLAGS.TDF_RTL_LAYOUT) != 0; }
+			set { this.SetFlag(TASKDIALOG_FLAGS.TDF_RTL_LAYOUT, value); }
 		}
 
 		/// <summary>
@@ -779,8 +727,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool NoDefaultRadioButton
 		{
-			get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_NO_DEFAULT_RADIO_BUTTON) != 0; }
-			set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_NO_DEFAULT_RADIO_BUTTON, value); }
+			get { return (this.flags & TASKDIALOG_FLAGS.TDF_NO_DEFAULT_RADIO_BUTTON) != 0; }
+			set { this.SetFlag(TASKDIALOG_FLAGS.TDF_NO_DEFAULT_RADIO_BUTTON, value); }
 		}
 
 		/// <summary>
@@ -788,8 +736,8 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool CanBeMinimized
 		{
-			get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_CAN_BE_MINIMIZED) != 0; }
-			set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_CAN_BE_MINIMIZED, value); }
+			get { return (this.flags & TASKDIALOG_FLAGS.TDF_CAN_BE_MINIMIZED) != 0; }
+			set { this.SetFlag(TASKDIALOG_FLAGS.TDF_CAN_BE_MINIMIZED, value); }
 		}
 
 		/// <summary>
@@ -919,12 +867,12 @@ namespace TaskDialogInterop
 			this.mainInstruction = null;
 			this.content = null;
 			this.commonButtons = 0;
-			this.mainIcon = VistaTaskDialogIcon.None;
+			this.mainIcon = TaskDialogIcon.None;
 			this.customMainIcon = null;
-			this.footerIcon = VistaTaskDialogIcon.None;
+			this.footerIcon = TaskDialogIcon.None;
 			this.customFooterIcon = null;
-			this.buttons = new VistaTaskDialogButton[0];
-			this.radioButtons = new VistaTaskDialogButton[0];
+			this.buttons = new TaskDialogButton[0];
+			this.radioButtons = new TaskDialogButton[0];
 			this.flags = 0;
 			this.defaultButton = 0;
 			this.defaultRadioButton = 0;
@@ -1062,11 +1010,11 @@ namespace TaskDialogInterop
 			verificationFlagChecked = false;
 			radioButtonResult = 0;
 			int result = 0;
-			VistaUnsafeNativeMethods.TASKDIALOGCONFIG config = new VistaUnsafeNativeMethods.TASKDIALOGCONFIG();
+			TASKDIALOGCONFIG config = new TASKDIALOGCONFIG();
 
 			try
 			{
-				config.cbSize = (uint)Marshal.SizeOf(typeof(VistaUnsafeNativeMethods.TASKDIALOGCONFIG));
+				config.cbSize = (uint)Marshal.SizeOf(typeof(TASKDIALOGCONFIG));
 				config.hwndParent = hwndOwner;
 				config.dwFlags = this.flags;
 				config.dwCommonButtons = this.commonButtons;
@@ -1079,7 +1027,7 @@ namespace TaskDialogInterop
 				config.MainIcon = (IntPtr)this.mainIcon;
 				if (this.customMainIcon != null)
 				{
-					config.dwFlags |= VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_HICON_MAIN;
+					config.dwFlags |= TASKDIALOG_FLAGS.TDF_USE_HICON_MAIN;
 					config.MainIcon = this.customMainIcon.Handle;
 				}
 
@@ -1093,11 +1041,11 @@ namespace TaskDialogInterop
 					config.pszContent = this.content;
 				}
 
-				VistaTaskDialogButton[] customButtons = this.buttons;
+				TaskDialogButton[] customButtons = this.buttons;
 				if (customButtons.Length > 0)
 				{
 					// Hand marshal the buttons array.
-					int elementSize = Marshal.SizeOf(typeof(VistaTaskDialogButton));
+					int elementSize = Marshal.SizeOf(typeof(TaskDialogButton));
 					config.pButtons = Marshal.AllocHGlobal(elementSize * (int)customButtons.Length);
 					for (int i = 0; i < customButtons.Length; i++)
 					{
@@ -1111,11 +1059,11 @@ namespace TaskDialogInterop
 					}
 				}
 
-				VistaTaskDialogButton[] customRadioButtons = this.radioButtons;
+				TaskDialogButton[] customRadioButtons = this.radioButtons;
 				if (customRadioButtons.Length > 0)
 				{
 					// Hand marshal the buttons array.
-					int elementSize = Marshal.SizeOf(typeof(VistaTaskDialogButton));
+					int elementSize = Marshal.SizeOf(typeof(TaskDialogButton));
 					config.pRadioButtons = Marshal.AllocHGlobal(elementSize * (int)customRadioButtons.Length);
 					for (int i = 0; i < customRadioButtons.Length; i++)
 					{
@@ -1155,7 +1103,7 @@ namespace TaskDialogInterop
 				config.FooterIcon = (IntPtr)this.footerIcon;
 				if (this.customFooterIcon != null)
 				{
-					config.dwFlags |= VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_HICON_FOOTER;
+					config.dwFlags |= TASKDIALOG_FLAGS.TDF_USE_HICON_FOOTER;
 					config.FooterIcon = this.customFooterIcon.Handle;
 				}
 
@@ -1168,14 +1116,14 @@ namespace TaskDialogInterop
 				// translate to the friendly version.
 				if (this.callback != null)
 				{
-					config.pfCallback = new VistaUnsafeNativeMethods.VistaTaskDialogCallback(this.PrivateCallback);
+					config.pfCallback = new UnsafeNativeMethods.TaskDialogCallbackProc(this.PrivateCallback);
 				}
 
 				////config.lpCallbackData = this.callbackData; // How do you do this? Need to pin the ref?
 				config.cxWidth = this.width;
 
 				// The call all this mucking about is here for.
-				VistaUnsafeNativeMethods.TaskDialogIndirect(ref config, out result, out radioButtonResult, out verificationFlagChecked);
+				UnsafeNativeMethods.TaskDialogIndirect(ref config, out result, out radioButtonResult, out verificationFlagChecked);
 			}
 			finally
 			{
@@ -1185,13 +1133,13 @@ namespace TaskDialogInterop
 				// that are not required for the users of this class.
 				if (config.pButtons != IntPtr.Zero)
 				{
-					int elementSize = Marshal.SizeOf(typeof(VistaTaskDialogButton));
+					int elementSize = Marshal.SizeOf(typeof(TaskDialogButton));
 					for (int i = 0; i < config.cButtons; i++)
 					{
 					unsafe
 					{
 						byte* p = (byte*)config.pButtons;
-						Marshal.DestroyStructure((IntPtr)(p + (elementSize * i)), typeof(VistaTaskDialogButton));
+						Marshal.DestroyStructure((IntPtr)(p + (elementSize * i)), typeof(TaskDialogButton));
 					}
 					}
 
@@ -1200,13 +1148,13 @@ namespace TaskDialogInterop
 
 				if (config.pRadioButtons != IntPtr.Zero)
 				{
-					int elementSize = Marshal.SizeOf(typeof(VistaTaskDialogButton));
+					int elementSize = Marshal.SizeOf(typeof(TaskDialogButton));
 					for (int i = 0; i < config.cRadioButtons; i++)
 					{
 					unsafe
 					{
 						byte* p = (byte*)config.pRadioButtons;
-						Marshal.DestroyStructure((IntPtr)(p + (elementSize * i)), typeof(VistaTaskDialogButton));
+						Marshal.DestroyStructure((IntPtr)(p + (elementSize * i)), typeof(TaskDialogButton));
 					}
 					}
 
@@ -1234,14 +1182,14 @@ namespace TaskDialogInterop
 				// Prepare arguments for the callback to the user we are insulating from Interop casting sillyness.
 
 				// Future: Consider reusing a single ActiveTaskDialog object and mark it as destroyed on the destry notification.
-				VistaActiveTaskDialog activeDialog = new VistaActiveTaskDialog(hwnd);
-				VistaTaskDialogNotificationArgs args = new VistaTaskDialogNotificationArgs();
+				ActiveTaskDialog activeDialog = new ActiveTaskDialog(hwnd);
+				TaskDialogNotificationArgs args = new TaskDialogNotificationArgs();
 				args.Config = this.config;
-				args.Notification = (VistaTaskDialogNotification)msg;
+				args.Notification = (TaskDialogNotification)msg;
 				switch (args.Notification)
 				{
-					case VistaTaskDialogNotification.ButtonClicked:
-					case VistaTaskDialogNotification.RadioButtonClicked:
+					case TaskDialogNotification.ButtonClicked:
+					case TaskDialogNotification.RadioButtonClicked:
 						args.ButtonId = (int)wparam;
 
 						// The index, ideally, should be -1 or something whenever the
@@ -1267,16 +1215,16 @@ namespace TaskDialogInterop
 						else
 							args.ButtonIndex = TaskDialog.GetButtonIndexForCommonButton(args.Config.CommonButtons, args.ButtonId);
 						break;
-					case VistaTaskDialogNotification.HyperlinkClicked:
+					case TaskDialogNotification.HyperlinkClicked:
 						args.Hyperlink = Marshal.PtrToStringUni(lparam);
 						break;
-					case VistaTaskDialogNotification.Timer:
+					case TaskDialogNotification.Timer:
 						args.TimerTickCount = (uint)wparam;
 						break;
-					case VistaTaskDialogNotification.VerificationClicked:
+					case TaskDialogNotification.VerificationClicked:
 						args.VerificationFlagChecked = (wparam != UIntPtr.Zero);
 						break;
-					case VistaTaskDialogNotification.ExpandoButtonClicked:
+					case TaskDialogNotification.ExpandoButtonClicked:
 						args.Expanded = (wparam != UIntPtr.Zero);
 						break;
 				}
@@ -1294,7 +1242,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		/// <param name="flag">The Flag bit to set or clear.</param>
 		/// <param name="value">True to set, false to clear the bit in the flags field.</param>
-		private void SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS flag, bool value)
+		private void SetFlag(TASKDIALOG_FLAGS flag, bool value)
 		{
 			if (value)
 			{

@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:local="clr-namespace:TaskDialogInterop"
+	xmlns:c="clr-namespace:TaskDialogInterop.Data"
 	mc:Ignorable="d"
 	x:Class="TaskDialogInterop.CommandLink"
 	x:Name="UserControl"
@@ -22,9 +22,9 @@
 			<BitmapImage x:Key="CmdArr1" UriSource="Resources/cmdarr1.png" />
 			<BitmapImage x:Key="CmdShld" UriSource="Resources/shield-16.png" />
 			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-			<local:NotBooleanToVisibilityConverter x:Key="NotBooleanToVisibilityConverter"/>
-			<local:CommandLinkTextConverter x:Key="CommandLinkTextConverter"/>
-			<local:CommandLinkExtraTextVisibilityConverter x:Key="CommandLinkExtraTextVisibilityConverter"/>
+			<c:NotBooleanToVisibilityConverter x:Key="NotBooleanToVisibilityConverter"/>
+			<c:CommandLinkTextConverter x:Key="CommandLinkTextConverter"/>
+			<c:CommandLinkExtraTextVisibilityConverter x:Key="CommandLinkExtraTextVisibilityConverter"/>
 		</ResourceDictionary>
 	</UserControl.Resources>
 

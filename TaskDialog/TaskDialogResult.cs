@@ -65,7 +65,7 @@ namespace TaskDialogInterop
 	/// <summary>
 	/// Specifies data for the return values of a task dialog box.
 	/// </summary>
-	public class TaskDialogResult
+	public struct TaskDialogResult
 	{
 		/// <summary>
 		/// Represents a result with no data.
@@ -98,12 +98,6 @@ namespace TaskDialogInterop
 		public int? CustomButtonResult { get; private set; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:TaskDialog.TaskDialogResult"/> class.
-		/// </summary>
-		private TaskDialogResult()
-		{
-		}
-		/// <summary>
 		/// Initializes a new instance of the <see cref="TaskDialogResult"/> class.
 		/// </summary>
 		/// <param name="result">The simple TaskDialog result.</param>
@@ -119,6 +113,100 @@ namespace TaskDialogInterop
 			RadioButtonResult = radioButtonResult;
 			CommandButtonResult = commandButtonResult;
 			CustomButtonResult = customButtonResult;
+		}
+
+		/// <summary>
+		/// Implements the operator ==.
+		/// </summary>
+		/// <param name="a">The first operand.</param>
+		/// <param name="b">The second operand.</param>
+		/// <returns>The result of the operator.</returns>
+		public static bool operator ==(TaskDialogResult a, TaskDialogResult b)
+		{
+			return a.Equals(b);
+		}
+		/// <summary>
+		/// Implements the operator !=.
+		/// </summary>
+		/// <param name="a">The first operand.</param>
+		/// <param name="b">The second operand.</param>
+		/// <returns>The result of the operator.</returns>
+		public static bool operator !=(TaskDialogResult a, TaskDialogResult b)
+		{
+			return !(a == b);
+		}
+
+		/// <summary>
+		/// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+		/// </summary>
+		/// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+		/// <returns>
+		/// 	<c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+		/// </returns>
+		/// <exception cref="T:System.NullReferenceException">
+		/// The <paramref name="obj"/> parameter is null.
+		/// </exception>
+		public override bool Equals(object obj)
+		{
+			if (obj == null) return false;
+
+			if (ReferenceEquals(this, obj)) return true;
+
+			bool result = false;
+
+			try
+			{
+				var tdr = (TaskDialogResult)obj;
+
+				result = this.Result == tdr.Result
+					&& this.VerificationChecked == tdr.VerificationChecked
+					&& this.RadioButtonResult == tdr.RadioButtonResult
+					&& this.CommandButtonResult == tdr.CommandButtonResult
+					&& this.CustomButtonResult == tdr.CustomButtonResult;
+			}
+			catch (InvalidCastException) // obj isn't of type TaskDialogResult
+			{
+				result = false;
+			}
+			catch (NullReferenceException) // obj is null, 
+			{
+				result = false;
+			}
+
+			return result;
+		}
+		/// <summary>
+		/// Returns a hash code for this instance.
+		/// </summary>
+		/// <returns>
+		/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+		/// </returns>
+		public override int GetHashCode()
+		{
+			return Result.GetHashCode() ^ VerificationChecked.GetHashCode()
+				^ RadioButtonResult.GetHashCode() ^ CommandButtonResult.GetHashCode()
+				^ CustomButtonResult.GetHashCode();
+		}
+		/// <summary>
+		/// Returns a <see cref="System.String"/> that represents this instance.
+		/// </summary>
+		/// <returns>
+		/// A <see cref="System.String"/> that represents this instance.
+		/// </returns>
+		public override string ToString()
+		{
+			string text = "Result: " + Result.ToString();
+
+			if (VerificationChecked.HasValue)
+				text += ", VerificationChecked: " + VerificationChecked.Value.ToString();
+			if (RadioButtonResult.HasValue)
+				text += ", RadioButtonResult: " + RadioButtonResult.Value.ToString();
+			if (CommandButtonResult.HasValue)
+				text += ", CommandButtonResult: " + CommandButtonResult.Value.ToString();
+			if (CustomButtonResult.HasValue)
+				text += ", CustomButtonResult: " + CustomButtonResult.Value.ToString();
+
+			return text;
 		}
 	}
 }

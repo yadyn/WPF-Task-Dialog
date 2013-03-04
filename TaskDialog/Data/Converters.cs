@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Data;
 
-namespace TaskDialogInterop
+namespace TaskDialogInterop.Data
 {
 	/// <summary>
 	/// Converts a null check into a negated visibility value.

@@ -1,4 +1,4 @@
-﻿<local:TaskDialogViewModel
+﻿<local:EmulatedTaskDialogViewModel
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="clr-namespace:TaskDialogInterop"
@@ -13,27 +13,27 @@
 	DefaultButtonIndex="0"
 	ShowCloseButton="False"
 	DialogResult="-1">
-	<local:TaskDialogViewModel.MainIcon>
+	<local:EmulatedTaskDialogViewModel.MainIcon>
 		<BitmapImage UriSource="../Resources/shield-32.png"/>
-	</local:TaskDialogViewModel.MainIcon>
-	<local:TaskDialogViewModel.FooterIcon>
+	</local:EmulatedTaskDialogViewModel.MainIcon>
+	<local:EmulatedTaskDialogViewModel.FooterIcon>
 		<BitmapImage UriSource="../Resources/shield-16.png"/>
-	</local:TaskDialogViewModel.FooterIcon>
-	<local:TaskDialogViewModel.NormalButtons>
+	</local:EmulatedTaskDialogViewModel.FooterIcon>
+	<local:EmulatedTaskDialogViewModel.NormalButtons>
 		<local:TaskDialogButtonData ID="6" Text="Yes" IsDefault="True" IsCancel="False"/>
 		<local:TaskDialogButtonData ID="7" Text="No" IsDefault="False" IsCancel="False"/>
 		<local:TaskDialogButtonData ID="2" Text="Cancel" IsDefault="False" IsCancel="True"/>
-	</local:TaskDialogViewModel.NormalButtons>
-	<local:TaskDialogViewModel.CommandLinks>
+	</local:EmulatedTaskDialogViewModel.NormalButtons>
+	<local:EmulatedTaskDialogViewModel.CommandLinks>
 		<local:TaskDialogButtonData ID="2000" Text="Command Link 1" IsDefault="True" IsCancel="False"/>
 		<local:TaskDialogButtonData ID="2001" Text="Command Link 2&#x0a;Line 2&#x0a;Line 3" IsDefault="False" IsCancel="False"/>
 		<local:TaskDialogButtonData ID="2002" Text="Command Link 3" IsDefault="False" IsCancel="False"/>
-	</local:TaskDialogViewModel.CommandLinks>
-	<local:TaskDialogViewModel.RadioButtons>
+	</local:EmulatedTaskDialogViewModel.CommandLinks>
+	<local:EmulatedTaskDialogViewModel.RadioButtons>
 		<local:TaskDialogButtonData ID="1000" Text="Radio Button 1" IsDefault="True" IsCancel="False"/>
 		<local:TaskDialogButtonData ID="1001" Text="Radio Button 2" IsDefault="False" IsCancel="False"/>
 		<local:TaskDialogButtonData ID="1002" Text="Radio Button 3" IsDefault="False" IsCancel="False"/>
 		<local:TaskDialogButtonData ID="1003" Text="Radio Button 4" IsDefault="False" IsCancel="False"/>
 		<local:TaskDialogButtonData ID="1004" Text="Radio Button 5" IsDefault="False" IsCancel="False"/>
-	</local:TaskDialogViewModel.RadioButtons>
-</local:TaskDialogViewModel>
+	</local:EmulatedTaskDialogViewModel.RadioButtons>
+</local:EmulatedTaskDialogViewModel>

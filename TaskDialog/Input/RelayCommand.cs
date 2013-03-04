@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 
-namespace TaskDialogInterop
+namespace TaskDialogInterop.Input
 {
 	/// <summary>
 	/// Defines a command that is relayed to a pre-defined delegate handler.
