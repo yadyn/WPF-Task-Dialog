@@ -35,6 +35,15 @@
 			<BitmapImage x:Key="ExpArr2" UriSource="Resources/exparr-down2.bmp" />
 			<BitmapImage x:Key="ExpArr3" UriSource="Resources/exparr-down3.bmp" />
 			<BitmapImage x:Key="CmdElevated" UriSource="Resources/shield-16.png" />
+
+			<Style TargetType="{x:Type Hyperlink}" BasedOn="{StaticResource {x:Type Hyperlink}}">
+				<Setter Property="Foreground" Value="{StaticResource {x:Static SystemColors.HotTrackBrushKey}}" />
+				<Style.Triggers>
+					<Trigger Property="IsMouseOver" Value="True">
+						<Setter Property="Foreground" Value="{StaticResource {x:Static SystemColors.HotTrackBrushKey}}" />
+					</Trigger>
+				</Style.Triggers>
+			</Style>
 		</ResourceDictionary>
 	</Window.Resources>
 
@@ -91,7 +100,8 @@
 								  Margin="4,17,11,3"
 								  ItemsSource="{Binding CommandLinks}"
 								  ItemsPanel="{DynamicResource ItemsPanelTemplate}"
-								  ItemTemplate="{DynamicResource DataTemplate}">
+								  ItemTemplate="{DynamicResource DataTemplate}"
+								  Focusable="False">
 						<ItemsControl.Resources>
 							<ItemsPanelTemplate x:Key="ItemsPanelTemplate">
 								<StackPanel/>
@@ -105,7 +115,8 @@
 								  Margin="10,15,10,6"
 								  ItemsSource="{Binding RadioButtons}"
 								  ItemsPanel="{DynamicResource ItemsPanelTemplate}"
-								  ItemTemplate="{DynamicResource DataTemplate}">
+								  ItemTemplate="{DynamicResource DataTemplate}"
+								  Focusable="False">
 						<ItemsControl.Resources>
 							<ItemsPanelTemplate x:Key="ItemsPanelTemplate">
 								<StackPanel/>
@@ -208,7 +219,8 @@
 				<ItemsControl x:Name="Buttons" Grid.Column="1"
 							  ItemsSource="{Binding NormalButtons}"
 							  ItemsPanel="{DynamicResource ButtonsItemsPanelTemplate}"
-							  ItemTemplate="{DynamicResource ButtonsDataTemplate}">
+							  ItemTemplate="{DynamicResource ButtonsDataTemplate}"
+							  Focusable="False">
 					<ItemsControl.Resources>
 						<ItemsPanelTemplate x:Key="ButtonsItemsPanelTemplate">
 							<WrapPanel Orientation="Horizontal" HorizontalAlignment="Right"/>
