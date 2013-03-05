@@ -447,14 +447,13 @@ namespace TaskDialogInterop
 						int i = 0;
 						_normalButtons.AddRange(
 							(from button in options.CustomButtons
-							 let id = TaskDialog.CustomButtonIDOffset + i
-							 orderby id
 							 select new TaskDialogButtonData(
-								id,
+								TaskDialog.CustomButtonIDOffset + i,
 								button,
 								NormalButtonCommand,
 								DefaultButtonIndex == i++,
 								button.Contains(GetLocalizedStringForCommonButton(TaskDialogCommonButtons.Cancel)) || button.Contains(GetLocalizedStringForCommonButton(TaskDialogCommonButtons.Cancel))))
+							.OrderBy(b => b.ID)
 						);
 					}
 					// Common buttons are always supported, even if using command links and/or radio buttons
@@ -463,9 +462,8 @@ namespace TaskDialogInterop
 						int i = 0;
 						_normalButtons.AddRange(
 							(from button in Enum.GetValues(typeof(TaskDialogCommonButtons)).Cast<int>()
-							 where button != (int)TaskDialogCommonButtons.None
+							 where IsPowerOfTwo(button) // this will exclude enum combinations
 								&& options.CommonButtons.HasFlag((TaskDialogCommonButtons)button)
-								&& (button % 2 == 0 || button == 1)
 							 select ConvertCommonButton(
 								(TaskDialogCommonButtons)button,
 								NormalButtonCommand,
@@ -1034,6 +1032,10 @@ namespace TaskDialogInterop
 			}
 
 			return fixedLabels;
+		}
+		private bool IsPowerOfTwo(int x) // should technically be ulong, but whatevs
+		{
+			return (x != 0) && ((x & (x - 1)) == 0);
 		}
 
 		bool IActiveTaskDialog.ClickButton(int buttonId)

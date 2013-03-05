@@ -12,9 +12,10 @@
 	Title="{Binding Title, Mode=OneWay}"
 	ResizeMode="NoResize"
 	ShowInTaskbar="False"
-	SizeToContent="Height"
+	SizeToContent="WidthAndHeight"
 	MinWidth="375" MaxWidth="500"
 	SnapsToDevicePixels="True"
+	UseLayoutRounding="True"
 	TextOptions.TextFormattingMode="Display">
 
 	<Window.Resources>
