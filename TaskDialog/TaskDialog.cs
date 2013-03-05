@@ -608,8 +608,8 @@ namespace TaskDialogInterop
 						if (!hasCustomCancel)
 						{
 							hasCustomCancel =
-								(button.ButtonText == "Close"
-								|| button.ButtonText == "Cancel");
+								(button.ButtonText == TaskDialogOptions.LocalizedStrings.CommonButton_Close
+								|| button.ButtonText == TaskDialogOptions.LocalizedStrings.CommonButton_Cancel);
 						}
 
 						lst.Add(button);
@@ -668,9 +668,8 @@ namespace TaskDialogInterop
 			td.AllowDialogCancellation =
 				(options.AllowDialogCancellation
 				|| hasCustomCancel
-				|| options.CommonButtons == TaskDialogCommonButtons.Close
-				|| options.CommonButtons == TaskDialogCommonButtons.OKCancel
-				|| options.CommonButtons == TaskDialogCommonButtons.YesNoCancel);
+				|| options.CommonButtons.HasFlag(TaskDialogCommonButtons.Close)
+				|| options.CommonButtons.HasFlag(TaskDialogCommonButtons.Cancel));
 			td.CallbackTimer = options.EnableCallbackTimer;
 			td.ExpandedByDefault = options.ExpandedByDefault;
 			td.ExpandFooterArea = options.ExpandToFooter;

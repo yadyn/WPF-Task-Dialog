@@ -138,10 +138,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		public string MainInstruction
 		{
-			get
-			{
-				return options.MainInstruction;
-			}
+			get { return options.MainInstruction; }
 			private set
 			{
 				options.MainInstruction = value;
@@ -154,10 +151,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		public string Content
 		{
-			get
-			{
-				return options.Content;
-			}
+			get { return options.Content; }
 			private set
 			{
 				options.Content = value;
@@ -226,34 +220,39 @@ namespace TaskDialogInterop
 			}
 		}
 		/// <summary>
-		/// Gets or sets a value indicating whether content area expanded info is visible.
+		/// Gets a value indicating whether content area expanded info is visible.
 		/// </summary>
 		public bool ContentExpandedInfoVisible
 		{
-			get
-			{
-				return !options.ExpandToFooter && _expandedInfoVisible;
-			}
+			get { return !options.ExpandToFooter && _expandedInfoVisible; }
 		}
 		/// <summary>
-		/// Gets or sets a value indicating whether footer area expanded info is visible.
+		/// Gets a value indicating whether footer area expanded info is visible.
 		/// </summary>
 		public bool FooterExpandedInfoVisible
 		{
-			get
-			{
-				return options.ExpandToFooter && _expandedInfoVisible;
-			}
+			get { return options.ExpandToFooter && _expandedInfoVisible; }
+		}
+		/// <summary>
+		/// Gets the text to show on the expanded info toggle button to open the expander.
+		/// </summary>
+		public string ExpandedInfoShowDetailsText
+		{
+			get { return TaskDialogOptions.LocalizedStrings.ExpandedInfo_Show; }
+		}
+		/// <summary>
+		/// Gets the text to show on the expanded info toggle button to close the expander.
+		/// </summary>
+		public string ExpandedInfoHideDetailsText
+		{
+			get { return TaskDialogOptions.LocalizedStrings.ExpandedInfo_Hide; }
 		}
 		/// <summary>
 		/// Gets the verification text.
 		/// </summary>
 		public string VerificationText
 		{
-			get
-			{
-				return options.VerificationText;
-			}
+			get { return options.VerificationText; }
 			private set
 			{
 				options.VerificationText = value;
@@ -266,10 +265,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool VerificationChecked
 		{
-			get
-			{
-				return _verificationChecked;
-			}
+			get { return _verificationChecked; }
 			set
 			{
 				if (_verificationChecked == value)
@@ -293,10 +289,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		public string FooterText
 		{
-			get
-			{
-				return options.FooterText;
-			}
+			get { return options.FooterText; }
 			private set
 			{
 				options.FooterText = value;
@@ -319,10 +312,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		public TaskDialogIcon MainIconType
 		{
-			get
-			{
-				return options.MainIcon;
-			}
+			get { return options.MainIcon; }
 			private set
 			{
 				options.MainIcon = value;
@@ -355,10 +345,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		public int DefaultButtonIndex
 		{
-			get
-			{
-				return options.DefaultButtonIndex ?? 0;
-			}
+			get { return options.DefaultButtonIndex ?? 0; }
 		}
 		/// <summary>
 		/// Gets a value indicating whether or not Alt-F4, Esc, and the red X
@@ -409,10 +396,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		public double ProgressBarMinimum
 		{
-			get
-			{
-				return _progressBarMin;
-			}
+			get { return _progressBarMin; }
 			private set
 			{
 				_progressBarMin = value;
@@ -425,10 +409,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		public double ProgressBarMaximum
 		{
-			get
-			{
-				return _progressBarMax;
-			}
+			get { return _progressBarMax; }
 			private set
 			{
 				_progressBarMax = value;
@@ -441,10 +422,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		public double ProgressBarValue
 		{
-			get
-			{
-				return _progressBarValue;
-			}
+			get { return _progressBarValue; }
 			private set
 			{
 				_progressBarValue = value;
@@ -476,7 +454,7 @@ namespace TaskDialogInterop
 								button,
 								NormalButtonCommand,
 								DefaultButtonIndex == i++,
-								button.Contains(TaskDialogCommonButtons.Cancel.ToString()) || button.Contains(TaskDialogCommonButtons.Close.ToString())))
+								button.Contains(GetLocalizedStringForCommonButton(TaskDialogCommonButtons.Cancel)) || button.Contains(GetLocalizedStringForCommonButton(TaskDialogCommonButtons.Cancel))))
 						);
 					}
 					// Common buttons are always supported, even if using command links and/or radio buttons
@@ -504,11 +482,11 @@ namespace TaskDialogInterop
 					// Under dwCommonButtons:
 					// "If no common buttons are specified and no custom buttons are specified using
 					//the cButtons and pButtons members, the task dialog will contain the OK button by default."
-					if (_normalButtons.Count == 0)
+					if (_normalButtons.Count == 0 && CommandLinks.Count == 0)
 					{
 						_normalButtons.Add(new TaskDialogButtonData(
 							(int)TaskDialogCommonButtons.OK,
-							TaskDialogCommonButtons.OK.ToString(),
+							GetLocalizedStringForCommonButton(TaskDialogCommonButtons.OK),
 							NormalButtonCommand,
 							true, true));
 					}
@@ -582,20 +560,14 @@ namespace TaskDialogInterop
 		/// </summary>
 		public int DialogResult
 		{
-			get
-			{
-				return _dialogResult;
-			}
+			get { return _dialogResult; }
 		}
 		/// <summary>
 		/// Gets the value of the chosen radio option.
 		/// </summary>
 		public int RadioResult
 		{
-			get
-			{
-				return _radioResult;
-			}
+			get { return _radioResult; }
 		}
 
 		/// <summary>
@@ -617,7 +589,7 @@ namespace TaskDialogInterop
 							args.Notification = TaskDialogNotification.ButtonClicked;
 							args.ButtonId = i;
 							if (i > 100)
-								args.ButtonIndex = i % 500;
+								args.ButtonIndex = i % TaskDialog.CustomButtonIDOffset;
 							else
 								args.ButtonIndex = TaskDialog.GetButtonIndexForCommonButton(args.Config.CommonButtons, args.ButtonId);
 
@@ -648,7 +620,7 @@ namespace TaskDialogInterop
 							args.Config = this.options;
 							args.Notification = TaskDialogNotification.ButtonClicked;
 							args.ButtonId = i;
-							args.ButtonIndex = i % 500;
+							args.ButtonIndex = i % TaskDialog.CustomButtonIDOffset;
 
 							OnCallback(args);
 
@@ -677,7 +649,7 @@ namespace TaskDialogInterop
 							args.Config = this.options;
 							args.Notification = TaskDialogNotification.RadioButtonClicked;
 							args.ButtonId = i;
-							args.ButtonIndex = i % 500;
+							args.ButtonIndex = i % TaskDialog.CustomButtonIDOffset;
 
 							OnCallback(args);
 						});
@@ -905,7 +877,39 @@ namespace TaskDialogInterop
 					break;
 			}
 
-			return new TaskDialogButtonData(id, "_" + commonButton.ToString(), command, isDefault, isCancel);
+			return new TaskDialogButtonData(id, GetLocalizedStringForCommonButton(commonButton), command, isDefault, isCancel);
+		}
+		private string GetLocalizedStringForCommonButton(TaskDialogCommonButtons commonButton)
+		{
+			string text;
+
+			switch (commonButton)
+			{
+				default:
+				case TaskDialogCommonButtons.None:
+					text = String.Empty;
+					break;
+				case TaskDialogCommonButtons.OK:
+					text = TaskDialogOptions.LocalizedStrings.CommonButton_OK;
+					break;
+				case TaskDialogCommonButtons.Yes:
+					text = TaskDialogOptions.LocalizedStrings.CommonButton_Yes;
+					break;
+				case TaskDialogCommonButtons.No:
+					text = TaskDialogOptions.LocalizedStrings.CommonButton_No;
+					break;
+				case TaskDialogCommonButtons.Cancel:
+					text = TaskDialogOptions.LocalizedStrings.CommonButton_Cancel;
+					break;
+				case TaskDialogCommonButtons.Retry:
+					text = TaskDialogOptions.LocalizedStrings.CommonButton_Retry;
+					break;
+				case TaskDialogCommonButtons.Close:
+					text = TaskDialogOptions.LocalizedStrings.CommonButton_Close;
+					break;
+			}
+
+			return text;
 		}
 		private void HandleCallbackReturn(TaskDialogNotificationArgs e, bool returnValue)
 		{

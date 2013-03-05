@@ -55,6 +55,7 @@
     <Compile Include="CommandLink.xaml.cs">
       <DependentUpon>CommandLink.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Localization.cs" />
     <Compile Include="Win32Types.cs" />
     <Compile Include="Data\Converters.cs" />
     <Compile Include="NativeMethods.cs" />

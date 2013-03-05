@@ -1211,7 +1211,7 @@ namespace TaskDialogInterop
 						//with the native dialog, too.
 
 						if (args.ButtonId > 100)
-							args.ButtonIndex = args.ButtonId % 500;
+							args.ButtonIndex = args.ButtonId % TaskDialog.CustomButtonIDOffset;
 						else
 							args.ButtonIndex = TaskDialog.GetButtonIndexForCommonButton(args.Config.CommonButtons, args.ButtonId);
 						break;

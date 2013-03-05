@@ -161,7 +161,7 @@
 										UseLayoutRounding="True"
 										RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 									<TextBlock x:Name="ShowDetailsLabel"
-										Text="Show details"
+										Text="{Binding ExpandedInfoShowDetailsText}"
 										Margin="8,0,0,0"
 										HorizontalAlignment="Left" VerticalAlignment="Center"/>
 								</StackPanel>
@@ -182,10 +182,10 @@
 									</MultiTrigger>
 									<Trigger Property="IsChecked" Value="True">
 										<Setter TargetName="ShowDetailsArrow" Property="Source" Value="{DynamicResource ExpArrUp1}"/>
-										<Setter TargetName="ShowDetailsLabel" Property="Text" Value="Hide details"/>
+										<Setter TargetName="ShowDetailsLabel" Property="Text" Value="{Binding ExpandedInfoHideDetailsText}"/>
 									</Trigger>
 									<Trigger Property="IsChecked" Value="False">
-										<Setter TargetName="ShowDetailsLabel" Property="Text" Value="Show details"/>
+										<Setter TargetName="ShowDetailsLabel" Property="Text" Value="{Binding ExpandedInfoShowDetailsText}"/>
 									</Trigger>
 									<MultiTrigger>
 										<MultiTrigger.Conditions>

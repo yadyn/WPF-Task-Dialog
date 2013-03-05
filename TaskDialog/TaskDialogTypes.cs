@@ -35,6 +35,22 @@ namespace TaskDialogInterop
 		/// the caption.
 		/// </remarks>
 		public static TaskDialogOptions Default;
+		/// <summary>
+		/// Contains localized strings for the emulated dialog.
+		/// </summary>
+		/// <remarks>
+		/// Note that these are only used by the emulated dialog.
+		/// The native dialog is controlled by Windows language settings.
+		/// </remarks>
+		public static TaskDialogStrings LocalizedStrings;
+
+		/// <summary>
+		/// Initializes the <see cref="T:TaskDialogOptions"/> type.
+		/// </summary>
+		static TaskDialogOptions()
+		{
+			LocalizedStrings = new EnglishTaskDialogStrings();
+		}
 
 		/// <summary>
 		/// The owner window of the task dialog box.
