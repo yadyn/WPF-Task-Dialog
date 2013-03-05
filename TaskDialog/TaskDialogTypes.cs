@@ -79,7 +79,7 @@ namespace TaskDialogInterop
 		/// </summary>
 		public bool ExpandToFooter;
 		/// <summary>
-		/// Standard buttons.
+		/// Standard push buttons.
 		/// </summary>
 		public TaskDialogCommonButtons CommonButtons;
 		/// <summary>
@@ -88,13 +88,15 @@ namespace TaskDialogInterop
 		public string[] RadioButtons;
 		/// <summary>
 		/// Buttons that are not from the set of standard buttons. Use an
-		/// ampersand to denote an access key.
+		/// ampersand to denote an access key. These are ignored if CommandLinks
+		/// are also defined. These will be appended after any defined common buttons.
 		/// </summary>
 		public string[] CustomButtons;
 		/// <summary>
-		/// Command link buttons.
+		/// Command links. These override any custom buttons, but can be used with
+		/// radio and common buttons.
 		/// </summary>
-		public string[] CommandButtons;
+		public string[] CommandLinks;
 		/// <summary>
 		/// Zero-based index of the button to have focus by default.
 		/// </summary>

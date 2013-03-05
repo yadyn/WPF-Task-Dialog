@@ -6,12 +6,11 @@
 	Title="Task Dialog Title"
 	MainInstruction="The main instruction text for the TaskDialog goes here"
 	Content="The content text for the task dialog is shown here and the text will automatically wrap as needed."
-	ExpandedInfo="Any expanded content text for the task dialog is shown here and the text will automatically wrap as needed."
+	ContentExpandedInfo="Any expanded content text for the task dialog is shown here and the text will automatically wrap as needed."
 	VerificationText="Don't show me this message again"
 	FooterText="Optional footer text with an icon can be included."
 	MainIconType="Information"
 	DefaultButtonIndex="0"
-	ShowCloseButton="False"
 	DialogResult="-1">
 	<local:EmulatedTaskDialogViewModel.MainIcon>
 		<BitmapImage UriSource="../Resources/shield-32.png"/>

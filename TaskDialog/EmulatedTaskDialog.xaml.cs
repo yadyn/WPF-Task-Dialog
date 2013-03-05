@@ -54,11 +54,6 @@ namespace TaskDialogInterop
 				ConvertToHyperlinkedText(FooterText, ViewModel.FooterText);
 
 				this.WindowStartupLocation = ViewModel.StartPosition;
-
-				if (ViewModel.NormalButtons.Count == 0)
-				{
-					this.MaxWidth = 462;
-				}
 				
 				// Footer only shows the secondary white top border when the buttons section is visible
 				FooterInner.BorderThickness = new Thickness(

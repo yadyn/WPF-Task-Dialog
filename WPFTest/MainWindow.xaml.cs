@@ -167,7 +167,7 @@ namespace WPFTest
 			config.MainInstruction = "The main instruction text for the TaskDialog goes here.";
 			config.Content = "The content text for the task dialog is shown here and the text will automatically wrap as needed.";
 			config.ExpandedInfo = "Any expanded content text for the task dialog is shown here and the text will automatically wrap as needed.";
-			config.CommandButtons = new string[] { "Command &Link 1", "Command Link 2\nLine 2\nLine 3", "Command Link 3" };
+			config.CommandLinks = new string[] { "Command &Link 1", "Command Link 2\nLine 2\nLine 3", "Command Link 3" };
 			config.MainIcon = TaskDialogIcon.Information;
 
 			TaskDialogResult res = TaskDialog.Show(config);

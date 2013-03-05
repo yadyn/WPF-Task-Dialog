@@ -305,6 +305,16 @@ namespace TaskDialogInterop
 			}
 		}
 		/// <summary>
+		/// Gets a value indicating whether or not a main icon is defined, whether custom or built-in system.
+		/// </summary>
+		public bool HasMainIcon
+		{
+			get
+			{
+				return options.MainIcon != TaskDialogIcon.None || options.CustomMainIcon != null;
+			}
+		}
+		/// <summary>
 		/// Gets the type of the main icon.
 		/// </summary>
 		public TaskDialogIcon MainIconType
@@ -362,7 +372,7 @@ namespace TaskDialogInterop
 				//normal button marked as IsCancel or its been overridden
 				return options.AllowDialogCancellation
 					|| NormalButtons.Any(button => button.IsCancel)
-					|| ((options.CommandButtons == null || options.CommandButtons.Length == 0)
+					|| ((options.CommandLinks == null || options.CommandLinks.Length == 0)
 						&& (options.RadioButtons == null || options.RadioButtons.Length == 0)
 						&& (options.CustomButtons == null || options.CustomButtons.Length == 0));
 			}
@@ -443,7 +453,7 @@ namespace TaskDialogInterop
 			}
 		}
 		/// <summary>
-		/// Gets the button labels.
+		/// Gets data for any standard push buttons.
 		/// </summary>
 		public List<TaskDialogButtonData> NormalButtons
 		{
@@ -451,62 +461,56 @@ namespace TaskDialogInterop
 			{
 				if (_normalButtons == null)
 				{
+					_normalButtons = new List<TaskDialogButtonData>();
+
+					// Only use custom buttons if no command links are defined
+					if (options.CustomButtons != null && CommandLinks.Count == 0)
+					{
+						int i = 0;
+						_normalButtons.AddRange(
+							(from button in options.CustomButtons
+							 let id = TaskDialog.CustomButtonIDOffset + i
+							 orderby id
+							 select new TaskDialogButtonData(
+								id,
+								button,
+								NormalButtonCommand,
+								DefaultButtonIndex == i++,
+								button.Contains(TaskDialogCommonButtons.Cancel.ToString()) || button.Contains(TaskDialogCommonButtons.Close.ToString())))
+						);
+					}
+					// Common buttons are always supported, even if using command links and/or radio buttons
+					if (options.CommonButtons != TaskDialogCommonButtons.None)
+					{
+						int i = 0;
+						_normalButtons.AddRange(
+							(from button in Enum.GetValues(typeof(TaskDialogCommonButtons)).Cast<int>()
+							 where button != (int)TaskDialogCommonButtons.None
+								&& options.CommonButtons.HasFlag((TaskDialogCommonButtons)button)
+								&& (button % 2 == 0 || button == 1)
+							 select ConvertCommonButton(
+								(TaskDialogCommonButtons)button,
+								NormalButtonCommand,
+								DefaultButtonIndex == i++,
+								(TaskDialogCommonButtons)button == TaskDialogCommonButtons.Cancel || (TaskDialogCommonButtons)button == TaskDialogCommonButtons.Close))
+							.OrderBy(b => b.ID)
+						);
+					}
+
 					// Even if no buttons are specified, show an OK button at minimum
-					
-					// I wish I could support no buttons, but this is what the native dialog
-					//does if you don't specify anything
-					
+					// This is what the native dialog does if you don't specify anything
+
 					// See MSDN docs: http://msdn.microsoft.com/en-us/library/bb787473%28v=vs.85%29.aspx
 					// Under dwCommonButtons:
 					// "If no common buttons are specified and no custom buttons are specified using
 					//the cButtons and pButtons members, the task dialog will contain the OK button by default."
-
-					if (CommandLinks.Count == 0
-						&& (options.CustomButtons == null || options.CustomButtons.Length == 0)
-						&& options.CommonButtons == TaskDialogCommonButtons.None)
+					if (_normalButtons.Count == 0)
 					{
-						_normalButtons = new List<TaskDialogButtonData>();
 						_normalButtons.Add(new TaskDialogButtonData(
 							(int)TaskDialogCommonButtons.OK,
 							TaskDialogCommonButtons.OK.ToString(),
 							NormalButtonCommand,
 							true, true));
-					}
-					else if (options.CustomButtons != null)
-					{
-						int i = 0;
-						_normalButtons =
-							(from button in options.CustomButtons
-							 select new TaskDialogButtonData(
-								TaskDialog.CustomButtonIDOffset + i,
-								button,
-								NormalButtonCommand,
-								DefaultButtonIndex == i++,
-								button.Contains(TaskDialogCommonButtons.Cancel.ToString()) || button.Contains(TaskDialogCommonButtons.Close.ToString())))
-							.ToList();
-					}
-					else if (options.CommonButtons != TaskDialogCommonButtons.None)
-					{
-						int i = 0;
-						TaskDialogCommonButtons comBtns = TaskDialog.ConvertCommonButtons(options.CommonButtons);
-						_normalButtons =
-							(from button in Enum.GetValues(typeof(TaskDialogCommonButtons)).Cast<int>()
-							 where button != (int)TaskDialogCommonButtons.None
-								&& comBtns.HasFlag((TaskDialogCommonButtons)button)
-							 select TaskDialog.ConvertCommonButton(
-								(TaskDialogCommonButtons)button,
-								NormalButtonCommand,
-								DefaultButtonIndex == i++,
-								(TaskDialogCommonButtons)button == TaskDialogCommonButtons.Cancel || (TaskDialogCommonButtons)button == TaskDialogCommonButtons.Close))
-							.ToList();
-
-						// Fix for Retry/Cancel out of order
-						if (options.CommonButtons == TaskDialogCommonButtons.RetryCancel)
-							_normalButtons.Reverse();
-					}
-					else
-					{
-						_normalButtons = new List<TaskDialogButtonData>();
 					}
 				}
 
@@ -522,14 +526,14 @@ namespace TaskDialogInterop
 			{
 				if (_commandLinks == null)
 				{
-					if (options.CommandButtons == null || options.CommandButtons.Length == 0)
+					if (options.CommandLinks == null || options.CommandLinks.Length == 0)
 					{
 						_commandLinks = new List<TaskDialogButtonData>();
 					}
 					else
 					{
 						int i = 0;
-						_commandLinks = (from button in options.CommandButtons
+						_commandLinks = (from button in options.CommandLinks
 										   select new TaskDialogButtonData(
 											   TaskDialog.CommandButtonIDOffset + i,
 											   button,
@@ -552,9 +556,7 @@ namespace TaskDialogInterop
 			{
 				if (_radioButtons == null)
 				{
-					// If command buttons are defined, ignore any radio buttons (unless design mode)
-					if ((!IsInDesignMode && CommandLinks.Count > 0)
-						|| options.RadioButtons == null || options.RadioButtons.Length == 0)
+					if (options.RadioButtons == null || options.RadioButtons.Length == 0)
 					{
 						_radioButtons = new List<TaskDialogButtonData>();
 					}
@@ -872,6 +874,39 @@ namespace TaskDialogInterop
 			}
 		}
 
+
+		private TaskDialogButtonData ConvertCommonButton(TaskDialogCommonButtons commonButton, System.Windows.Input.ICommand command = null, bool isDefault = false, bool isCancel = false)
+		{
+			int id = 0;
+
+			switch (commonButton)
+			{
+				default:
+				case TaskDialogCommonButtons.None:
+					id = (int)TaskDialogSimpleResult.None;
+					break;
+				case TaskDialogCommonButtons.OK:
+					id = (int)TaskDialogSimpleResult.Ok;
+					break;
+				case TaskDialogCommonButtons.Yes:
+					id = (int)TaskDialogSimpleResult.Yes;
+					break;
+				case TaskDialogCommonButtons.No:
+					id = (int)TaskDialogSimpleResult.No;
+					break;
+				case TaskDialogCommonButtons.Cancel:
+					id = (int)TaskDialogSimpleResult.Cancel;
+					break;
+				case TaskDialogCommonButtons.Retry:
+					id = (int)TaskDialogSimpleResult.Retry;
+					break;
+				case TaskDialogCommonButtons.Close:
+					id = (int)TaskDialogSimpleResult.Close;
+					break;
+			}
+
+			return new TaskDialogButtonData(id, "_" + commonButton.ToString(), command, isDefault, isCancel);
+		}
 		private void HandleCallbackReturn(TaskDialogNotificationArgs e, bool returnValue)
 		{
 			switch (e.Notification)
@@ -973,7 +1008,7 @@ namespace TaskDialogInterop
 		}
 		private void FixAllButtonLabelAccessKeys()
 		{
-			options.CommandButtons = FixLabelAccessKeys(options.CommandButtons);
+			options.CommandLinks = FixLabelAccessKeys(options.CommandLinks);
 			options.RadioButtons = FixLabelAccessKeys(options.RadioButtons);
 			options.CustomButtons = FixLabelAccessKeys(options.CustomButtons);
 		}
