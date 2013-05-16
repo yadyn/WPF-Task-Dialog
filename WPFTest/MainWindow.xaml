@@ -27,8 +27,8 @@
 				<Button Content="Full Example" Name="button1" Click="button1_Click" />
 				<Button Content="MessageBox Example" Name="button2" Click="button2_Click" />
 				<Button Content="Simple MessageBox Example" Name="button3" Click="button3_Click" />
-				<Button Content="RadioBox Example" Name="button4" Click="button4_Click" />
-				<Button Content="CommandBox Example" Name="button5" Click="button5_Click" />
+				<Button Content="RadioButton Example" Name="button4" Click="button4_Click" />
+				<Button Content="CommandLink Example" Name="button5" Click="button5_Click" />
 				<Button Content="Custom Icon Example" Name="button6" Click="button6_Click" />
 				<Button Content="Progress Bar Example" Name="button7" Click="button7_Click" />
 			</StackPanel>

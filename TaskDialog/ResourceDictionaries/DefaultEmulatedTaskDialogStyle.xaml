@@ -1,0 +1,361 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:s="clr-namespace:System;assembly=mscorlib"
+	xmlns:local="clr-namespace:TaskDialogInterop"
+	xmlns:c="clr-namespace:TaskDialogInterop.Data"
+	mc:Ignorable="d">
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="/TaskDialog;component/ResourceDictionaries/Common.xaml"/>
+		<ResourceDictionary Source="/TaskDialog;component/ResourceDictionaries/DefaultCommandLinkStyle.xaml"/>
+	</ResourceDictionary.MergedDictionaries>
+
+	<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+	<c:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
+	<c:CollectionNotEmptyToVisibilityConverter x:Key="CollectionNotEmptyToVisibilityConverter"/>
+
+	<BitmapImage x:Key="ExpArrUp1" UriSource="/TaskDialog;component/Resources/exparr-up1.bmp" />
+	<BitmapImage x:Key="ExpArrUp2" UriSource="/TaskDialog;component/Resources/exparr-up2.bmp" />
+	<BitmapImage x:Key="ExpArrUp3" UriSource="/TaskDialog;component/Resources/exparr-up3.bmp" />
+	<BitmapImage x:Key="ExpArrDown1" UriSource="/TaskDialog;component/Resources/exparr-down1.bmp" />
+	<BitmapImage x:Key="ExpArrDown2" UriSource="/TaskDialog;component/Resources/exparr-down2.bmp" />
+	<BitmapImage x:Key="ExpArrDown3" UriSource="/TaskDialog;component/Resources/exparr-down3.bmp" />
+	<BitmapImage x:Key="CmdElevated" UriSource="/TaskDialog;component/Resources/shield-16.png" />
+
+	<Style x:Key="DefaultMainInstructionStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+		<Setter Property="Margin" Value="3,7,5,3"/>
+		<Setter Property="FontSize" Value="16"/>
+		<Setter Property="Foreground" Value="#FF0033B3"/>
+		<Setter Property="TextWrapping" Value="Wrap"/>
+	</Style>
+	<Style x:Key="DefaultContentTextStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+		<Setter Property="Margin" Value="3,12,3,8"/>
+		<Setter Property="TextWrapping" Value="Wrap"/>
+	</Style>
+	<Style x:Key="DefaultContentExpandedTextStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+		<Setter Property="Margin" Value="3,0,3,8"/>
+		<Setter Property="TextWrapping" Value="Wrap"/>
+	</Style>
+	<Style x:Key="DefaultProgressBarStyle" TargetType="{x:Type ProgressBar}" BasedOn="{StaticResource {x:Type ProgressBar}}">
+		<Setter Property="Margin" Value="3,7,3,3"/>
+		<Setter Property="Height" Value="15"/>
+	</Style>
+	<Style x:Key="DefaultRadioButtonStyle" TargetType="{x:Type RadioButton}" BasedOn="{StaticResource {x:Type RadioButton}}">
+		<Setter Property="Margin" Value="3,3,3,4"/>
+		<Setter Property="MinWidth" Value="336"/>
+	</Style>
+	<Style x:Key="DefaultButtonsAreaStyle" TargetType="{x:Type Border}">
+		<Setter Property="BorderThickness" Value="0,1,0,0"/>
+		<Setter Property="Padding" Value="9,6"/>
+		<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+	</Style>
+	<Style x:Key="DefaultShowDetailsButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
+		<Setter Property="Margin" Value="1,3,0,3"/>
+		<Setter Property="HorizontalAlignment" Value="Left"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ToggleButton}">
+					<StackPanel Orientation="Horizontal" Background="Transparent">
+						<Image x:Name="ShowDetailsArrow"
+														Source="{StaticResource ExpArrDown1}"
+														Stretch="None" Width="19" Height="19"
+														VerticalAlignment="Center" HorizontalAlignment="Left"
+														UseLayoutRounding="True"
+														RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+						<TextBlock x:Name="ShowDetailsLabel"
+														Text="{Binding ExpandedInfoShowDetailsText}"
+														Margin="8,0,0,0"
+														HorizontalAlignment="Left" VerticalAlignment="Center"/>
+					</StackPanel>
+					<ControlTemplate.Triggers>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsChecked" Value="False"/>
+								<Condition Property="IsMouseOver" Value="True"/>
+							</MultiTrigger.Conditions>
+							<Setter TargetName="ShowDetailsArrow" Property="Source" Value="{StaticResource ExpArrDown2}"/>
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsChecked" Value="False"/>
+								<Condition Property="IsPressed" Value="True"/>
+							</MultiTrigger.Conditions>
+							<Setter TargetName="ShowDetailsArrow" Property="Source" Value="{StaticResource ExpArrDown3}"/>
+						</MultiTrigger>
+						<Trigger Property="IsChecked" Value="True">
+							<Setter TargetName="ShowDetailsArrow" Property="Source" Value="{StaticResource ExpArrUp1}"/>
+							<Setter TargetName="ShowDetailsLabel" Property="Text" Value="{Binding ExpandedInfoHideDetailsText}"/>
+						</Trigger>
+						<Trigger Property="IsChecked" Value="False">
+							<Setter TargetName="ShowDetailsLabel" Property="Text" Value="{Binding ExpandedInfoShowDetailsText}"/>
+						</Trigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsChecked" Value="True"/>
+								<Condition Property="IsMouseOver" Value="True"/>
+							</MultiTrigger.Conditions>
+							<Setter TargetName="ShowDetailsArrow" Property="Source" Value="{StaticResource ExpArrUp2}"/>
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsChecked" Value="True"/>
+								<Condition Property="IsPressed" Value="True"/>
+							</MultiTrigger.Conditions>
+							<Setter TargetName="ShowDetailsArrow" Property="Source" Value="{StaticResource ExpArrUp3}"/>
+						</MultiTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="DefaultVerificationCheckBoxStyle" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
+		<Setter Property="Margin" Value="4,3"/>
+		<Setter Property="HorizontalAlignment" Value="Left"/>
+		<Setter Property="MaxWidth" Value="215"/>
+	</Style>
+	<Style x:Key="DefaultVerificationTextStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+		<Setter Property="TextWrapping" Value="Wrap"/>
+		<Setter Property="VerticalAlignment" Value="Top"/>
+		<Setter Property="Margin" Value="7,0,0,0"/>
+	</Style>
+	<Style x:Key="DefaultCommandButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+		<Setter Property="Margin" Value="4,3"/>
+		<Setter Property="Padding" Value="12,1"/>
+		<Setter Property="MinWidth" Value="66"/>
+		<Setter Property="MinHeight" Value="21"/>
+	</Style>
+	<Style x:Key="DefaultFooterAreaStyle" TargetType="{x:Type Border}">
+		<Setter Property="BorderThickness" Value="0,1,0,0"/>
+		<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+	</Style>
+	<Style x:Key="DefaultFooterInnerAreaStyle" TargetType="{x:Type Border}">
+		<Setter Property="Padding" Value="9"/>
+		<Setter Property="BorderThickness" Value="0,1,0,0"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}"/>
+	</Style>
+	<Style x:Key="DefaultFooterExpandedAreaStyle" TargetType="{x:Type Border}">
+		<Setter Property="BorderThickness" Value="0,1,0,0"/>
+		<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+	</Style>
+	<Style x:Key="DefaultFooterExpandedInnerAreaStyle" TargetType="{x:Type Border}">
+		<Setter Property="Padding" Value="9"/>
+		<Setter Property="BorderThickness" Value="0,1,0,0"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}"/>
+	</Style>
+
+	<ControlTemplate x:Key="DefaultEmulatedTaskDialogTemplate" TargetType="{x:Type local:EmulatedTaskDialog}">
+		<ControlTemplate.Resources>
+			<Style TargetType="{x:Type Hyperlink}">
+				<Setter Property="Foreground" Value="{StaticResource {x:Static SystemColors.HotTrackBrushKey}}" />
+				<Style.Triggers>
+					<Trigger Property="IsMouseOver" Value="True">
+						<Setter Property="Foreground" Value="{StaticResource {x:Static SystemColors.HotTrackBrushKey}}" />
+					</Trigger>
+				</Style.Triggers>
+			</Style>
+		</ControlTemplate.Resources>
+		<Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+			<Border x:Name="ContentArea" Padding="7,3,7,7">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="1*" />
+					</Grid.ColumnDefinitions>
+					<Image x:Name="MainIcon"
+						Source="{Binding MainIcon, Mode=OneWay}"
+						Margin="3,7,7,8" VerticalAlignment="Top"
+						Width="32" Height="32"
+						Visibility="{Binding MainIcon, Converter={StaticResource NotNullToVisibilityConverter}, Mode=OneWay}" />
+					<Grid Grid.Column="1">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<TextBlock x:Name="MainInstruction"
+							Text="{Binding MainInstruction, Mode=OneWay}"
+							Style="{TemplateBinding MainInstructionStyle}"
+							Visibility="{Binding MainInstruction, Converter={StaticResource NotNullToVisibilityConverter}, Mode=OneWay}"/>
+						<TextBlock x:Name="PART_ContentText" Grid.Row="1"
+							Style="{TemplateBinding ContentTextStyle}"
+							Visibility="{Binding Content, Converter={StaticResource NotNullToVisibilityConverter}, Mode=OneWay}" />
+						<TextBlock x:Name="PART_ContentExpandedText" Grid.Row="2"
+							Style="{TemplateBinding ContentExpandedTextStyle}"
+							Visibility="{Binding ContentExpandedInfoVisible, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
+						<ProgressBar x:Name="ProgressBar" Grid.Row="3"
+							Style="{TemplateBinding ProgressBarStyle}"
+							Value="{Binding ProgressBarValue, Mode=OneWay}"
+							Minimum="{Binding ProgressBarMinimum, Mode=OneWay}"
+							Maximum="{Binding ProgressBarMaximum, Mode=OneWay}"
+							IsIndeterminate="{Binding ProgressBarIndeterminate, Mode=OneWay}"
+							Visibility="{Binding ShowProgressBar, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"/>
+						<StackPanel x:Name="SpecialButtons" Orientation="Vertical" Grid.Row="4">
+							<ItemsControl x:Name="RadioButtons"
+								Margin="10,15,10,6"
+								ItemsSource="{Binding RadioButtons}"
+								Focusable="False"
+								Visibility="{Binding RadioButtons, Converter={StaticResource CollectionNotEmptyToVisibilityConverter}}">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<StackPanel/>
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<RadioButton GroupName="default"
+											Style="{Binding RadioButtonStyle, RelativeSource={RelativeSource AncestorType={x:Type local:EmulatedTaskDialog}}}"
+											Content="{Binding Text, Mode=OneWay}"
+											IsChecked="{Binding IsDefault, Mode=OneWay}"
+											IsEnabled="{Binding IsEnabled, Mode=OneWay}"
+											Command="{Binding Command, Mode=OneWay}"
+											CommandParameter="{Binding ID, Mode=OneWay}"/>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+							<ItemsControl x:Name="CommandLinks"
+								Margin="4,17,11,3"
+								ItemsSource="{Binding CommandLinks}"
+								Focusable="False"
+								Visibility="{Binding CommandLinks, Converter={StaticResource CollectionNotEmptyToVisibilityConverter}}">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<StackPanel/>
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<Button
+											Style="{Binding CommandLinkStyle, RelativeSource={RelativeSource AncestorType={x:Type local:EmulatedTaskDialog}}}"
+											Command="{Binding Command, Mode=OneWay}"
+											CommandParameter="{Binding ID, Mode=OneWay}"
+											IsEnabled="{Binding IsEnabled, Mode=OneWay}"/>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</StackPanel>
+					</Grid>
+				</Grid>
+			</Border>
+			<Border x:Name="ButtonsArea" Grid.Row="1"
+				Style="{TemplateBinding ButtonsAreaStyle}">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="1*"/>
+					</Grid.ColumnDefinitions>
+					<StackPanel Orientation="Vertical">
+						<ToggleButton x:Name="ShowDetailsButton"
+							Style="{TemplateBinding ShowDetailsButtonStyle}"
+							Visibility="{Binding HasExpandedInfo, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"
+							IsChecked="{Binding ExpandedInfoVisible, Mode=TwoWay}"/>
+						<CheckBox x:Name="PART_VerificationCheckBox"
+							Style="{TemplateBinding VerificationCheckBoxStyle}"
+							Visibility="{Binding VerificationText, Converter={StaticResource NotNullToVisibilityConverter}, Mode=OneWay}"
+							IsChecked="{Binding VerificationChecked, Mode=TwoWay}">
+							<CheckBox.Content>
+								<TextBlock Text="{Binding VerificationText, Mode=OneWay}"
+									Style="{TemplateBinding VerificationTextStyle}"/>
+							</CheckBox.Content>
+						</CheckBox>
+					</StackPanel>
+					<ItemsControl x:Name="Buttons" Grid.Column="1"
+						ItemsSource="{Binding NormalButtons}"
+						Focusable="False">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<StackPanel Orientation="Horizontal" IsItemsHost="True" VerticalAlignment="Top" HorizontalAlignment="Right" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Button
+									Style="{Binding CommandButtonStyle, RelativeSource={RelativeSource AncestorType={x:Type local:EmulatedTaskDialog}}}"
+									Command="{Binding Command, Mode=OneWay}"
+									CommandParameter="{Binding ID, Mode=OneWay}"
+									IsCancel="{Binding IsCancel, Mode=OneWay}"
+									IsDefault="{Binding IsDefault, Mode=OneWay}"
+									IsEnabled="{Binding IsEnabled, Mode=OneWay}">
+									<StackPanel Orientation="Horizontal">
+										<Image Source="{StaticResource CmdElevated}"
+											Visibility="{Binding IsElevationRequired, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+										<ContentPresenter RecognizesAccessKey="True" Content="{Binding Text}"/>
+									</StackPanel>
+								</Button>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</Grid>
+			</Border>
+			<Border x:Name="FooterArea" Grid.Row="2"
+				Style="{TemplateBinding FooterAreaStyle}"
+				Visibility="{Binding FooterText, Converter={StaticResource NotNullToVisibilityConverter}, Mode=OneWay}">
+				<Border x:Name="FooterInner"
+					Style="{TemplateBinding FooterInnerAreaStyle}">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="1*" />
+						</Grid.ColumnDefinitions>
+						<Image x:Name="FooterIcon"
+							Source="{Binding FooterIcon, Mode=OneWay}"
+							VerticalAlignment="Top"
+							Width="16" Height="16" Margin="3,0"/>
+						<TextBlock x:Name="PART_FooterText" Grid.Column="1" Margin="4,0" TextWrapping="Wrap"/>
+					</Grid>
+				</Border>
+			</Border>
+			<Border x:Name="FooterExpandedArea" Grid.Row="3"
+				Style="{TemplateBinding FooterExpandedAreaStyle}"
+				Visibility="{Binding FooterExpandedInfoVisible, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
+				<Border x:Name="FooterExpandedInner"
+					Style="{TemplateBinding FooterExpandedInnerAreaStyle}">
+					<TextBlock x:Name="PART_FooterExpandedText" Margin="4,0" TextWrapping="Wrap"/>
+				</Border>
+			</Border>
+		</Grid>
+	</ControlTemplate>
+
+	<Style x:Key="DefaultEmulatedTaskDialogStyle" TargetType="{x:Type local:EmulatedTaskDialog}" BasedOn="{StaticResource {x:Type Window}}">
+		<Setter Property="Title" Value="{Binding Title, Mode=OneWay}"/>
+		<Setter Property="ResizeMode" Value="NoResize"/>
+		<Setter Property="ShowInTaskbar" Value="False"/>
+		<Setter Property="SizeToContent" Value="WidthAndHeight"/>
+		<Setter Property="MinWidth" Value="375"/>
+		<Setter Property="MaxWidth" Value="500"/>
+		<Setter Property="SnapsToDevicePixels" Value="True"/>
+		<Setter Property="UseLayoutRounding" Value="True"/>
+		<Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+		<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+		<Setter Property="MainInstructionStyle" Value="{StaticResource DefaultMainInstructionStyle}"/>
+		<Setter Property="ContentTextStyle" Value="{StaticResource DefaultContentTextStyle}"/>
+		<Setter Property="ContentExpandedTextStyle" Value="{StaticResource DefaultContentExpandedTextStyle}"/>
+		<Setter Property="ProgressBarStyle" Value="{StaticResource DefaultProgressBarStyle}"/>
+		<Setter Property="RadioButtonStyle" Value="{StaticResource DefaultRadioButtonStyle}"/>
+		<Setter Property="CommandLinkStyle" Value="{StaticResource DefaultCommandLinkStyle}"/>
+		<Setter Property="ButtonsAreaStyle" Value="{StaticResource DefaultButtonsAreaStyle}"/>
+		<Setter Property="ShowDetailsButtonStyle" Value="{StaticResource DefaultShowDetailsButtonStyle}"/>
+		<Setter Property="VerificationCheckBoxStyle" Value="{StaticResource DefaultVerificationCheckBoxStyle}"/>
+		<Setter Property="VerificationTextStyle" Value="{StaticResource DefaultVerificationTextStyle}"/>
+		<Setter Property="CommandButtonStyle" Value="{StaticResource DefaultCommandButtonStyle}"/>
+		<Setter Property="FooterAreaStyle" Value="{StaticResource DefaultFooterAreaStyle}"/>
+		<Setter Property="FooterInnerAreaStyle" Value="{StaticResource DefaultFooterInnerAreaStyle}"/>
+		<Setter Property="FooterExpandedAreaStyle" Value="{StaticResource DefaultFooterExpandedAreaStyle}"/>
+		<Setter Property="FooterExpandedInnerAreaStyle" Value="{StaticResource DefaultFooterExpandedInnerAreaStyle}"/>
+		<Setter Property="Template" Value="{StaticResource DefaultEmulatedTaskDialogTemplate}"/>
+	</Style>
+
+</ResourceDictionary>

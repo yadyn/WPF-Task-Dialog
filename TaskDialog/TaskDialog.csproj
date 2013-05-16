@@ -52,10 +52,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandLink.xaml.cs">
-      <DependentUpon>CommandLink.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="EmulatedTaskDialog.cs" />
     <Compile Include="Localization.cs" />
+    <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Compile Include="Win32Types.cs" />
     <Compile Include="Data\Converters.cs" />
     <Compile Include="NativeMethods.cs" />
@@ -68,9 +70,6 @@
     <Compile Include="Input\RelayCommand.cs" />
     <Compile Include="SafeNativeMethods.cs" />
     <Compile Include="TaskDialog.cs" />
-    <Compile Include="EmulatedTaskDialog.xaml.cs">
-      <DependentUpon>EmulatedTaskDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="TaskDialogEvents.cs" />
     <Compile Include="TaskDialogInterop.cs" />
     <Compile Include="TaskDialogResult.cs" />
@@ -105,10 +104,6 @@
     <Resource Include="Resources\cmdarr3.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="CommandLink.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <DesignData Include="DesignData\DesignerCommandLink.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -121,9 +116,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="EmulatedTaskDialog.xaml">
+    <Page Include="ResourceDictionaries\DefaultCommandLinkStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ResourceDictionaries\DefaultEmulatedTaskDialogStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

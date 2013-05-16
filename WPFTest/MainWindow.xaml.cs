@@ -146,7 +146,7 @@ namespace WPFTest
 			TaskDialogOptions config = new TaskDialogOptions();
 
 			config.Owner = this;
-			config.Title = "RadioBox Title";
+			config.Title = "RadioButton Title";
 			config.MainInstruction = "The main instruction text for the TaskDialog goes here.";
 			config.Content = "The content text for the task dialog is shown here and the text will automatically wrap as needed.";
 			config.ExpandedInfo = "Any expanded content text for the task dialog is shown here and the text will automatically wrap as needed.";
