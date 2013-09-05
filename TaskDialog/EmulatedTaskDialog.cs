@@ -279,12 +279,18 @@ namespace TaskDialogInterop
 				ViewModel.RequestClose += new EventHandler(ViewModel_RequestClose);
 				ViewModel.RequestVerificationFocus += new EventHandler(ViewModel_RequestVerificationFocus);
 
+				this.WindowStartupLocation = ViewModel.StartPosition;
+
+				// Attempt to set initial focus on any button marked IsDefault
+				var defaultButton = GetDefaultButton(this);
+
+				if (defaultButton != null)
+					defaultButton.Focus();
+
 				ConvertToHyperlinkedText(_contentText, ViewModel.Content);
 				ConvertToHyperlinkedText(_contentExpandedInfo, ViewModel.ContentExpandedInfo);
 				ConvertToHyperlinkedText(_footerExpandedInfo, ViewModel.FooterExpandedInfo);
 				ConvertToHyperlinkedText(_footerText, ViewModel.FooterText);
-
-				this.WindowStartupLocation = ViewModel.StartPosition;
 
 				//if (ViewModel.NormalButtons.Count == 0)
 				//    this.MaxWidth = 462;
@@ -439,6 +445,36 @@ namespace TaskDialogInterop
 				if (i < hyperlinks.Count)
 					textBlock.Inlines.Add(hyperlinks[i]);
 			}
+		}
+		private Button GetDefaultButton(DependencyObject parent)
+		{
+			var childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+
+			for (int i = 0; i < childrenCount; i++)
+			{
+				var child = VisualTreeHelper.GetChild(parent, i);
+
+				if (child != null)
+				{
+					var childType = child.GetType();
+
+					if (typeof(Button).IsAssignableFrom(childType))
+					{
+						var button = child as Button;
+
+						if (button.IsDefault)
+							return button;
+					}
+				}
+
+				// Test its children
+				var childButton = GetDefaultButton(child);
+
+				if (childButton != null)
+					return childButton;
+			}
+
+			return null;
 		}
 	}
 }
