@@ -98,6 +98,20 @@ namespace TaskDialogInterop
 		/// </summary>
 		public string ExpandedInfo;
 		/// <summary>
+		/// The string to be used to label the button for collapsing the expanded information. This
+		/// member is ignored when the ExpandedInfo member is null. If this member is null
+		/// and the CollapsedControlText is specified, then the CollapsedControlText value will be
+		/// used for this member as well.
+		/// </summary>
+		public string ExpandedControlText;
+		/// <summary>
+		/// The string to be used to label the button for expanding the expanded information. This
+		/// member is ignored when the ExpandedInfo member is null.  If this member is null
+		/// and the ExpandedControlText is specified, then the ExpandedControlText value will be
+		/// used for this member as well.
+		/// </summary>
+		public string CollapsedControlText;
+		/// <summary>
 		/// Indicates that the expanded info should be displayed when the
 		/// dialog is initially displayed.
 		/// </summary>
