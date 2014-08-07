@@ -16,11 +16,11 @@ namespace TaskDialogInterop
 	/// </remarks>
 	public static class TaskDialog
 	{
-		private const string HtmlHyperlinkPattern = "<a href=\".+\">.+</a>";
-		private const string HtmlHyperlinkCapturePattern = "<a href=\"(?<link>.+)\">(?<text>.+)</a>";
+		private const string HtmlHyperlinkPattern = "<a href=\"[^>]+\">[^<]+<\\/a>";
+		private const string HtmlHyperlinkCapturePattern = "<a href=\"(?<link>[^>]+)\">(?<text>[^<]+)<\\/a>";
 
-		internal static readonly Regex HyperlinkRegex = new Regex(HtmlHyperlinkPattern);
-		internal static readonly Regex HyperlinkCaptureRegex = new Regex(HtmlHyperlinkCapturePattern);
+		internal static readonly Regex HyperlinkRegex = new Regex(HtmlHyperlinkPattern, RegexOptions.IgnoreCase);
+		internal static readonly Regex HyperlinkCaptureRegex = new Regex(HtmlHyperlinkCapturePattern, RegexOptions.IgnoreCase);
 
 		internal const int CommandButtonIDOffset = 2000;
 		internal const int RadioButtonIDOffset = 1000;
