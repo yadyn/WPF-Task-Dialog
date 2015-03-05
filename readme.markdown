@@ -1,4 +1,5 @@
 # WPF Task Dialog Wrapper #
+## Now support Right to left ##
 
 It is a drop-in assembly that lets you call up Task Dialogs in your WPF app.
 Uses the native [TaskDialogIndirect][1] API calls when available (Vista/7) and
@@ -47,7 +48,7 @@ The basic flow in your apps will typically be something like this:
     config.MainIcon = VistaTaskDialogIcon.Shield;
     config.FooterText = "Optional footer text with an icon can be included.";
     config.FooterIcon = VistaTaskDialogIcon.Warning;
-    
+    config.IsRightToLeft = true; // for right to left languages.
     TaskDialogResult res = TaskDialog.Show(config);
 
 The options object lets you specify all of the particulars. Anything you don't
