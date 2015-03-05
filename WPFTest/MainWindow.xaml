@@ -34,6 +34,7 @@
 			</StackPanel>
 			<Grid Grid.Row="1">
 				<CheckBox Content="Force Emulation Mode" Name="checkBox1" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Center" Checked="checkBox1_CheckedChanged" Unchecked="checkBox1_CheckedChanged" />
+                <CheckBox Content="Right to left?" Margin="250,8,-170,-8" Name="checkbox2"/>
 			</Grid>
 			<Grid Grid.Column="1">
 				<Grid.RowDefinitions>

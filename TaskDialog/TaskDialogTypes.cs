@@ -188,6 +188,10 @@ namespace TaskDialogInterop
 		/// time to complete, etc.
 		/// </remarks>
 		public bool EnableCallbackTimer;
+        /// <summary>
+        /// Indicates that should dialog be shown RightToLeft
+        /// </summary>
+        public bool IsRightToLeft;
 	}
 	/// <summary>
 	/// Provides view data for all task dialog buttons.

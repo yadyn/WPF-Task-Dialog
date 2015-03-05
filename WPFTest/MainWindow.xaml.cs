@@ -105,8 +105,8 @@ namespace WPFTest
 			config.FooterIcon = TaskDialogIcon.Warning;
 			config.AllowDialogCancellation = true;
 			config.Callback = taskDialog_Callback1;
-
-			TaskDialogResult res = TaskDialog.Show(config);
+            config.IsRightToLeft = checkbox2.IsChecked ?? false;
+            TaskDialogResult res = TaskDialog.Show(config);
 
 			UpdateResult(res);
 		}
@@ -152,8 +152,8 @@ namespace WPFTest
 			config.ExpandedInfo = "Any expanded content text for the task dialog is shown here and the text will automatically wrap as needed.";
 			config.RadioButtons = new string[] { "Radio Option 1", "Radio Option 2", "Radio Option 3", "Radio Option 4", "Radio Option 5" };
 			config.MainIcon = TaskDialogIcon.Information;
-
-			TaskDialogResult res = TaskDialog.Show(config);
+            config.IsRightToLeft = checkbox2.IsChecked ?? false;
+            TaskDialogResult res = TaskDialog.Show(config);
 
 			UpdateResult(res);
 		}
@@ -169,8 +169,8 @@ namespace WPFTest
 			config.ExpandedInfo = "Any expanded content text for the task dialog is shown here and the text will automatically wrap as needed.";
 			config.CommandLinks = new string[] { "Command &Link 1", "Command Link 2\nLine 2\nLine 3", "Command Link 3" };
 			config.MainIcon = TaskDialogIcon.Information;
-
-			TaskDialogResult res = TaskDialog.Show(config);
+            config.IsRightToLeft = checkbox2.IsChecked ?? false;
+            TaskDialogResult res = TaskDialog.Show(config);
 
 			UpdateResult(res);
 		}
@@ -185,8 +185,8 @@ namespace WPFTest
 			config.Content = "You may be a victim of software counterfeiting.";
 			config.CommonButtons = TaskDialogCommonButtons.Close;
 			config.CustomMainIcon = System.Drawing.Icon.FromHandle(Properties.Resources.genuine_32.GetHicon());
-
-			TaskDialogResult res = TaskDialog.Show(config);
+            config.IsRightToLeft = checkbox2.IsChecked ?? false;
+            TaskDialogResult res = TaskDialog.Show(config);
 
 			UpdateResult(res);
 
@@ -206,7 +206,7 @@ namespace WPFTest
 			config.ShowProgressBar = true;
 			config.EnableCallbackTimer = true;
 			config.Callback = taskDialog_Callback2;
-
+            config.IsRightToLeft = checkbox2.IsChecked ?? false;
 			TaskDialogResult res = TaskDialog.Show(config);
 
 			UpdateResult(res);
